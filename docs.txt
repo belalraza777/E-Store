@@ -1,0 +1,282 @@
+================================================================================
+                        E-STORE PROJECT DOCUMENTATION
+================================================================================
+
+PROJECT OVERVIEW
+----------------
+A full-stack e-commerce application built with Node.js, Express, MongoDB, and React.
+Features authentication, product management, and shopping cart functionality.
+
+================================================================================
+                            IMPLEMENTED FEATURES
+================================================================================
+
+1. AUTHENTICATION & AUTHORIZATION
+----------------------------------
+   ✓ User registration and login
+   ✓ OAuth integration (Google, GitHub, etc.)
+   ✓ JWT-based authentication
+   ✓ Role-based access control (User/Admin)
+   ✓ Passport.js integration
+   ✓ Protected routes with middleware
+
+   Endpoints:
+   - POST /api/v1/auth/register
+   - POST /api/v1/auth/login
+   - GET  /api/v1/auth/oauth/*
+
+
+2. PRODUCT MANAGEMENT
+----------------------
+   ✓ Create, Read, Update, Delete products (Admin only)
+   ✓ Product categorization
+   ✓ Product slug generation
+   ✓ Image support
+   ✓ Stock management
+   ✓ Ratings and reviews tracking
+   ✓ Discount pricing
+   ✓ Product search and filtering
+   ✓ Pagination support
+
+   Public Endpoints:
+   - GET    /api/v1/products           - Get all products (with pagination)
+   - GET    /api/v1/products/categories - Get all available categories
+   - GET    /api/v1/products/:slug     - Get single product by slug
+
+   Admin Endpoints (Requires Authentication + Admin Role):
+   - POST   /api/v1/products           - Create new product
+   - PUT    /api/v1/products/:id       - Update product
+   - DELETE /api/v1/products/:id       - Delete product
+
+
+3. SHOPPING CART
+----------------
+   ✓ Add items to cart
+   ✓ Update item quantity
+   ✓ Remove items from cart
+   ✓ Automatic price calculation
+   ✓ Discount price support
+   ✓ User-specific carts
+   ✓ Persistent cart storage
+
+   Endpoints (All require authentication):
+   - POST   /api/v1/cart/:productId/:quantity                - Add item to cart
+   - GET    /api/v1/cart                    - Get user's cart
+   - PUT    /api/v1/cart/:itemId/:quantity  - Update item quantity
+   - DELETE /api/v1/cart/:itemId            - Remove item from cart
+
+   Cart Item ID Note:
+   When updating/deleting items, use the cart item's _id (from cart.items array),
+   NOT the product ID. Get cart first to retrieve correct item IDs.
+
+================================================================================
+                              DATABASE MODELS
+================================================================================
+
+1. USER MODEL
+-------------
+   - _id (ObjectId)
+   - username/email
+   - password (hashed)
+   - role (user/admin)
+   - OAuth provider info
+   - timestamps
+
+2. PRODUCT MODEL
+----------------
+   - _id (ObjectId)
+   - title (String, required)
+   - slug (String, unique, indexed)
+   - description (String)
+   - price (Number, required)
+   - discountPrice (Number, optional)
+   - stock (Number, default: 0)
+   - images (Array of Strings)
+   - category (String, enum)
+   - ratings (Number, default: 0)
+   - numReviews (Number)
+   - isActive (Boolean)
+   - timestamps
+
+3. CART MODEL
+-------------
+   - _id (ObjectId)
+   - user (ObjectId ref User, required)
+   - items (Array):
+     * _id (auto-generated subdocument ID)
+     * product (ObjectId ref Product)
+     * quantity (Number, default: 1)
+     * price (Number)
+     * discountPrice (Number, default: 0)
+   - totalPrice (Number)
+   - discountPrice (Number, default: 0)
+   - timestamps
+
+================================================================================
+                            MIDDLEWARE & UTILITIES
+================================================================================
+
+✓ Error Handler Middleware
+✓ Rate Limiting
+✓ JOI Validation (Product creation/update)
+✓ Async Wrapper (Error handling)
+✓ Verify Authentication Middleware
+✓ Verify Admin Middleware
+✓ Slug Helper (Auto-generate URL-friendly slugs)
+
+================================================================================
+                              PROJECT STRUCTURE
+================================================================================
+
+server/
+├── app.js                          - Express app setup and route registration
+├── server.js                       - Server entry point
+├── config/
+│   ├── db.js                       - MongoDB connection
+│   └── passport.js                 - Passport authentication strategies
+├── constants/
+│   └── categories.js               - Product categories enum
+├── controllers/
+│   ├── authController.js           - Authentication logic
+│   ├── productController.js        - Public product operations
+│   ├── adminProductController.js   - Admin product operations
+│   └── cartController.js           - Cart operations (NEW)
+├── middlewares/
+│   ├── errorHandler.js             - Global error handling
+│   ├── joiValidation.js            - Request validation
+│   ├── rateLimit.js                - Rate limiting
+│   ├── setupMiddlewares.js         - Middleware configuration
+│   ├── verifyAuth.js               - JWT authentication check
+│   └── verifyAdmin.js              - Admin role verification
+├── models/
+│   ├── userModel.js                - User schema
+│   ├── productModel.js             - Product schema
+│   └── cartModel.js                - Cart schema (NEW)
+├── routes/
+│   ├── authRoute.js                - Auth endpoints
+│   ├── oauthRoute.js               - OAuth endpoints
+│   ├── productRoute.js             - Product endpoints
+│   └── cartRoute.js                - Cart endpoints (NEW)
+├── helper/
+│   └── slugHelper.js               - Slug generation utility
+└── utils/
+    └── asyncWrapper.js             - Async error wrapper
+
+client/
+├── src/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── assets/
+├── public/
+└── index.html
+
+================================================================================
+                           USAGE EXAMPLES
+================================================================================
+
+1. ADD ITEM TO CART
+-------------------
+POST /api/v1/cart
+Headers: Authorization: Bearer <token>
+Body: {
+  "productId": "673abc123def456789",
+  "quantity": 2
+}
+
+Response: {
+  "success": true,
+  "data": {
+    "_id": "cart123",
+    "user": "user456",
+    "items": [
+      {
+        "_id": "675xyz987fed654321",  // Use this ID for updates/deletes
+        "product": { ... },
+        "quantity": 2,
+        "price": 99.99,
+        "discountPrice": 79.99
+      }
+    ],
+    "totalPrice": 199.98,
+    "discountPrice": 159.98
+  },
+  "message": "Item added to cart"
+}
+
+
+2. UPDATE CART ITEM QUANTITY
+-----------------------------
+PUT /api/v1/cart/675xyz987fed654321/5
+Headers: Authorization: Bearer <token>
+
+Response: {
+  "success": true,
+  "data": { ... },
+  "message": "Cart item updated"
+}
+
+
+3. GET USER'S CART
+------------------
+GET /api/v1/cart
+Headers: Authorization: Bearer <token>
+
+Response: {
+  "success": true,
+  "data": { ... }
+}
+
+
+4. REMOVE ITEM FROM CART
+-------------------------
+DELETE /api/v1/cart/675xyz987fed654321
+Headers: Authorization: Bearer <token>
+
+Response: {
+  "success": true,
+  "data": { ... },
+  "message": "Item removed from cart"
+}
+
+================================================================================
+                         ENVIRONMENT VARIABLES
+================================================================================
+
+Required environment variables (create .env file):
+- PORT
+- MONGODB_URI
+- JWT_SECRET
+- OAUTH_CLIENT_ID
+- OAUTH_CLIENT_SECRET
+- SESSION_SECRET
+
+================================================================================
+                            SECURITY FEATURES
+================================================================================
+
+✓ Password hashing
+✓ JWT token-based authentication
+✓ Rate limiting to prevent abuse
+✓ Input validation with JOI
+✓ Role-based access control
+✓ Secure cookie handling
+✓ CORS configuration
+✓ Error message sanitization
+
+================================================================================
+                            UPCOMING FEATURES
+================================================================================
+
+- Order management system
+- Payment integration
+- User profile management
+- Wishlist functionality
+- Product reviews and ratings
+- Email notifications
+- Admin dashboard
+- Product search with filters
+- Inventory management
+
+================================================================================
+                        LAST UPDATED: January 16, 2026
+================================================================================
