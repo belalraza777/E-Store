@@ -140,7 +140,7 @@ const updateCartItem = async (req, res, next) => {
  */
 const removeFromCart = async (req, res, next) => {
     const { itemId } = req.params;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     // Fetch user's cart
     const cart = await Cart.findOne({ user: userId });
@@ -161,12 +161,14 @@ const removeFromCart = async (req, res, next) => {
 
     // Recalculate total price after item removal
     cart.totalPrice = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // Recalculate discount price
+    cart.discountPrice = cart.items.reduce((total, item) => total + ((item.discountPrice || 0) * item.quantity), 0);
 
     // Save updated cart and populate product details for response
     await cart.save();
     await cart.populate('items.product', 'name price image slug');
 
-    return res.status(200).json({ success: true, data: cart, message: "Item removed from cart" });
+    return res.status(200).json({ success: true, message: `Item removed from cart ${itemId}` });
 };
 
 // Export all cart controller functions
