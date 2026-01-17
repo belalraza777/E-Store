@@ -164,14 +164,6 @@ const createProductSchema = Joi.object({
             "number.integer": "Stock must be an integer",
         }),
 
-    images: Joi.array()
-        .items(Joi.string().uri())
-        .optional()
-        .messages({
-            "array.base": "Images must be an array",
-            "string.uri": "Each image must be a valid URL",
-        }),
-
     category: Joi.string()
         .required()
         .messages({
@@ -226,14 +218,6 @@ const updateProductSchema = Joi.object({
             "number.base": "Stock must be a number",
             "number.min": "Stock must be greater than or equal to 0",
             "number.integer": "Stock must be an integer",
-        }),
-
-    images: Joi.array()
-        .items(Joi.string().uri())
-        .optional()
-        .messages({
-            "array.base": "Images must be an array",
-            "string.uri": "Each image must be a valid URL",
         }),
 
     category: Joi.string()

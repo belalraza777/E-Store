@@ -7,6 +7,7 @@ import { createProductValidation, updateProductValidation } from "../middlewares
 import verifyAuth from "../middlewares/verifyAuth.js";
 import verifyAdmin from "../middlewares/verifyAdmin.js";
 import { CATEGORIES } from "../constants/categories.js";
+import upload from "../middlewares/upload.js";
 
 // Public routes
 router.get("/", asyncWrapper(productController.getAllProducts));
@@ -22,6 +23,7 @@ router.post(
     "/",
     verifyAuth,
     verifyAdmin,
+    upload.array("images", 5),
     createProductValidation,
     asyncWrapper(adminProductController.createProduct)
 );
@@ -30,6 +32,7 @@ router.put(
     "/:id",
     verifyAuth,
     verifyAdmin,
+    upload.array("images", 5),
     updateProductValidation,
     asyncWrapper(adminProductController.updateProduct)
 );

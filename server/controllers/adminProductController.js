@@ -1,10 +1,16 @@
 import Product from "../models/productModel.js";
 import { processProductSlug } from "../helper/slugHelper.js";
 import { isValidCategory, normalizeCategory } from "../constants/categories.js";
+import { cloudinary } from "../config/cloudnary.js";
 
 // Create new product (Admin only)
 const createProduct = async (req, res, next) => {
-    const { title, description, price, discountPrice, stock, images, category } = req.body;
+    const { title, description, price, discountPrice, stock, category } = req.body;
+
+    const uploadedImages = (req.files || []).map((file) => ({
+        url: file.path,
+        publicId: file.filename,
+    }));
 
     // Validate category
     if (!isValidCategory(category)) {
@@ -25,7 +31,7 @@ const createProduct = async (req, res, next) => {
         price,
         discountPrice,
         stock: stock || 0,
-        images: images || [],
+        images: uploadedImages,
         category: normalizeCategory(category),
         isActive: true
     });
@@ -61,7 +67,9 @@ const updateProduct = async (req, res, next) => {
     if (req.body.price !== undefined) product.price = req.body.price;
     if (req.body.discountPrice !== undefined) product.discountPrice = req.body.discountPrice;
     if (req.body.stock !== undefined) product.stock = req.body.stock;
-    if (req.body.images) product.images = req.body.images;
+    if (req.files && req.files.length > 0) {
+        product.images = req.files.map((file) => ({ url: file.path, publicId: file.filename }));
+    }
     if (req.body.category) product.category = normalizeCategory(req.body.category);
     if (req.body.isActive !== undefined) product.isActive = req.body.isActive;
 
@@ -74,11 +82,22 @@ const updateProduct = async (req, res, next) => {
 
 // Delete product (Admin only)
 const deleteProduct = async (req, res, next) => {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
         return res.status(404).json({ success: false, message: "Product not found" });
     }
+
+    // Delete associated images from Cloudinary
+    if (product.images && product.images.length > 0) {
+        const deletePromises = product.images.map((image) =>
+            cloudinary.uploader.destroy(image.publicId)
+        );
+        await Promise.all(deletePromises); // Wait for all deletions to complete (promise.all used for better performance when multiple resolutions are needed)
+    }
+
+    // Delete product from database
+    await Product.findByIdAndDelete(req.params.id);
 
     return res.status(200).json({ success: true, message: "Product deleted", data: { id: product._id } });
 };
