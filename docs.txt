@@ -21,9 +21,12 @@ Features authentication, product management, and shopping cart functionality.
    ✓ Protected routes with middleware
 
    Endpoints:
-   - POST /api/v1/auth/register
-   - POST /api/v1/auth/login
-   - GET  /api/v1/auth/oauth/*
+   - POST /api/v1/auth/register        - User registration
+   - POST /api/v1/auth/login           - User login
+   - GET  /api/v1/auth/logout          - User logout
+   - GET  /api/v1/auth/check           - Check authentication status & role
+   - PATCH /api/v1/auth/reset          - Reset password (authenticated users)
+   - GET  /api/v1/auth/oauth/*         - OAuth endpoints (Google)
 
 
 2. PRODUCT MANAGEMENT
@@ -70,6 +73,21 @@ Features authentication, product management, and shopping cart functionality.
    When updating/deleting items, use the cart item's _id (from cart.items array),
    NOT the product ID. Get cart first to retrieve correct item IDs.
 
+4. ORDERS
+---------
+   ✓ Place orders (authenticated users)
+   ✓ View my orders
+   ✓ Admin order listing
+   ✓ Admin order filtering (by status/postalCode)
+   ✓ Admin order status/payment updates
+
+   Endpoints:
+   - POST  /api/v1/orders              - Create order (auth) — direct buy or from cart
+   - GET   /api/v1/orders/my           - Get current user's orders (auth)
+   - GET   /api/v1/orders              - List all orders (admin)
+   - GET   /api/v1/orders/filter       - Filter orders by status/postalCode (admin)
+   - PUT   /api/v1/orders/:id/status   - Update order status/payment (admin)
+
 ================================================================================
                               DATABASE MODELS
 ================================================================================
@@ -115,6 +133,22 @@ Features authentication, product management, and shopping cart functionality.
   - totalDiscountPrice (Number, default: 0)
    - timestamps
 
+4. ORDER MODEL
+--------------
+  - _id (ObjectId)
+  - user (ObjectId ref User, required)
+  - items (Array):
+    * product (ObjectId ref Product)
+    * quantity (Number)
+    * price (Number) - charged unit price at order time
+  - shippingAddress { address, city, postalCode, country }
+  - paymentMethod (Online | COD)
+  - paymentStatus (pending | paid | failed)
+  - orderStatus (placed | shipped | delivered | cancelled)
+  - totalAmount (Number)
+  - isCancelled (Boolean)
+  - timestamps
+
 ================================================================================
                             MIDDLEWARE & UTILITIES
 ================================================================================
@@ -122,7 +156,7 @@ Features authentication, product management, and shopping cart functionality.
 ✓ Error Handler Middleware
 ✓ Rate Limiting
 ✓ Multer File Upload (Cloudinary storage)
-✓ JOI Validation (Product creation/update)
+✓ JOI Validation (Products, Orders)
 ✓ Async Wrapper (Error handling)
 ✓ Verify Authentication Middleware
 ✓ Verify Admin Middleware
@@ -145,7 +179,8 @@ server/
 │   ├── authController.js           - Authentication logic
 │   ├── productController.js        - Public product operations
 │   ├── adminProductController.js   - Admin product operations (with Cloudinary)
-│   └── cartController.js           - Cart operations
+│   ├── cartController.js           - Cart operations
+│   └── orderController.js          - Order operations (user + admin)
 ├── middlewares/
 │   ├── errorHandler.js             - Global error handling
 │   ├── joiValidation.js            - Request validation
@@ -157,12 +192,14 @@ server/
 ├── models/
 │   ├── userModel.js                - User schema
 │   ├── productModel.js             - Product schema (with Cloudinary image objects)
-│   └── cartModel.js                - Cart schema
+│   ├── cartModel.js                - Cart schema
+│   └── orderModel.js               - Order schema
 ├── routes/
 │   ├── authRoute.js                - Auth endpoints
 │   ├── oauthRoute.js               - OAuth endpoints
 │   ├── productRoute.js             - Product endpoints (with upload middleware)
-│   └── cartRoute.js                - Cart endpoints
+│   ├── cartRoute.js                - Cart endpoints
+│   └── orderRoute.js               - Order endpoints
 ├── helper/
 │   └── slugHelper.js               - Slug generation utility
 └── utils/
@@ -246,7 +283,85 @@ Response: {
 }
 
 
-2. UPDATE CART ITEM QUANTITY
+3. PLACE ORDER
+--------------
+POST /api/v1/orders
+Headers: Authorization: Bearer <token>
+
+Body:
+{
+  "items": [
+    { "product": "673abc123def456789", "quantity": 2 }
+  ],
+  "shippingAddress": {
+    "address": "123 Main St",
+    "city": "Springfield",
+    "postalCode": "12345",
+    "country": "USA"
+  },
+  "paymentMethod": "COD"
+}
+
+Response: {
+  "success": true,
+  "message": "Order placed",
+  "data": {
+    "_id": "order123",
+    "items": [
+      { "product": { ... }, "quantity": 2, "price": 79.99 }
+    ],
+    "totalAmount": 159.98,
+    "orderStatus": "placed",
+    "paymentStatus": "pending"
+  }
+}
+
+
+4. GET MY ORDERS
+----------------
+GET /api/v1/orders/my
+Headers: Authorization: Bearer <token>
+
+Response: {
+  "success": true,
+  "data": [
+    {
+      "_id": "order123",
+      "items": [...],
+      "shippingAddress": {...},
+      "orderStatus": "placed",
+      "paymentStatus": "pending",
+      "totalAmount": 159.98,
+      "createdAt": "2026-01-17T10:30:00.000Z"
+    }
+  ]
+}
+
+
+5. FILTER ORDERS (Admin)
+-------------------------
+GET /api/v1/orders/filter?orderStatus=shipped&postalCode=12345
+Headers: Authorization: Bearer <admin_token>
+
+Query Parameters:
+- orderStatus (optional): placed | shipped | delivered | cancelled
+- postalCode (optional): filter by shipping postal code
+
+Response: {
+  "success": true,
+  "data": [
+    {
+      "_id": "order123",
+      "user": {...},
+      "orderStatus": "shipped",
+      "shippingAddress": { "postalCode": "12345", ... },
+      ...
+    }
+  ]
+}
+
+
+6. UPDATE CART ITEM QUANTITY
 -----------------------------
 PUT /api/v1/cart/675xyz987fed654321/5
 Headers: Authorization: Bearer <token>
@@ -258,7 +373,7 @@ Response: {
 }
 
 
-3. GET USER'S CART
+7. GET USER'S CART
 ------------------
 GET /api/v1/cart
 Headers: Authorization: Bearer <token>
@@ -269,7 +384,7 @@ Response: {
 }
 
 
-4. REMOVE ITEM FROM CART
+8. REMOVE ITEM FROM CART
 -------------------------
 DELETE /api/v1/cart/675xyz987fed654321
 Headers: Authorization: Bearer <token>
@@ -278,6 +393,29 @@ Response: {
   "success": true,
   "data": { ... },
   "message": "Item removed from cart"
+}
+
+
+9. UPDATE ORDER STATUS (Admin)
+-------------------------------
+PUT /api/v1/orders/order123/status
+Headers: Authorization: Bearer <admin_token>
+
+Body:
+{
+  "orderStatus": "shipped",
+  "paymentStatus": "paid"
+}
+
+Response: {
+  "success": true,
+  "message": "Order status updated",
+  "data": {
+    "_id": "order123",
+    "orderStatus": "shipped",
+    "paymentStatus": "paid",
+    ...
+  }
 }
 
 ================================================================================
@@ -295,6 +433,8 @@ Required environment variables (create .env file):
 - CLOUD_API_KEY              (Cloudinary API key)
 - CLOUD_API_SECRET           (Cloudinary API secret)
 - CLOUDINARY_FOLDER          (Optional, default: "estore_media")
+- GOOGLE_FRONTEND_REDIRECT_URL (Frontend OAuth redirect URL)
+- NODE_ENV                   (development | production)
 
 ================================================================================
                             SECURITY FEATURES
@@ -313,15 +453,16 @@ Required environment variables (create .env file):
                             UPCOMING FEATURES
 ================================================================================
 
-- Order management system
-- Payment integration
+- Payment integration (Stripe/PayPal)
 - User profile management
 - Wishlist functionality
-- Product reviews and ratings
+- Product reviews and ratings system
 - Email notifications
 - Admin dashboard
-- Product search with filters
-- Inventory management
+- Advanced product search with filters
+- Inventory management alerts
+- Order tracking
+- Multiple shipping addresses
 
 ================================================================================
                         LAST UPDATED: January 17, 2026

@@ -233,6 +233,45 @@ const updateProductSchema = Joi.object({
         }),
 });
 
+    // Create order validation schema
+const createOrderSchema = Joi.object({
+    items: Joi.array()
+        .items(
+            Joi.object({
+                product: Joi.string().required(),
+                quantity: Joi.number().integer().min(1).required(),
+            })
+        )
+        .min(1)
+        .required(),
+
+    shippingAddress: Joi.object({
+        address: Joi.string().required(),
+        city: Joi.string().required(),
+        postalCode: Joi.string().required(),
+        country: Joi.string().required(),
+    }).required(),
+
+    paymentMethod: Joi.string().valid("Online", "COD").required(),
+});
+
+    // Update order status validation schema
+    const updateOrderStatusSchema = Joi.object({
+        orderStatus: Joi.string()
+            .valid("placed", "shipped", "delivered", "cancelled")
+            .required()
+            .messages({
+                "any.only": "Order status must be placed, shipped, delivered, or cancelled",
+                "any.required": "Order status is required",
+            }),
+        paymentStatus: Joi.string()
+            .valid("pending", "paid", "failed")
+            .optional()
+            .messages({
+                "any.only": "Payment status must be pending, paid, or failed",
+            }),
+    });
+
 
 
 // ============================
@@ -276,6 +315,8 @@ export const loginValidation = validate(loginSchema);
 export const resetPasswordValidation = validate(resetPasswordSchema);
 export const createProductValidation = validate(createProductSchema);
 export const updateProductValidation = validate(updateProductSchema);
+export const createOrderValidation = validate(createOrderSchema);
+export const updateOrderStatusValidation = validate(updateOrderStatusSchema);
 
 
 // Export the validate function for custom validations

@@ -44,6 +44,13 @@ const userSchema = new mongoose.Schema(
 
         avatar: String,
 
+        address: {
+            street: String,
+            city: String,
+            postalCode: String,
+            country: String,
+        },
+
         isBlocked: {
             type: Boolean,
             default: false,

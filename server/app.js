@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoute.js";
 import oauthRoutes from "./routes/oauthRoute.js";
 import productRoutes from "./routes/productRoute.js";
 import cartRoutes from "./routes/cartRoute.js";
+import orderRoutes from "./routes/orderRoute.js";
 
 // Setup middlewares for the app [ALl incoming requests pass through here]
 setupMiddlewares(app);
@@ -22,6 +23,7 @@ app.use("/api/v1/auth", authRoutes); // Local auth routes
 app.use("/api/v1/auth", oauthRoutes); // OAuth routes
 app.use("/api/v1/products", productRoutes); // Product routes
 app.use("/api/v1/cart", cartRoutes); // Cart routes
+app.use("/api/v1/orders", orderRoutes); // Order routes
 
 
 app.get("/demo", (req, res) => {
