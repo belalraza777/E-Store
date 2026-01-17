@@ -31,7 +31,8 @@ Features authentication, product management, and shopping cart functionality.
    ✓ Create, Read, Update, Delete products (Admin only)
    ✓ Product categorization
    ✓ Product slug generation
-   ✓ Image support
+   ✓ Cloudinary image uploads (up to 5 images per product)
+   ✓ Automatic Cloudinary cleanup on product deletion
    ✓ Stock management
    ✓ Ratings and reviews tracking
    ✓ Discount pricing
@@ -44,9 +45,9 @@ Features authentication, product management, and shopping cart functionality.
    - GET    /api/v1/products/:slug     - Get single product by slug
 
    Admin Endpoints (Requires Authentication + Admin Role):
-   - POST   /api/v1/products           - Create new product
-   - PUT    /api/v1/products/:id       - Update product
-   - DELETE /api/v1/products/:id       - Delete product
+   - POST   /api/v1/products           - Create new product (multipart/form-data)
+   - PUT    /api/v1/products/:id       - Update product (multipart/form-data)
+   - DELETE /api/v1/products/:id       - Delete product (deletes Cloudinary images)
 
 
 3. SHOPPING CART
@@ -91,7 +92,9 @@ Features authentication, product management, and shopping cart functionality.
    - price (Number, required)
    - discountPrice (Number, optional)
    - stock (Number, default: 0)
-   - images (Array of Strings)
+   - images (Array of Objects):
+     * url (String, required) - Cloudinary secure URL
+     * publicId (String, required) - Cloudinary public ID for deletion
    - category (String, enum)
    - ratings (Number, default: 0)
    - numReviews (Number)
@@ -109,7 +112,7 @@ Features authentication, product management, and shopping cart functionality.
      * price (Number)
      * discountPrice (Number, default: 0)
    - totalPrice (Number)
-   - discountPrice (Number, default: 0)
+  - totalDiscountPrice (Number, default: 0)
    - timestamps
 
 ================================================================================
@@ -118,6 +121,7 @@ Features authentication, product management, and shopping cart functionality.
 
 ✓ Error Handler Middleware
 ✓ Rate Limiting
+✓ Multer File Upload (Cloudinary storage)
 ✓ JOI Validation (Product creation/update)
 ✓ Async Wrapper (Error handling)
 ✓ Verify Authentication Middleware
@@ -133,30 +137,32 @@ server/
 ├── server.js                       - Server entry point
 ├── config/
 │   ├── db.js                       - MongoDB connection
-│   └── passport.js                 - Passport authentication strategies
+│   ├── passport.js                 - Passport authentication strategies
+│   └── cloudnary.js                - Cloudinary configuration (NEW)
 ├── constants/
 │   └── categories.js               - Product categories enum
 ├── controllers/
 │   ├── authController.js           - Authentication logic
 │   ├── productController.js        - Public product operations
-│   ├── adminProductController.js   - Admin product operations
-│   └── cartController.js           - Cart operations (NEW)
+│   ├── adminProductController.js   - Admin product operations (with Cloudinary)
+│   └── cartController.js           - Cart operations
 ├── middlewares/
 │   ├── errorHandler.js             - Global error handling
 │   ├── joiValidation.js            - Request validation
 │   ├── rateLimit.js                - Rate limiting
 │   ├── setupMiddlewares.js         - Middleware configuration
+│   ├── upload.js                   - Multer-Cloudinary upload middleware (NEW)
 │   ├── verifyAuth.js               - JWT authentication check
 │   └── verifyAdmin.js              - Admin role verification
 ├── models/
 │   ├── userModel.js                - User schema
-│   ├── productModel.js             - Product schema
-│   └── cartModel.js                - Cart schema (NEW)
+│   ├── productModel.js             - Product schema (with Cloudinary image objects)
+│   └── cartModel.js                - Cart schema
 ├── routes/
 │   ├── authRoute.js                - Auth endpoints
 │   ├── oauthRoute.js               - OAuth endpoints
-│   ├── productRoute.js             - Product endpoints
-│   └── cartRoute.js                - Cart endpoints (NEW)
+│   ├── productRoute.js             - Product endpoints (with upload middleware)
+│   └── cartRoute.js                - Cart endpoints
 ├── helper/
 │   └── slugHelper.js               - Slug generation utility
 └── utils/
@@ -174,7 +180,43 @@ client/
                            USAGE EXAMPLES
 ================================================================================
 
-1. ADD ITEM TO CART
+1. CREATE PRODUCT WITH IMAGES (Admin)
+--------------------------------------
+POST /api/v1/products
+Headers: 
+  Authorization: Bearer <admin_token>
+  Content-Type: multipart/form-data
+
+Form Data:
+  title: Modern Desk Lamp
+  description: Minimalist LED desk lamp with adjustable arm and warm/cool modes.
+  price: 89.99
+  discountPrice: 74.99
+  stock: 120
+  category: home-decor
+  images: (file) image1.jpg
+  images: (file) image2.jpg
+
+Response: {
+  "success": true,
+  "message": "Product created",
+  "data": {
+    "_id": "673abc...",
+    "title": "Modern Desk Lamp",
+    "slug": "modern-desk-lamp",
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/.../image1.jpg",
+        "publicId": "estore_media/xyz123",
+        "_id": "..."
+      }
+    ],
+    ...
+  }
+}
+
+
+2. ADD ITEM TO CART
 -------------------
 POST /api/v1/cart
 Headers: Authorization: Bearer <token>
@@ -198,7 +240,7 @@ Response: {
       }
     ],
     "totalPrice": 199.98,
-    "discountPrice": 159.98
+    "totalDiscountPrice": 159.98
   },
   "message": "Item added to cart"
 }
@@ -249,6 +291,10 @@ Required environment variables (create .env file):
 - OAUTH_CLIENT_ID
 - OAUTH_CLIENT_SECRET
 - SESSION_SECRET
+- CLOUD_NAME                 (Cloudinary cloud name)
+- CLOUD_API_KEY              (Cloudinary API key)
+- CLOUD_API_SECRET           (Cloudinary API secret)
+- CLOUDINARY_FOLDER          (Optional, default: "estore_media")
 
 ================================================================================
                             SECURITY FEATURES
@@ -278,5 +324,5 @@ Required environment variables (create .env file):
 - Inventory management
 
 ================================================================================
-                        LAST UPDATED: January 16, 2026
+                        LAST UPDATED: January 17, 2026
 ================================================================================
