@@ -16,11 +16,12 @@ const orderSchema = new mongoose.Schema(
                 },
                 quantity: Number,
                 price: Number,
+                discount: Number,
             },
         ],
 
         shippingAddress: {
-            street: String,
+            address: String,
             city: String,
             postalCode: String,
             country: String,
@@ -48,6 +49,9 @@ const orderSchema = new mongoose.Schema(
             
         },
 
+        
+subtotal: Number,
+        
         totalAmount: Number,
 
         isCancelled: {

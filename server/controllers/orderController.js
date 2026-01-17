@@ -3,7 +3,7 @@ import Product from "../models/productModel.js";
 
 // Create order
 // POST /api/v1/orders
-// Body: { items: [{ productID, quantity }], shippingAddress{ street, city, postalCode, country }, paymentMethod }
+// Body: { items: [{ productID, quantity }], shippingAddress{ address, city, postalCode, country }, paymentMethod }
 const createOrder = async (req, res, next) => {
     // Extract order details from request body
     const { items, shippingAddress, paymentMethod } = req.body;
@@ -26,23 +26,26 @@ const createOrder = async (req, res, next) => {
         return {
             product: item.product,
             quantity: item.quantity,
-            price: prod.discountPrice ??  prod.price,
+            price: prod.price,
+            discount: prod.discountPrice || 0,
         };
     });
 
     // Calculate total
-    const totalAmount = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const discountTotal = orderItems.reduce((sum, item) => sum + item.discount * item.quantity, 0);
+    const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     // Create and return order
     const order = await Order.create({
         user: userId,
         items: orderItems,
         shippingAddress,
-        paymentMethod,
-        totalAmount,
+        paymentMethod: paymentMethod.trim(),
+        subtotal: subtotal,
+        totalAmount: discountTotal,
     });
 
-    await order.populate("items.product", "title price");
+    await order.populate("items.product", "title price discount slug");
 
     return res.status(201).json({ success: true, message: "Order placed", data: order });
 };
@@ -52,7 +55,7 @@ const createOrder = async (req, res, next) => {
 const getMyOrders = async (req, res, next) => {
     const userId = req.user.id;
     const orders = await Order.find({ user: userId })
-        .populate("items.product", "title slug price discountPrice")
+        .populate("items.product", "title slug price discount")
         .sort({ createdAt: -1 });
 
     return res.status(200).json({ success: true, data: orders });
@@ -63,7 +66,7 @@ const getMyOrders = async (req, res, next) => {
 // ADMIN: get all orders 
 const getAllOrders = async (req, res, next) => {
     const orders = await Order.find()
-        .populate("items.product", "title slug price discountPrice")
+        .populate("items.product", "title slug price discount")
         .populate("user", "name email")
         .sort({ createdAt: -1 });
 
@@ -97,7 +100,7 @@ const updateOrderStatus = async (req, res, next) => {
     }
 
     await order.save();
-    await order.populate("items.product", "title slug price discountPrice");
+    await order.populate("items.product", "title slug price discount");
 
     return res.status(200).json({ success: true, message: "Order updated", data: order });
 };
@@ -117,7 +120,7 @@ const filterOrders = async (req, res, next) => {
     }
 
     const orders = await Order.find(filter)
-        .populate("items.product", "title slug price discountPrice")
+        .populate("items.product", "title slug price discount")
         .populate("user", "name email")
         .sort({ createdAt: -1 });
 

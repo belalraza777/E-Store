@@ -102,8 +102,29 @@ const deleteProduct = async (req, res, next) => {
     return res.status(200).json({ success: true, message: "Product deleted", data: { id: product._id } });
 };
 
+
+// Update product stock (ADMIN only)
+const updateStock = async (req, res, next) => {
+    const { id } = req.params;
+    const { stock } = req.body;
+
+    if (stock === undefined || stock < 0) {
+        return res.status(400).json({ success: false, message: "Invalid stock value" });
+    }
+
+    const product = await Product.findById(id);
+    if (!product) {
+        return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    product.stock = stock;
+    await product.save();
+
+    return res.status(200).json({ success: true, message: "Stock updated", data: product });
+};
 export default {
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    updateStock,
 };

@@ -51,6 +51,7 @@ Features authentication, product management, and shopping cart functionality.
    - POST   /api/v1/products           - Create new product (multipart/form-data)
    - PUT    /api/v1/products/:id       - Update product (multipart/form-data)
    - DELETE /api/v1/products/:id       - Delete product (deletes Cloudinary images)
+   - PATCH  /api/v1/products/:id/stock - Update product stock only
 
 
 3. SHOPPING CART
@@ -141,12 +142,15 @@ Features authentication, product management, and shopping cart functionality.
     * product (ObjectId ref Product)
     * quantity (Number)
     * price (Number) - charged unit price at order time
+    * discount (Number) - discounted price per unit
   - shippingAddress { address, city, postalCode, country }
   - paymentMethod (Online | COD)
   - paymentStatus (pending | paid | failed)
   - orderStatus (placed | shipped | delivered | cancelled)
-  - totalAmount (Number)
+  - subtotal (Number) - original price before discount
+  - totalAmount (Number) - final price after discount
   - isCancelled (Boolean)
+  - isDelivered (Boolean)
   - timestamps
 
 ================================================================================
@@ -294,12 +298,12 @@ Body:
     { "product": "673abc123def456789", "quantity": 2 }
   ],
   "shippingAddress": {
-    "address": "123 Main St",
-    "city": "Springfield",
-    "postalCode": "12345",
-    "country": "USA"
+    "address": "mathurapur",
+    "city": "samastipur",
+    "postalCode": "848101",
+    "country": "india"
   },
-  "paymentMethod": "COD"
+  "paymentMethod": "online"
 }
 
 Response: {
@@ -308,8 +312,14 @@ Response: {
   "data": {
     "_id": "order123",
     "items": [
-      { "product": { ... }, "quantity": 2, "price": 79.99 }
+      { 
+        "product": { ... }, 
+        "quantity": 2, 
+        "price": 99.99,
+        "discount": 79.99
+      }
     ],
+    "subtotal": 199.98,
     "totalAmount": 159.98,
     "orderStatus": "placed",
     "paymentStatus": "pending"
@@ -398,7 +408,7 @@ Response: {
 
 9. UPDATE ORDER STATUS (Admin)
 -------------------------------
-PUT /api/v1/orders/order123/status
+PUT /api/v1/orders/:id/status
 Headers: Authorization: Bearer <admin_token>
 
 Body:
@@ -414,6 +424,28 @@ Response: {
     "_id": "order123",
     "orderStatus": "shipped",
     "paymentStatus": "paid",
+    ...
+  }
+}
+
+
+10. UPDATE PRODUCT STOCK (Admin)
+---------------------------------
+PATCH /api/v1/products/:id/stock
+Headers: Authorization: Bearer <admin_token>
+
+Body:
+{
+  "stock": 50
+}
+
+Response: {
+  "success": true,
+  "message": "Stock updated",
+  "data": {
+    "_id": "product123",
+    "title": "Modern Desk Lamp",
+    "stock": 50,
     ...
   }
 }
@@ -463,7 +495,3 @@ Required environment variables (create .env file):
 - Inventory management alerts
 - Order tracking
 - Multiple shipping addresses
-
-================================================================================
-                        LAST UPDATED: January 17, 2026
-================================================================================

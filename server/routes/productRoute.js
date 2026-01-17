@@ -44,4 +44,11 @@ router.delete(
     asyncWrapper(adminProductController.deleteProduct)
 );
 
+router.patch(
+    "/:id/stock",
+    verifyAuth,
+    verifyAdmin,
+    asyncWrapper(adminProductController.updateStock)
+);
+
 export default router;
