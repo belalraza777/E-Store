@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/authContext.jsx';
+import { useAuth } from '../../context/authContext.jsx';
+import { toast } from 'sonner';
 
 const OAuthSuccess = () => {
     const navigate = useNavigate();
@@ -12,6 +13,10 @@ const OAuthSuccess = () => {
                 // Backend has set httpOnly cookie, fetch user data
                 const result = await refreshUser();
                 if (result.success) {
+                    if (result.data.isblocked) {
+                        toast.error("Your account has been blocked. Please contact support.");
+                        return redirect('/');
+                    }
                     navigate('/', { replace: true });
                 } else {
                     navigate('/login', { replace: true });
@@ -21,7 +26,7 @@ const OAuthSuccess = () => {
                 navigate('/login', { replace: true });
             }
         };
-        
+
         // Only fetch if not already loading
         if (!loading) {
             fetchUser();
@@ -30,10 +35,10 @@ const OAuthSuccess = () => {
 
     return (
         <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-            <div style={{ 
-                width: '50px', 
-                height: '50px', 
-                borderRadius: '50%', 
+            <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
                 background: '#667eea',
                 margin: '0 auto',
                 animation: 'spin 1s linear infinite'

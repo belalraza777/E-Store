@@ -1,19 +1,21 @@
 // routes/AppRoutes.jsx
 import { Routes, Route } from 'react-router-dom';
-import OAuthSuccess from '../Oauth/Oauth_success';
+import Login from '../pages/Auth/Login';
+import Register from '../pages/Auth/Register';
+import OAuthSuccess from '../pages/Auth/Oauth_success';
 import ProtectedRoute from './ProtectedRoute';
 
 const AppRoutes = () => {
     return (
         <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<div>Home</div>} />
+            <Route path="/" element={<div><h1 style={{ textAlign: "center" }}>Home</h1></div>} />
             <Route path="/products" element={<div>Products</div>} />
             <Route path="/cart" element={<div>Cart</div>} />
 
             {/* Auth Routes */}
-            <Route path="/login" element={<div>Login</div>} />
-            <Route path="/register" element={<div>Register</div>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/oauth-success" element={<OAuthSuccess />} />
 
             {/* User Routes */}
