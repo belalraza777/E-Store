@@ -52,7 +52,12 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    numReviews: {
+    reviewCount: {
+      type: Number,
+      default: 0,
+    },
+
+    averageRating: {
       type: Number,
       default: 0,
     },

@@ -1,4 +1,5 @@
 import Product from "../models/productModel.js";
+import Review from "../models/reviewModel.js";
 import { processProductSlug } from "../helper/slugHelper.js";
 import { isValidCategory, normalizeCategory } from "../constants/categories.js";
 import { cloudinary } from "../config/cloudnary.js";
@@ -95,6 +96,8 @@ const deleteProduct = async (req, res, next) => {
         );
         await Promise.all(deletePromises); // Wait for all deletions to complete (promise.all used for better performance when multiple resolutions are needed)
     }
+    //Delete associated reviews
+    await Review.deleteMany({ product: product._id });
 
     // Delete product from database
     await Product.findByIdAndDelete(req.params.id);
@@ -122,6 +125,8 @@ const updateStock = async (req, res, next) => {
 
     return res.status(200).json({ success: true, message: "Stock updated", data: product });
 };
+
+
 export default {
     createProduct,
     updateProduct,
