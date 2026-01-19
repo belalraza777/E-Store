@@ -1,5 +1,5 @@
-import Order from "../models/orderModel.js";
-import Product from "../models/productModel.js";
+import Order from "../../models/orderModel.js";
+import Product from "../../models/productModel.js";
 
 // Create order
 // POST /api/v1/orders

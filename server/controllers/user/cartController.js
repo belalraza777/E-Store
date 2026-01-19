@@ -1,5 +1,5 @@
-import Cart from "../models/cartModel.js";
-import Product from "../models/productModel.js";
+import Cart from "../../models/cartModel.js";
+import Product from "../../models/productModel.js";
 
 /**
  * Add item to cart or update quantity if item already exists

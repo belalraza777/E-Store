@@ -1,9 +1,9 @@
-import User from "../models/userModel.js";
+import User from "../../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-// import { generateOTP } from "../utils/otp.js";
-// import { sendOtpEmail } from "../utils/email.js";
-// import Otp from "../models/otpModel.js";
+// import { generateOTP } from "../../utils/otp.js";
+// import { sendOtpEmail } from "../../utils/email.js";
+// import Otp from "../../models/otpModel.js";
 
 
 // Controller for user login

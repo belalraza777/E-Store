@@ -1,8 +1,8 @@
-import Product from "../models/productModel.js";
-import Review from "../models/reviewModel.js";
-import { processProductSlug } from "../helper/slugHelper.js";
-import { isValidCategory, normalizeCategory } from "../constants/categories.js";
-import { cloudinary } from "../config/cloudnary.js";
+import Product from "../../models/productModel.js";
+import Review from "../../models/reviewModel.js";
+import { processProductSlug } from "../../helper/slugHelper.js";
+import { isValidCategory, normalizeCategory } from "../../constants/categories.js";
+import { cloudinary } from "../../config/cloudnary.js";
 
 // Create new product (Admin only)
 const createProduct = async (req, res, next) => {

@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import usersController from "../controllers/authController.js";
+import usersController from "../controllers/common/authController.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 import { registerValidation, loginValidation } from "../middlewares/joiValidation.js";
 import verifyAuth from "../middlewares/verifyAuth.js";

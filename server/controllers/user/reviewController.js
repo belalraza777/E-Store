@@ -1,6 +1,6 @@
-import Review from "../models/reviewModel.js";
-import Product from "../models/productModel.js";
-import Order from "../models/orderModel.js";
+import Review from "../../models/reviewModel.js";
+import Product from "../../models/productModel.js";
+import Order from "../../models/orderModel.js";
 
 // POST /api/v1/reviews/:productId
 // Add review for a product

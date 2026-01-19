@@ -1,4 +1,4 @@
-import User from "../models/userModel.js";
+import User from "../../models/userModel.js";
 
 // Fetch the authenticated user's profile
 const getProfile = async (req, res, next) => {

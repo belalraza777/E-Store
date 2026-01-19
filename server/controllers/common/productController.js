@@ -1,4 +1,4 @@
-import Product from "../models/productModel.js";
+import Product from "../../models/productModel.js";
 
 // Get all products with optional filtering and pagination
 const getAllProducts = async (req, res, next) => {

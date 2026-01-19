@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import cartController from "../controllers/cartController.js";
+import cartController from "../controllers/user/cartController.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 import verifyAuth from "../middlewares/verifyAuth.js";
 

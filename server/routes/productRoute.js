@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
-import productController from "../controllers/productController.js";
-import adminProductController from "../controllers/adminProductController.js";
+import productController from "../controllers/common/productController.js";
+import adminProductController from "../controllers/admin/productController.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 import { createProductValidation, updateProductValidation } from "../middlewares/joiValidation.js";
 import verifyAuth from "../middlewares/verifyAuth.js";
