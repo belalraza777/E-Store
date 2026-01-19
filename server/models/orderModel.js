@@ -58,6 +58,10 @@ subtotal: Number,
             type: Boolean,
             default: false,
         },
+        cancelReason: {
+            type: String,
+            trim: true,
+        },
         isDelivered: {
             type: Boolean,
             default: false,

@@ -62,6 +62,47 @@ const getMyOrders = async (req, res, next) => {
 };
 
 
+//Cancel order by user
+const cancelOrder = async (req, res, next) => {
+    const { id } = req.params;
+    const reason = req?.body?.reason;
+    const userId = req.user?.id;
+
+    if (!reason || typeof reason !== "string") {
+        return res.status(400).json({ success: false, message: "Cancel Reason is Required" });
+    }
+
+    const order = await Order.findById(id);
+    if (!order) {
+        return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Verify order belongs to user
+    if (order.user.toString() !== userId) {
+        return res.status(403).json({ success: false, message: "Not authorized to cancel this order" });
+    }
+
+    // Check if order can be cancelled
+    if (order.isCancelled) {
+        return res.status(400).json({ success: false, message: "Order is already cancelled" });
+    }
+
+    if (order.isDelivered) {
+        return res.status(400).json({ success: false, message: "Cannot cancel delivered order" });
+    }
+
+    // Cancel order
+    order.orderStatus = "cancelled";
+    order.isCancelled = true;
+    if (reason && reason.trim()) {
+        order.cancelReason = reason.trim();
+    }
+    await order.save();
+    await order.populate("items.product", "title slug price discount");
+
+    return res.status(200).json({ success: true, message: "Order cancelled successfully", data: order });
+};
+
 
 // ADMIN: get all orders 
 const getAllOrders = async (req, res, next) => {
@@ -90,7 +131,7 @@ const updateOrderStatus = async (req, res, next) => {
     }
 
     // Auto-update isDelivered when order is delivered
-    if (orderStatus.trim() === "delivered") {
+    if (orderStatus.trim() === "delivered" && !order.isCancelled) {
         order.isDelivered = true;
     }
 
@@ -130,6 +171,7 @@ const filterOrders = async (req, res, next) => {
 export default {
     createOrder,
     getMyOrders,
+    cancelOrder,
     getAllOrders,
     updateOrderStatus,
     filterOrders,

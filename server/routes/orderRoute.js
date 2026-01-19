@@ -22,6 +22,14 @@ router.get(
     asyncWrapper(orderController.getMyOrders)
 );
 
+//Cancel order by user
+router.put(
+    "/:id/cancel",
+    verifyAuth,
+    asyncWrapper(orderController.cancelOrder)
+);
+
+
 // ADMIN: list all orders
 router.get(
     "/",
