@@ -10,6 +10,7 @@ import productRoutes from "./routes/productRoute.js";
 import cartRoutes from "./routes/cartRoute.js";
 import orderRoutes from "./routes/orderRoute.js";
 import reviewRoutes from "./routes/reviewRoute.js";
+import profileRoutes from "./routes/profileRoute.js";
 
 // Setup middlewares for the app [ALl incoming requests pass through here]
 setupMiddlewares(app);
@@ -26,6 +27,7 @@ app.use("/api/v1/products", productRoutes); // Product routes
 app.use("/api/v1/cart", cartRoutes); // Cart routes
 app.use("/api/v1/orders", orderRoutes); // Order routes
 app.use("/api/v1/reviews", reviewRoutes); // Review routes
+app.use("/api/v1/profile", profileRoutes); // Profile routes
 
 
 app.get("/demo", (req, res) => {

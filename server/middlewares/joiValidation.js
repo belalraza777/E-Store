@@ -79,6 +79,40 @@ const loginSchema = Joi.object({
         }),
 });
 
+// Update profile validation schema
+const updateProfileSchema = Joi.object({
+    name: Joi.string()
+        .trim()
+        .min(2)
+        .max(50)
+        .messages({
+            "string.min": "Name must be at least 2 characters",
+            "string.max": "Name must be at most 50 characters",
+        }),
+
+    email: Joi.string()
+        .trim()
+        .email()
+        .lowercase()
+        .messages({
+            "string.email": "Please provide a valid email address",
+        }),
+
+    phone: Joi.string()
+        .trim()
+        .pattern(/^\+?[1-9]\d{1,14}$/)
+        .messages({
+            "string.pattern.base": "Please provide a valid phone number (E.164 format)",
+        }),
+
+    address: Joi.object({
+        address: Joi.string().max(200),
+        city: Joi.string().max(100),
+        postalCode: Joi.string().max(20),
+        country: Joi.string().max(100),
+    }).min(1),
+}).min(1).messages({ "object.min": "Please provide at least one field to update" });
+
 // Reset password validation schema
 const resetPasswordSchema = Joi.object({
     oldPassword: Joi.string()
@@ -313,6 +347,7 @@ const validate = (schema, property = "body") => {
 export const registerValidation = validate(registerSchema);
 export const loginValidation = validate(loginSchema);
 export const resetPasswordValidation = validate(resetPasswordSchema);
+export const updateProfileValidation = validate(updateProfileSchema);
 export const createProductValidation = validate(createProductSchema);
 export const updateProductValidation = validate(updateProductSchema);
 export const createOrderValidation = validate(createOrderSchema);

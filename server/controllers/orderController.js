@@ -47,6 +47,11 @@ const createOrder = async (req, res, next) => {
 
     await order.populate("items.product", "title price discount slug");
 
+    //Reduce stock quantity for each product
+    for (const item of orderItems) {
+        await Product.findByIdAndUpdate(item.product, { $inc: { stockQuantity: -item.quantity } });
+    }
+
     return res.status(201).json({ success: true, message: "Order placed", data: order });
 };
 
@@ -99,6 +104,11 @@ const cancelOrder = async (req, res, next) => {
     }
     await order.save();
     await order.populate("items.product", "title slug price discount");
+
+    //Restock the products
+    for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.product._id, { $inc: { stockQuantity: item.quantity } });
+    }
 
     return res.status(200).json({ success: true, message: "Order cancelled successfully", data: order });
 };
