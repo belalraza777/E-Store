@@ -78,16 +78,43 @@ Features authentication, product management, and shopping cart functionality.
 ---------
    ✓ Place orders (authenticated users)
    ✓ View my orders
+   ✓ Cancel orders with reason (authenticated users)
    ✓ Admin order listing
    ✓ Admin order filtering (by status/postalCode)
    ✓ Admin order status/payment updates
 
+   User Endpoints:
+   - POST   /api/v1/orders              - Create order (auth)
+   - GET    /api/v1/orders/my           - Get current user's orders (auth)
+   - DELETE /api/v1/orders/:id          - Cancel order with reason (auth)
+
+   Admin Endpoints:
+   - GET    /api/v1/orders              - List all orders (admin)
+   - GET    /api/v1/orders/filter       - Filter orders by status/postalCode (admin)
+   - PUT    /api/v1/orders/:id/status   - Update order status/payment (admin)
+
+
+5. REVIEWS & RATINGS
+--------------------
+   ✓ Add product reviews (all authenticated users)
+   ✓ Verified purchase badge (users who bought & received product)
+   ✓ Get product reviews with ratings
+   ✓ Delete own review (users can delete their review)
+   ✓ Admin delete any review
+   ✓ Automatic review count & average rating updates
+   ✓ Average rating based on verified purchases only
+   ✓ Prevent duplicate reviews per user per product
+
    Endpoints:
-   - POST  /api/v1/orders              - Create order (auth) — direct buy or from cart
-   - GET   /api/v1/orders/my           - Get current user's orders (auth)
-   - GET   /api/v1/orders              - List all orders (admin)
-   - GET   /api/v1/orders/filter       - Filter orders by status/postalCode (admin)
-   - PUT   /api/v1/orders/:id/status   - Update order status/payment (admin)
+   - POST   /api/v1/reviews/:productId  - Add review (auth)
+   - GET    /api/v1/reviews/product/:productId - Get product reviews (public)
+   - DELETE /api/v1/reviews/:reviewId   - Delete review (auth - owner or admin)
+
+   Review Features:
+   - Rating: 1-5 stars (required)
+   - Comment: Optional text review
+   - isVerified: Automatic badge for verified purchases
+   - Mongoose middleware auto-updates product stats
 
 ================================================================================
                               DATABASE MODELS
@@ -116,7 +143,8 @@ Features authentication, product management, and shopping cart functionality.
      * publicId (String, required) - Cloudinary public ID for deletion
    - category (String, enum)
    - ratings (Number, default: 0)
-   - numReviews (Number)
+   - reviewCount (Number, default: 0) - Auto-updated by Review middleware
+   - averageRating (Number, default: 0) - Auto-updated by Review middleware
    - isActive (Boolean)
    - timestamps
 
@@ -150,8 +178,23 @@ Features authentication, product management, and shopping cart functionality.
   - subtotal (Number) - original price before discount
   - totalAmount (Number) - final price after discount
   - isCancelled (Boolean)
+  - cancelReason (String, optional) - Reason for order cancellation
   - isDelivered (Boolean)
   - timestamps
+
+5. REVIEW MODEL
+---------------
+  - _id (ObjectId)
+  - user (ObjectId ref User, required)
+  - product (ObjectId ref Product, required)
+  - rating (Number, 1-5, required)
+  - comment (String, optional)
+  - isVerified (Boolean, default: false) - True if user purchased product
+  - timestamps
+
+  Mongoose Middleware:
+  - post("save"): Auto-updates product reviewCount & averageRating
+  - post("deleteOne"): Auto-updates product stats after deletion
 
 ================================================================================
                             MIDDLEWARE & UTILITIES
@@ -184,7 +227,8 @@ server/
 │   ├── productController.js        - Public product operations
 │   ├── adminProductController.js   - Admin product operations (with Cloudinary)
 │   ├── cartController.js           - Cart operations
-│   └── orderController.js          - Order operations (user + admin)
+│   ├── orderController.js          - Order operations (user + admin)
+│   └── reviewController.js         - Review operations (user + admin)
 ├── middlewares/
 │   ├── errorHandler.js             - Global error handling
 │   ├── joiValidation.js            - Request validation
@@ -197,13 +241,15 @@ server/
 │   ├── userModel.js                - User schema
 │   ├── productModel.js             - Product schema (with Cloudinary image objects)
 │   ├── cartModel.js                - Cart schema
-│   └── orderModel.js               - Order schema
+│   ├── orderModel.js               - Order schema
+│   └── reviewModel.js              - Review schema (with auto-update middleware)
 ├── routes/
 │   ├── authRoute.js                - Auth endpoints
 │   ├── oauthRoute.js               - OAuth endpoints
 │   ├── productRoute.js             - Product endpoints (with upload middleware)
 │   ├── cartRoute.js                - Cart endpoints
-│   └── orderRoute.js               - Order endpoints
+│   ├── orderRoute.js               - Order endpoints
+│   └── reviewRoute.js              - Review endpoints
 ├── helper/
 │   └── slugHelper.js               - Slug generation utility
 └── utils/
@@ -450,6 +496,88 @@ Response: {
   }
 }
 
+
+11. CANCEL ORDER (User)
+------------------------
+DELETE /api/v1/orders/:id
+Headers: Authorization: Bearer <token>
+
+Body:
+{
+  "reason": "Changed my mind about the purchase"
+}
+
+Response: {
+  "success": true,
+  "message": "Order cancelled successfully",
+  "data": {
+    "_id": "order123",
+    "orderStatus": "cancelled",
+    "isCancelled": true,
+    "cancelReason": "Changed my mind about the purchase",
+    ...
+  }
+}
+
+
+12. ADD PRODUCT REVIEW
+-----------------------
+POST /api/v1/reviews/:productId
+Headers: Authorization: Bearer <token>
+
+Body:
+{
+  "rating": 5,
+  "comment": "Excellent product! Highly recommend."
+}
+
+Response: {
+  "success": true,
+  "message": "Review added successfully",
+  "data": {
+    "_id": "review123",
+    "user": { "_id": "user123", "name": "John Doe" },
+    "product": "product123",
+    "rating": 5,
+    "comment": "Excellent product! Highly recommend.",
+    "isVerified": true,
+    "createdAt": "2026-01-19T..."
+  }
+}
+
+
+13. GET PRODUCT REVIEWS
+------------------------
+GET /api/v1/reviews/product/:productId
+
+Response: {
+  "success": true,
+  "data": [
+    {
+      "_id": "review123",
+      "user": { "_id": "user123", "name": "John Doe" },
+      "rating": 5,
+      "comment": "Excellent product!",
+      "isVerified": true,
+      "createdAt": "2026-01-19T..."
+    }
+  ],
+  "averageRating": "4.8",
+  "totalReviews": 15,
+  "verifiedReviews": 12
+}
+
+
+14. DELETE REVIEW
+------------------
+DELETE /api/v1/reviews/:reviewId
+Headers: Authorization: Bearer <token>
+
+Response: {
+  "success": true,
+  "message": "Review deleted successfully"
+}
+
 ================================================================================
                          ENVIRONMENT VARIABLES
 ================================================================================
@@ -488,10 +616,11 @@ Required environment variables (create .env file):
 - Payment integration (Stripe/PayPal)
 - User profile management
 - Wishlist functionality
-- Product reviews and ratings system
 - Email notifications
 - Admin dashboard
 - Advanced product search with filters
 - Inventory management alerts
 - Order tracking
 - Multiple shipping addresses
+- Review helpful/unhelpful votes
+- Review replies by admin/seller
