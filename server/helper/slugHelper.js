@@ -1,8 +1,5 @@
 import Product from "../models/productModel.js";
 
-export const PRODUCT_CONSTANTS = {
-    DEFAULT_LIMIT: 20,
-};
 
 export const processProductSlug = async (title) => {
     if (!title) return { valid: false, slug: null, error: "Title required" };

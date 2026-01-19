@@ -1,9 +1,8 @@
 import Product from "../models/productModel.js";
-import { PRODUCT_CONSTANTS } from "../helper/slugHelper.js";
 
 // Get all products with optional filtering and pagination
 const getAllProducts = async (req, res, next) => {
-    const { page = 1, limit = PRODUCT_CONSTANTS.DEFAULT_LIMIT } = req.query;
+    const { page = 1, limit = 20 } = req.query;
     const skip = (page - 1) * limit;
 
     // Build filter for active products only
