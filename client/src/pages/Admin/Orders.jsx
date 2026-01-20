@@ -14,7 +14,7 @@ import {
   FiBarChart2
 } from 'react-icons/fi';
 import useOrderStore from '../../store/orderStore.js';
-// Styles loaded via main.css
+
 
 export default function AdminOrders() {
   const { orders, loading, fetchAllOrders } = useOrderStore();

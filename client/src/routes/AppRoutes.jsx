@@ -7,6 +7,7 @@ import ProtectedRoute from './ProtectedRoute';
 import Product from '../pages/Product/Product';
 import SingleProduct from '../pages/Product/SingleProduct';
 import Cart from '../pages/Cart/Cart';
+import Checkout from '../pages/Checkout/Checkout.jsx';
 import AdminDashboard from '../pages/Admin/Dashboard.jsx';
 import AdminProducts from '../pages/Admin/Products.jsx';
 import ProductForm from '../pages/Admin/ProductForm.jsx';
@@ -33,6 +34,14 @@ const AppRoutes = () => {
 
             {/* User Routes */}
             <Route
+                path="/checkout"
+                element={
+                    <ProtectedRoute allowedRoles={["user"]}>
+                        <Checkout />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
                 path="/profile"
                 element={
                     <ProtectedRoute allowedRoles={["user", "admin"]}>
@@ -43,7 +52,7 @@ const AppRoutes = () => {
             <Route
                 path="/orders"
                 element={
-                    <ProtectedRoute allowedRoles={["user", "admin"]}>
+                    <ProtectedRoute allowedRoles={["user"]}>
                         <div>My Orders</div>
                     </ProtectedRoute>
                 }

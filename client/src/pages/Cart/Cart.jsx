@@ -84,9 +84,12 @@ export default function Cart() {
   }
 
   // Calculate totals
+  // totalPrice = sum of (price × qty) - original price total
+  // totalDiscountPrice = sum of (discountPrice × qty) - discounted price total (what customer pays)
   const originalTotal = cart.totalPrice || 0;
-  const totalDiscount = cart.totalDiscountPrice || 0;
-  const subtotal = originalTotal - totalDiscount;
+  const discountedTotal = cart.totalDiscountPrice || 0;
+  const discountAmount = originalTotal - discountedTotal;
+  const subtotal = discountedTotal;
   const total = subtotal;
 
   return (
@@ -189,10 +192,10 @@ export default function Cart() {
               <span>₹{originalTotal.toFixed(2)}</span>
             </div>
 
-            {totalDiscount > 0 && (
+            {discountAmount > 0 && (
               <div className="summary-row discount">
                 <span>Discount</span>
-                <span className="save-amount">-₹{totalDiscount.toFixed(2)}</span>
+                <span className="save-amount">-₹{discountAmount.toFixed(2)}</span>
               </div>
             )}
 

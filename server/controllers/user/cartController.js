@@ -58,10 +58,13 @@ const addToCart = async (req, res, next) => {
         }
     }
 
-    // Calculate total price by summing all items (price * quantity)
+    // Calculate total price by summing all items (original price * quantity)
     cart.totalPrice = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    // Calculate total discount price (sum of per-item discounts)
-    cart.totalDiscountPrice = cart.items.reduce((total, item) => total + ((item.discountPrice || 0) * item.quantity), 0);
+    // Calculate total payable (using discountPrice if available, else original price)
+    cart.totalDiscountPrice = cart.items.reduce((total, item) => {
+        const finalPrice = item.discountPrice > 0 ? item.discountPrice : item.price;
+        return total + (finalPrice * item.quantity);
+    }, 0);
     // Save cart to database and populate product details for response
     await cart.save();
     await cart.populate('items.product', 'name price image');
@@ -124,8 +127,11 @@ const updateCartItem = async (req, res, next) => {
 
     // Recalculate total price after quantity change
     cart.totalPrice = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    // Recalculate total discount price
-    cart.totalDiscountPrice = cart.items.reduce((total, item) => total + ((item.discountPrice || 0) * item.quantity), 0);
+    // Recalculate total payable
+    cart.totalDiscountPrice = cart.items.reduce((total, item) => {
+        const finalPrice = item.discountPrice > 0 ? item.discountPrice : item.price;
+        return total + (finalPrice * item.quantity);
+    }, 0);
 
     // Save updated cart and populate product details
     await cart.save();
@@ -161,8 +167,11 @@ const removeFromCart = async (req, res, next) => {
 
     // Recalculate total price after item removal
     cart.totalPrice = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    // Recalculate total discount price
-    cart.totalDiscountPrice = cart.items.reduce((total, item) => total + ((item.discountPrice || 0) * item.quantity), 0);
+    // Recalculate total payable
+    cart.totalDiscountPrice = cart.items.reduce((total, item) => {
+        const finalPrice = item.discountPrice > 0 ? item.discountPrice : item.price;
+        return total + (finalPrice * item.quantity);
+    }, 0);
 
     // Save updated cart and populate product details for response
     await cart.save();

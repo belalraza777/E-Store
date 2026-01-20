@@ -81,8 +81,9 @@
 /* Auth Pages */
 @import './pages/auth/login.css';
 
-/* Cart */
+/* Cart & Orders */
 @import './pages/cart/cart.css';
+@import './pages/order/order.css';
 
 /* Product Pages */
 @import './pages/product/product.css';
