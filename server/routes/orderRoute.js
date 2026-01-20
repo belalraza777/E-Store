@@ -1,5 +1,6 @@
 import express from "express";
-import orderController from "../controllers/user/orderController.js";
+import userOrderController from "../controllers/user/orderController.js";
+import adminOrderController from "../controllers/admin/orderController.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 import verifyAuth from "../middlewares/verifyAuth.js";
 import verifyAdmin from "../middlewares/verifyAdmin.js";
@@ -7,35 +8,38 @@ import { createOrderValidation, updateOrderStatusValidation } from "../middlewar
 
 const router = express.Router();
 
+// USER ROUTES
+
 // Create order (direct buy or from cart)
 router.post(
     "/",
     verifyAuth,
     createOrderValidation,
-    asyncWrapper(orderController.createOrder)
+    asyncWrapper(userOrderController.createOrder)
 );
 
 // Get current user's orders
 router.get(
     "/my",
     verifyAuth,
-    asyncWrapper(orderController.getMyOrders)
+    asyncWrapper(userOrderController.getMyOrders)
 );
 
-//Cancel order by user
+// Cancel order by user
 router.put(
     "/:id/cancel",
     verifyAuth,
-    asyncWrapper(orderController.cancelOrder)
+    asyncWrapper(userOrderController.cancelOrder)
 );
 
+// ADMIN ROUTES
 
 // ADMIN: list all orders
 router.get(
     "/",
     verifyAuth,
     verifyAdmin,
-    asyncWrapper(orderController.getAllOrders)
+    asyncWrapper(adminOrderController.getAllOrders)
 );
 
 // ADMIN: filter orders by status or postalCode
@@ -43,9 +47,8 @@ router.get(
     "/filter",
     verifyAuth,
     verifyAdmin,
-    asyncWrapper(orderController.filterOrders)
+    asyncWrapper(adminOrderController.filterOrders)
 );
-
 
 // ADMIN: update order status/payment status
 router.put(
@@ -53,7 +56,7 @@ router.put(
     verifyAuth,
     verifyAdmin,
     updateOrderStatusValidation,
-    asyncWrapper(orderController.updateOrderStatus)
+    asyncWrapper(adminOrderController.updateOrderStatus)
 );
 
 

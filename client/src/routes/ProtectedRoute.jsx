@@ -18,6 +18,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
   // 2. Logged in but role not allowed → redirect to unauthorized
   // allowedRoles is array, so we use includes() for role check
   if (allowedRoles && !allowedRoles.includes(user.role)) {
+    console.error(`Access Denied: user role "${user.role}" not in allowed roles ${JSON.stringify(allowedRoles)}`);
     return <Navigate to="/unauthorized" replace />;
   }
 

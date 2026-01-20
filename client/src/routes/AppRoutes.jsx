@@ -7,6 +7,11 @@ import ProtectedRoute from './ProtectedRoute';
 import Product from '../pages/Product/Product';
 import SingleProduct from '../pages/Product/SingleProduct';
 import Cart from '../pages/Cart/Cart';
+import AdminDashboard from '../pages/Admin/Dashboard.jsx';
+import AdminProducts from '../pages/Admin/Products.jsx';
+import ProductForm from '../pages/Admin/ProductForm.jsx';
+import AdminOrders from '../pages/Admin/Orders.jsx';
+import AdminOrderDetail from '../pages/Admin/OrderDetail.jsx';
 
 const AppRoutes = () => {
     return (
@@ -45,7 +50,7 @@ const AppRoutes = () => {
                 path="/admin/dashboard"
                 element={
                     <ProtectedRoute allowedRoles={["admin"]}>
-                        <div>Admin Dashboard</div>
+                        <AdminDashboard />
                     </ProtectedRoute>
                 }
             />
@@ -53,7 +58,23 @@ const AppRoutes = () => {
                 path="/admin/products"
                 element={
                     <ProtectedRoute allowedRoles={["admin"]}>
-                        <div>Manage Products</div>
+                        <AdminProducts />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin/products/new"
+                element={
+                    <ProtectedRoute allowedRoles={["admin"]}>
+                        <ProductForm />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin/products/:slug/edit"
+                element={
+                    <ProtectedRoute allowedRoles={["admin"]}>
+                        <ProductForm />
                     </ProtectedRoute>
                 }
             />
@@ -61,18 +82,19 @@ const AppRoutes = () => {
                 path="/admin/orders"
                 element={
                     <ProtectedRoute allowedRoles={["admin"]}>
-                        <div>Manage Orders</div>
+                        <AdminOrders />
                     </ProtectedRoute>
                 }
             />
             <Route
-                path="/admin/reviews"
+                path="/admin/orders/:id"
                 element={
                     <ProtectedRoute allowedRoles={["admin"]}>
-                        <div>Manage Reviews</div>
+                        <AdminOrderDetail />
                     </ProtectedRoute>
                 }
             />
+           
 
             {/* Unauthorized Route */}
             <Route path="/unauthorized" element={<div>Unauthorized</div>} />

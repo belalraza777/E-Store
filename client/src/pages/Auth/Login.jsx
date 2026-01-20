@@ -10,9 +10,9 @@ const LoginPage = () => {
     // Navigation hooks
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     // Get auth context
-    const { handleLogin, loading: authLoading } = useAuth();
+    const { handleLogin, loading: authLoading, user } = useAuth();
 
     // Form state
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -32,8 +32,8 @@ const LoginPage = () => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-// Handle email/password login
-    
+    // Handle email/password login
+
     const handlePasswordSubmit = async (event) => {
         event.preventDefault();
         if (submitting) return;
@@ -46,6 +46,10 @@ const LoginPage = () => {
             if (result.data.isblocked) {
                 toast.error("Your account has been blocked. Please contact support.");
                 return redirect('/');
+            }
+            if (user && user.role === 'admin') {
+                navigate('/admin/dashboard', { replace: true });
+                return;
             }
             toast.success("Logged in successfully");
             navigate(redirectPath, { replace: true });

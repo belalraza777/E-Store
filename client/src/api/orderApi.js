@@ -26,9 +26,7 @@ export const getMyOrders = async () => {
 
 export const cancelOrder = async (orderId, reason) => {
     try {
-        const response = await axiosInstance.delete(`/orders/${orderId}`, { 
-            data: { reason } 
-        });
+        const response = await axiosInstance.put(`/orders/${orderId}/cancel`, { reason });
         return { success: true, data: response.data.data, message: response.data.message };
     } catch (error) {
         return { 

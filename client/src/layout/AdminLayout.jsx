@@ -1,11 +1,11 @@
 // layouts/AdminLayout.jsx
+import AdminHeader from "./AdminHeader";
 
 const AdminLayout = ({ children }) => {
     return (
         <div className="admin-layout-wrapper">
-            <AdminSidebar />
+            <AdminHeader />
             <main className="admin-main">
-                <AdminHeader />
                 {children}
             </main>
         </div>

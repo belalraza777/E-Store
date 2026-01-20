@@ -115,13 +115,16 @@ const updateStock = async (req, res, next) => {
         return res.status(400).json({ success: false, message: "Invalid stock value" });
     }
 
-    const product = await Product.findById(id);
+    // Use findByIdAndUpdate to avoid full validation on nested fields
+    const product = await Product.findByIdAndUpdate(
+        id,
+        { stock },
+        { new: true, runValidators: true }
+    );
+
     if (!product) {
         return res.status(404).json({ success: false, message: "Product not found" });
     }
-
-    product.stock = stock;
-    await product.save();
 
     return res.status(200).json({ success: true, message: "Stock updated", data: product });
 };

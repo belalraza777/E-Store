@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 const OAuthSuccess = () => {
     // Navigation and auth context
     const navigate = useNavigate();
-    const { refreshUser, loading } = useAuth();
+    const { refreshUser, loading, user } = useAuth();
 
     // Handle OAuth callback - fetch user data and redirect
     useEffect(() => {
@@ -18,6 +18,10 @@ const OAuthSuccess = () => {
                     if (result.data.isblocked) {
                         toast.error("Your account has been blocked. Please contact support.");
                         return redirect('/');
+                    }
+                    if (user && user.role === 'admin') {
+                        navigate('/admin/dashboard', { replace: true });
+                        return;
                     }
                     navigate('/', { replace: true });
                 } else {
