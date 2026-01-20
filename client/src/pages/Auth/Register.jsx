@@ -7,13 +7,16 @@ import { FiMail, FiLock, FiPhone, FiUser } from "react-icons/fi";
 
 
 const RegisterPage = () => {
+  // Navigation and auth context
   const navigate = useNavigate();
   const { handleRegister, loading: authLoading } = useAuth();
 
+  // Form state and validation
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", password: "" });
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
+  // Handle input change and clear errors
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -23,6 +26,7 @@ const RegisterPage = () => {
     }
   };
 
+  // Validate all form fields
   const validateForm = () => {
     const newErrors = {};
 

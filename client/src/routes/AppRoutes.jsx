@@ -4,14 +4,18 @@ import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
 import OAuthSuccess from '../pages/Auth/Oauth_success';
 import ProtectedRoute from './ProtectedRoute';
+import Product from '../pages/Product/Product';
+import SingleProduct from '../pages/Product/SingleProduct';
+import Cart from '../pages/Cart/Cart';
 
 const AppRoutes = () => {
     return (
         <Routes>
             {/* Public Routes */}
             <Route path="/" element={<div><h1 style={{ textAlign: "center" }}>Home</h1></div>} />
-            <Route path="/products" element={<div>Products</div>} />
-            <Route path="/cart" element={<div>Cart</div>} />
+            <Route path="/products" element={<Product />} />
+            <Route path="/products/:slug" element={<SingleProduct />} />
+            <Route path="/cart" element={<Cart />} />
 
             {/* Auth Routes */}
             <Route path="/login" element={<Login />} />

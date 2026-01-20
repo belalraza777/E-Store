@@ -1,13 +1,28 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { FiMenu, FiX, FiShoppingCart, FiUser, FiLogOut, FiSearch } from "react-icons/fi";
 import "./header.css";
+import useCartStore from '../store/cartStore.js'
+
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, handleLogout } = useAuth();
+  const { cart, fetchCart } = useCartStore();
   const navigate = useNavigate();
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+  
+  useEffect(() => {
+    if (cart && cart.items) {
+      setCartItemCount(cart.items.length || 0);
+    };
+  }, [cart]);
+
 
   const handleLogoutClick = async () => {
     await handleLogout();
@@ -42,9 +57,9 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="header-actions">
-          <button className="action-btn cart-btn">
+          <button className="action-btn cart-btn" onClick={() => navigate('/cart')} >
             <FiShoppingCart />
-            <span className="cart-badge">0</span>
+            <span className="cart-badge">{cartItemCount}</span>
           </button>
 
           {user ? (

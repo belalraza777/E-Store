@@ -11,7 +11,7 @@ const addToCart = async (req, res, next) => {
     const userId = req.user.id;
 
     // Validate quantity is positive and is a valid number
-    const qty = parseInt(quantity);
+    const qty = parseInt(quantity, 10);
     if (isNaN(qty) || qty <= 0) {
         return res.status(400).json({ success: false, message: "Quantity must be a positive number" });
     }
@@ -32,7 +32,7 @@ const addToCart = async (req, res, next) => {
             items: [
                 {
                     product: productId,
-                    quantity,
+                    quantity: qty,
                     price: product.price,
                     discountPrice: product.discountPrice || 0,
                 }
@@ -44,14 +44,14 @@ const addToCart = async (req, res, next) => {
 
         if (existingItem) {
             // Item exists - increment quantity and update price if it changed
-            existingItem.quantity += quantity;
+            existingItem.quantity += qty;
             existingItem.price = product.price;
             existingItem.discountPrice = product.discountPrice || 0;
         } else {
             // Item doesn't exist - add new item to cart
             cart.items.push({
                 product: productId,
-                quantity,
+                quantity: qty,
                 price: product.price,
                 discountPrice: product.discountPrice || 0,
             });

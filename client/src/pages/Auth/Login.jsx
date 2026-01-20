@@ -7,25 +7,33 @@ import { FcGoogle } from "react-icons/fc";
 import { FiMail, FiLock } from "react-icons/fi";
 
 const LoginPage = () => {
+    // Navigation hooks
     const navigate = useNavigate();
     const location = useLocation();
+    
+    // Get auth context
     const { handleLogin, loading: authLoading } = useAuth();
 
+    // Form state
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [submitting, setSubmitting] = useState(false);
 
+    // Determine redirect path (default to home)
     const redirectPath = location.state?.from?.pathname || "/";
 
+    // Get Google auth URL
     const googleAuthUrl = useMemo(() => {
         const base = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
         return `${base.replace(/\/$/, "")}/auth/google`;
     }, []);
 
+    // Handle form input change
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-
+// Handle email/password login
+    
     const handlePasswordSubmit = async (event) => {
         event.preventDefault();
         if (submitting) return;

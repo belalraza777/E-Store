@@ -4,9 +4,11 @@ import { useAuth } from '../../context/authContext.jsx';
 import { toast } from 'sonner';
 
 const OAuthSuccess = () => {
+    // Navigation and auth context
     const navigate = useNavigate();
     const { refreshUser, loading } = useAuth();
 
+    // Handle OAuth callback - fetch user data and redirect
     useEffect(() => {
         const fetchUser = async () => {
             try {
