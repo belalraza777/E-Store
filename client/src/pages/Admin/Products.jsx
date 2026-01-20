@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import useProductStore from '../../store/productStore.js';
-import './AdminProducts.css';
+// Styles loaded via main.css
 
 export default function AdminProducts() {
   const { products, loading, fetchProducts, deleteProduct, updateStock } = useProductStore();

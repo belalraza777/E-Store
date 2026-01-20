@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import AddCartBtn from '../FunctionalBtn/AddCartbtn.jsx'
-import './ProductCard.css'
+// Styles loaded via main.css
 import { Link } from 'react-router-dom'
 
 export default function ProductCard({ product }) {

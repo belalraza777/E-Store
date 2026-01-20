@@ -4,7 +4,7 @@ import useProductStore from '../../store/productStore.js'
 import useReviewStore from '../../store/reviewStore.js'
 import AddCartBtn from '../../components/FunctionalBtn/AddCartbtn.jsx'
 import ReviewsSection from '../../components/reviews/ReviewsSection.jsx'
-import './SingleProduct.css'
+// Styles loaded via main.css
 
 export default function SingleProduct() {
   // Get product slug from URL

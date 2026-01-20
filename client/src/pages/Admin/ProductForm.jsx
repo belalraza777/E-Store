@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import useProductStore from '../../store/productStore.js';
-import './AdminProductForm.css';
+// Styles loaded via main.css
 
 export default function ProductForm() {
   const { slug } = useParams();

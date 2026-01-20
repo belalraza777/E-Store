@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../context/authContext";
-import "./login.css";
+// Styles loaded via main.css
 import { FiMail, FiLock, FiPhone, FiUser } from "react-icons/fi";
 
 

@@ -1,4 +1,4 @@
-import './App.css'
+// Styles loaded via main.css
 import Layout from './layout/Layout'
 import AppRoutes from './routes/AppRoutes'
 import { AuthProvider } from './context/authContext'

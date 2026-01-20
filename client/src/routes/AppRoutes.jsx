@@ -1,5 +1,5 @@
 // routes/AppRoutes.jsx
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
 import OAuthSuccess from '../pages/Auth/Oauth_success';
@@ -12,12 +12,16 @@ import AdminProducts from '../pages/Admin/Products.jsx';
 import ProductForm from '../pages/Admin/ProductForm.jsx';
 import AdminOrders from '../pages/Admin/Orders.jsx';
 import AdminOrderDetail from '../pages/Admin/OrderDetail.jsx';
+import { useAuth } from '../context/authContext.jsx';
 
 const AppRoutes = () => {
+    const { user } = useAuth();
     return (
         <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<div><h1 style={{ textAlign: "center" }}>Home</h1></div>} />
+            <Route
+                path="/" element={user?.role === 'admin' ? <Navigate to="/admin/dashboard" /> : <div><h1 style={{ textAlign: "center" }}>Home</h1></div>}
+            />
             <Route path="/products" element={<Product />} />
             <Route path="/products/:slug" element={<SingleProduct />} />
             <Route path="/cart" element={<Cart />} />
@@ -94,7 +98,7 @@ const AppRoutes = () => {
                     </ProtectedRoute>
                 }
             />
-           
+
 
             {/* Unauthorized Route */}
             <Route path="/unauthorized" element={<div>Unauthorized</div>} />

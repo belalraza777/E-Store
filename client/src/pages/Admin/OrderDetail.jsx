@@ -18,7 +18,7 @@ import {
   FiArrowLeft
 } from 'react-icons/fi';
 import useOrderStore from '../../store/orderStore.js';
-import './AdminOrderDetail.css';
+// Styles loaded via main.css
 
 export default function AdminOrderDetail() {
   const { id } = useParams();

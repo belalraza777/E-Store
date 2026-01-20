@@ -2,7 +2,7 @@ import { use, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { FiMenu, FiX, FiShoppingCart, FiUser, FiLogOut, FiSearch } from "react-icons/fi";
-import "./header.css";
+// Styles loaded via main.css
 import useCartStore from '../store/cartStore.js'
 
 

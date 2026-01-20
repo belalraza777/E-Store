@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useCartStore from '../../store/cartStore.js'
 import { toast } from 'sonner'
-import './Cart.css'
+// Styles loaded via main.css
 
 export default function Cart() {
   // Get cart state and actions from store

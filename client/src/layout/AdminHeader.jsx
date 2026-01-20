@@ -12,7 +12,7 @@ import {
   FiLogOut,
   FiChevronDown
 } from "react-icons/fi";
-import "./AdminHeader.css";
+// Styles loaded via main.css
 
 export default function AdminHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

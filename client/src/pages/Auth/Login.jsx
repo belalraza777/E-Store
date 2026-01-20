@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../context/authContext";
-import "./login.css";
+// Styles loaded via main.css
 import { FcGoogle } from "react-icons/fc";
 import { FiMail, FiLock } from "react-icons/fi";
 
@@ -32,8 +32,7 @@ const LoginPage = () => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-    // Handle email/password login
-
+    // Handle email/password login submission
     const handlePasswordSubmit = async (event) => {
         event.preventDefault();
         if (submitting) return;

@@ -1,0 +1,89 @@
+/* ==========================================================================
+   E-STORE Main Stylesheet
+   Production-Ready CSS Architecture
+   ========================================================================== */
+
+/*
+ * CSS Architecture Structure:
+ * 
+ * styles/
+ * ├── index.css              <- Main entry point (this file)
+ * ├── base/                  <- Foundation styles
+ * │   ├── variables.css      <- CSS custom properties / design tokens
+ * │   ├── reset.css          <- CSS reset & base element styles
+ * │   └── utilities.css      <- Utility classes
+ * ├── components/            <- Reusable component styles
+ * │   ├── buttons.css        <- Button variants
+ * │   ├── forms.css          <- Form elements
+ * │   ├── cards.css          <- Card components
+ * │   ├── alerts.css         <- Alerts & badges
+ * │   ├── tables.css         <- Table styles
+ * │   ├── product-card.css   <- Product card component
+ * │   ├── product-list.css   <- Product list/grid
+ * │   └── reviews.css        <- Reviews section
+ * ├── layout/                <- Layout components
+ * │   ├── header.css         <- User header/navigation
+ * │   ├── footer.css         <- Footer
+ * │   └── admin-header.css   <- Admin navigation
+ * └── pages/                 <- Page-specific styles
+ *     ├── admin/             <- Admin pages
+ *     │   ├── dashboard.css
+ *     │   ├── products.css
+ *     │   ├── product-form.css
+ *     │   ├── orders.css
+ *     │   └── order-detail.css
+ *     ├── auth/              <- Authentication pages
+ *     │   └── login.css
+ *     ├── cart/              <- Cart page
+ *     │   └── cart.css
+ *     └── product/           <- Product pages
+ *         ├── product.css
+ *         └── single-product.css
+ */
+
+/* ==========================================================================
+   1. BASE - Variables & Reset
+   ========================================================================== */
+@import './base/variables.css';
+@import './base/reset.css';
+@import './base/utilities.css';
+
+/* ==========================================================================
+   2. COMPONENTS - Reusable UI Components
+   ========================================================================== */
+@import './components/buttons.css';
+@import './components/forms.css';
+@import './components/cards.css';
+@import './components/alerts.css';
+@import './components/tables.css';
+@import './components/product-card.css';
+@import './components/product-list.css';
+@import './components/reviews.css';
+
+/* ==========================================================================
+   3. LAYOUT - Structural Components
+   ========================================================================== */
+@import './layout/header.css';
+@import './layout/footer.css';
+@import './layout/admin-header.css';
+
+/* ==========================================================================
+   4. PAGES - Page-Specific Styles
+   ========================================================================== */
+
+/* Admin Pages */
+@import './pages/admin/dashboard.css';
+@import './pages/admin/products.css';
+@import './pages/admin/product-form.css';
+@import './pages/admin/orders.css';
+@import './pages/admin/order-detail.css';
+
+/* Auth Pages */
+@import './pages/auth/login.css';
+
+/* Cart */
+@import './pages/cart/cart.css';
+
+/* Product Pages */
+@import './pages/product/product.css';
+@import './pages/product/single-product.css';

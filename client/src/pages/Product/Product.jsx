@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useProductStore from '../../store/productStore.js'
 import ProductList from '../../components/product/ProductList.jsx'
-import './Product.css'
+// Styles loaded via main.css
 import { Link } from 'react-router-dom'
 
 export default function Product() {

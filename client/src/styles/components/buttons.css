@@ -1,0 +1,122 @@
+/* =====================================================
+   BUTTON COMPONENTS
+   ===================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Primary Button */
+.btn-primary,
+.btn.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(221, 45, 74, 0.3);
+}
+
+.btn-primary:hover:not(:disabled),
+.btn.primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(221, 45, 74, 0.4);
+}
+
+/* Secondary Button */
+.btn-secondary,
+.btn.secondary {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.btn-secondary:hover:not(:disabled),
+.btn.secondary:hover:not(:disabled) {
+    background: var(--panel);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Ghost Button */
+.btn-ghost,
+.btn.ghost {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.btn-ghost:hover:not(:disabled),
+.btn.ghost:hover:not(:disabled) {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Danger Button */
+.btn-danger,
+.btn.danger {
+    background: var(--error);
+    color: #fff;
+}
+
+.btn-danger:hover:not(:disabled),
+.btn.danger:hover:not(:disabled) {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+}
+
+/* Success Button */
+.btn-success {
+    background: var(--success);
+    color: #fff;
+}
+
+.btn-success:hover:not(:disabled) {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* Button Sizes */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: var(--font-size-xs);
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: var(--font-size-base);
+}
+
+/* Full Width */
+.btn-full {
+    width: 100%;
+}
+
+/* Icon Button */
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: var(--radius-md);
+}
+
+.btn-icon svg {
+    width: 20px;
+    height: 20px;
+}

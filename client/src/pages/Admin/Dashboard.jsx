@@ -25,7 +25,7 @@ import {
   getRecentOrders, 
   getLowStockProducts 
 } from '../../helper/adminStatsHelper.js';
-import './AdminDashboard.css';
+// Styles loaded via main.css
 
 export default function AdminDashboard() {
   const { orders, loading: ordersLoading, fetchAllOrders } = useOrderStore();
