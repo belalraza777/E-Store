@@ -18,6 +18,7 @@ import AdminOrders from '../pages/Admin/Orders.jsx';
 import AdminOrderDetail from '../pages/Admin/OrderDetail.jsx';
 import { useAuth } from '../context/authContext.jsx';
 import ScrollToTop from './ScrollToTop';
+import ProfilePage from '../pages/ProfilePage';
 
 const AppRoutes = () => {
     // Get current user to determine routing
@@ -52,7 +53,7 @@ const AppRoutes = () => {
                     path="/profile"
                     element={
                         <ProtectedRoute allowedRoles={["user", "admin"]}>
-                            <div>Profile</div>
+                            <ProfilePage />
                         </ProtectedRoute>
                     }
                 />

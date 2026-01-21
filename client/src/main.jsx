@@ -3,6 +3,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './styles/main.css'
+import './styles/pages/profile.css'
 import App from './App.jsx'
 
 // Render app inside root element with React StrictMode and Router

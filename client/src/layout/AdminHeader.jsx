@@ -1,40 +1,33 @@
 // AdminHeader.jsx - Admin panel header with navigation menu
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/authContext";
-import { 
-  FiMenu, 
-  FiX, 
-  FiBarChart2, 
-  FiShoppingBag, 
-  FiPackage, 
+import {
+  FiMenu,
+  FiX,
+  FiBarChart2,
+  FiShoppingBag,
+  FiPackage,
   FiStar,
   FiUsers,
   FiLogOut,
   FiChevronDown
 } from "react-icons/fi";
+import { useAuth } from "../context/AuthContext.jsx";
+import Logout from "../components/FunctionalBtn/Logout.jsx";
+
 // Styles loaded via main.css
 
 export default function AdminHeader() {
   // State for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Get user and logout from auth context
-  const { user, handleLogout } = useAuth();
-  const navigate = useNavigate();
-
-  // Handle logout and redirect to login
-  const handleLogoutClick = async () => {
-    await handleLogout();
-    setMobileMenuOpen(false);
-    navigate("/login");
-  };
+  const { user } = useAuth();
 
   // Admin navigation menu items
   const adminMenus = [
     { label: "Dashboard", icon: FiBarChart2, href: "/admin/dashboard" },
     { label: "Products", icon: FiShoppingBag, href: "/admin/products" },
     { label: "Orders", icon: FiPackage, href: "/admin/orders" },
-    { label: "Reviews", icon: FiStar, href: "/admin/reviews" },
   ];
 
   return (
@@ -51,9 +44,9 @@ export default function AdminHeader() {
           {adminMenus.map((menu) => {
             const Icon = menu.icon;
             return (
-              <Link 
-                key={menu.href} 
-                to={menu.href} 
+              <Link
+                key={menu.href}
+                to={menu.href}
                 className="admin-nav-link"
               >
                 <Icon size={18} />
@@ -70,17 +63,12 @@ export default function AdminHeader() {
             <FiUsers size={20} />
             <span>{user?.name || "Admin"}</span>
           </div>
-          {/* Logout button */}
-          <button 
-            className="logout-btn" 
-            onClick={handleLogoutClick}
-            title="Logout"
-          >
-            <FiLogOut size={20} />
-          </button>
+
+          {/* Styled Logout button as component */}
+          <Logout className="admin-logout-btn" />
 
           {/* Mobile Menu Toggle */}
-          <button 
+          <button
             className="mobile-menu-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -95,7 +83,7 @@ export default function AdminHeader() {
           {adminMenus.map((menu) => {
             const Icon = menu.icon;
             return (
-              <Link 
+              <Link
                 key={menu.href}
                 to={menu.href}
                 className="admin-mobile-nav-link"
@@ -106,13 +94,10 @@ export default function AdminHeader() {
               </Link>
             );
           })}
-          <button 
+          <Logout
             className="admin-mobile-logout"
-            onClick={handleLogoutClick}
-          >
-            <FiLogOut size={18} />
-            <span>Logout</span>
-          </button>
+            onClick={() => setMobileMenuOpen(false)}
+          />
         </nav>
       )}
     </header>
