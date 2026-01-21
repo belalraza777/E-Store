@@ -1,3 +1,4 @@
+// Cart.jsx - Shopping cart page with quantity management and order summary
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useCartStore from '../../store/cartStore.js'
@@ -8,7 +9,9 @@ export default function Cart() {
   // Get cart state and actions from store
   const { cart, loading, fetchCart, updateItem, removeItem } = useCartStore();
   const navigate = useNavigate();
+  // Local state for quantity inputs
   const [quantities, setQuantities] = useState({});
+  // Track which item is being updated
   const [updatingId, setUpdatingId] = useState(null);
 
   // Fetch cart on mount
@@ -16,7 +19,7 @@ export default function Cart() {
     fetchCart();
   }, []);
 
-  // Sync quantities to local state
+  // Sync quantities to local state when cart changes
   useEffect(() => {
     if (cart?.items) {
       const qtys = {};
@@ -27,9 +30,10 @@ export default function Cart() {
     }
   }, [cart]);
 
-  // Update item quantity instantly; prevent overlapping calls per item
+  // Update item quantity - prevents multiple simultaneous calls
   const handleQuantityChange = async (itemId, newQty) => {
     if (newQty < 1 || updatingId === itemId) return;
+    // Update local state immediately for responsive UI
     setQuantities(prev => ({ ...prev, [itemId]: newQty }));
     setUpdatingId(itemId);
     await updateItem(itemId, newQty);
@@ -46,7 +50,7 @@ export default function Cart() {
     toast.success('Item removed from cart');
   };
 
-  // Redirect to checkout
+  // Navigate to checkout page
   const handleCheckout = () => {
     navigate('/checkout');
   };
@@ -63,11 +67,12 @@ export default function Cart() {
     );
   }
 
-  // Show empty state
+  // Show empty cart state with link to products
   if (!cart || cart.items.length === 0) {
     return (
       <div className="cart-page">
         <div className="empty-cart">
+          {/* Cart icon SVG */}
           <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <circle cx="9" cy="21" r="1" />
             <circle cx="20" cy="21" r="1" />
@@ -83,9 +88,8 @@ export default function Cart() {
     );
   }
 
-  // Calculate totals
-  // totalPrice = sum of (price × qty) - original price total
-  // totalDiscountPrice = sum of (discountPrice × qty) - discounted price total (what customer pays)
+  // Calculate totals from backend pre-calculated values
+  // totalPrice = original price total, totalDiscountPrice = what customer pays
   const originalTotal = cart.totalPrice || 0;
   const discountedTotal = cart.totalDiscountPrice || 0;
   const discountAmount = originalTotal - discountedTotal;
@@ -97,31 +101,37 @@ export default function Cart() {
       <h1>Shopping Cart</h1>
 
       <div className="cart-container">
-        {/* Cart Items */}
+        {/* Cart Items Section */}
         <div className="cart-items">
+          {/* Items count header */}
           <div className="items-header">
             <span>{cart.items.length} item{cart.items.length !== 1 ? 's' : ''}</span>
           </div>
 
+          {/* List of cart items */}
           <div className="items-list">
-            {cart.items.map(item => (
-              <div key={item._id} className="cart-item">
-                {/* Product Image */}
-                <div className="item-image">
-                  {item.product?.image ? (
-                    <img src={item.product.image} alt={item.product.name} />
-                  ) : (
-                    <div className="placeholder">No Image</div>
-                  )}
-                </div>
+            {cart.items.map(item => {
+              // Get image URL - handle both {url: '...'} object and direct string formats
+              const imageUrl = item.product?.images?.[0]?.url || item.product?.images?.[0];
+              return (
+                <div key={item._id} className="cart-item">
+                  {/* Product Image */}
+                  <div className="item-image">
+                    {imageUrl ? (
+                      <img src={imageUrl} alt={item.product?.title} />
+                    ) : (
+                      <div className="placeholder">No Image</div>
+                    )}
+                  </div>
 
-                {/* Product Info */}
-                <div className="item-details">
-                  <Link to={`/products/${item.product?.slug}`} className="item-title">
-                    {item.product?.name}
-                  </Link>
-                  <p className="item-sku">SKU: {item.product?._id?.substring(0, 8)}</p>
+                  {/* Product Info - title, SKU, pricing */}
+                  <div className="item-details">
+                    <Link to={`/products/${item.product?.slug}`} className="item-title">
+                      {item.product?.title}
+                    </Link>
+                    <p className="item-sku">SKU: {item.product?._id?.substring(0, 8)}</p>
                   
+                  {/* Price display - show original and discount if applicable */}
                   <div className="item-pricing">
                     {item.discountPrice ? (
                       <>
@@ -134,7 +144,7 @@ export default function Cart() {
                   </div>
                 </div>
 
-                {/* Quantity & Total */}
+                {/* Quantity Controls - decrease, input, increase */}
                 <div className="item-quantity">
                   <button 
                     onClick={() => handleQuantityChange(item._id, quantities[item._id] - 1)}
@@ -154,6 +164,7 @@ export default function Cart() {
                     className="qty-input"
                     disabled={updatingId === item._id}
                   />
+                {/* Increase quantity button */}
                   <button 
                     onClick={() => handleQuantityChange(item._id, quantities[item._id] + 1)}
                     className="qty-btn"
@@ -163,12 +174,12 @@ export default function Cart() {
                   </button>
                 </div>
 
-                {/* Item Total */}
+                {/* Item Total - price × quantity */}
                 <div className="item-total">
                   <span>₹{((item.discountPrice || item.price) * item.quantity).toFixed(2)}</span>
                 </div>
 
-                {/* Remove Button */}
+                {/* Remove Item Button */}
                 <button 
                   onClick={() => handleRemoveItem(item._id)}
                   className="remove-btn"
@@ -178,20 +189,23 @@ export default function Cart() {
                   ✕
                 </button>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        {/* Order Summary */}
+        {/* Order Summary Sidebar */}
         <div className="order-summary">
           <h2>Order Summary</h2>
 
           <div className="summary-content">
+            {/* Original price row */}
             <div className="summary-row">
               <span>Price (Original)</span>
               <span>₹{originalTotal.toFixed(2)}</span>
             </div>
 
+            {/* Discount amount row - only show if discount exists */}
             {discountAmount > 0 && (
               <div className="summary-row discount">
                 <span>Discount</span>
@@ -199,11 +213,13 @@ export default function Cart() {
               </div>
             )}
 
+            {/* Subtotal row */}
             <div className="summary-row">
               <span>Subtotal</span>
               <span>₹{subtotal.toFixed(2)}</span>
             </div>
 
+            {/* Shipping info */}
             <div className="summary-row shipping">
               <span>Shipping</span>
               <span className="free">FREE</span>
@@ -211,20 +227,23 @@ export default function Cart() {
 
             <div className="summary-divider"></div>
 
+            {/* Total amount */}
             <div className="summary-row total">
               <span>Total</span>
               <span>₹{total.toFixed(2)}</span>
             </div>
 
+            {/* Checkout button */}
             <button onClick={handleCheckout} className="checkout-btn">
               Proceed to Checkout
             </button>
 
+            {/* Continue shopping link */}
             <Link to="/products" className="continue-shopping-link">
               Continue Shopping
             </Link>
 
-            {/* Cart Info */}
+            {/* Cart Info - benefits */}
             <div className="cart-info">
               <p>✓ Free shipping on all orders</p>
               <p>✓ Secure checkout</p>

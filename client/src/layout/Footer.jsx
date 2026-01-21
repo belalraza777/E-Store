@@ -1,14 +1,16 @@
+// Footer.jsx - Site footer with links, contact info, and social media
 import { Link } from "react-router-dom";
 import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiMail, FiPhone, FiMapPin } from "react-icons/fi";
 // Styles loaded via main.css
 
 export default function Footer() {
+  // Get current year for copyright
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
       <div className="footer-container">
-        {/* About Section */}
+        {/* About Section - Logo and description */}
         <div className="footer-section">
           <div className="footer-logo">
             <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store" className="footer-logo-img" />
@@ -17,6 +19,7 @@ export default function Footer() {
           <p className="footer-description">
             Your one-stop shop for quality products and exceptional service. Discover amazing deals and fast delivery.
           </p>
+          {/* Social media links */}
           <div className="social-links">
             <a href="#facebook" className="social-icon" aria-label="Facebook">
               <FiFacebook />

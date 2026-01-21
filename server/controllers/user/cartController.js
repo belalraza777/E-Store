@@ -67,7 +67,7 @@ const addToCart = async (req, res, next) => {
     }, 0);
     // Save cart to database and populate product details for response
     await cart.save();
-    await cart.populate('items.product', 'name price image');
+    await cart.populate('items.product', 'title price discountPrice images slug');
 
     return res.status(201).json({ success: true, data: cart, message: "Item added to cart" });
 };
@@ -79,8 +79,8 @@ const addToCart = async (req, res, next) => {
 const getCart = async (req, res, next) => {
     const userId = req.user.id;
 
-    // Fetch user's cart and populate product details (name, price, image, slug)
-    const cart = await Cart.findOne({ user: userId }).populate('items.product', 'name price image slug');
+    // Fetch user's cart and populate product details (title, price, images, slug)
+    const cart = await Cart.findOne({ user: userId }).populate('items.product', 'title price discountPrice images slug');
 
     if (!cart) {
         return res.status(404).json({ success: false, message: "Cart not found" });
@@ -135,7 +135,7 @@ const updateCartItem = async (req, res, next) => {
 
     // Save updated cart and populate product details
     await cart.save();
-    await cart.populate('items.product', 'name price image slug');
+    await cart.populate('items.product', 'title price discountPrice images slug');
 
     return res.status(200).json({ success: true, data: cart, message: "Cart item updated" });
 };
@@ -175,7 +175,7 @@ const removeFromCart = async (req, res, next) => {
 
     // Save updated cart and populate product details for response
     await cart.save();
-    await cart.populate('items.product', 'name price image slug');
+    await cart.populate('items.product', 'title price discountPrice images slug');
 
     return res.status(200).json({ success: true, message: `Item removed from cart ${itemId}` });
 };

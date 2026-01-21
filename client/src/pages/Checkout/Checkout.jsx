@@ -1,3 +1,4 @@
+// Checkout.jsx - Checkout page with shipping form, payment method and order summary
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -8,11 +9,20 @@ import { useAuth } from '../../context/authContext.jsx';
 
 export default function Checkout() {
   const navigate = useNavigate();
+  // Get logged in user data
   const { user } = useAuth();
+  // Cart state and actions
   const { cart, loading: cartLoading, fetchCart, clearCart } = useCartStore();
+  // Order creation function
   const { createOrder } = useOrderStore();
 
+  // Form submission state
   const [submitting, setSubmitting] = useState(false);
+  // Track if order was just placed - prevents redirect on cart clear
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  // Track initial cart load - prevents redirect before cart loads
+  const [initialLoad, setInitialLoad] = useState(true);
+  // Form fields with user data as defaults
   const [form, setForm] = useState({  
     fullName: user?.name || '',
     phone: user?.phone || '',
@@ -23,26 +33,30 @@ export default function Checkout() {
     paymentMethod: 'COD',
   });
 
+  // Fetch cart on mount
   useEffect(() => {
-    fetchCart();
+    fetchCart().finally(() => setInitialLoad(false));
   }, []);
 
+  // Redirect if cart is empty (but not during initial load or after order placed)
   useEffect(() => {
-    if (!cartLoading && (!cart || cart.items?.length === 0)) {
+    if (!initialLoad && !orderPlaced && !cartLoading && (!cart || cart.items?.length === 0)) {
       toast.error('Your cart is empty');
       navigate('/cart');
     }
-  }, [cart, cartLoading, navigate]);
+  }, [cart, cartLoading, navigate, initialLoad, orderPlaced]);
 
+  // Handle form input changes
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Handle order submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
 
-    // Simple validation
+    // Validate required fields
     if (!form.fullName || !form.phone || !form.address || !form.city || !form.postalCode) {
       toast.error('Please fill all required fields');
       return;
@@ -50,6 +64,7 @@ export default function Checkout() {
 
     setSubmitting(true);
 
+    // Build order data object
     const orderData = {
       items: cart.items.map(item => ({
         product: item.product._id,
@@ -64,10 +79,13 @@ export default function Checkout() {
       paymentMethod: form.paymentMethod,
     };
 
+    // Create order via API
     const result = await createOrder(orderData);
     setSubmitting(false);
 
     if (result.success) {
+      // Set flag before clearing to prevent empty cart redirect
+      setOrderPlaced(true);
       clearCart();
       toast.success('Order placed successfully!');
       navigate('/orders');
@@ -76,12 +94,12 @@ export default function Checkout() {
     }
   };
 
-  // Calculate totals
-  // totalPrice = original price total, totalDiscountPrice = discounted price total (what to pay)
+  // All prices come pre-calculated from backend cart
+  // totalPrice = sum of (item.price * quantity) for all items (original prices)
+  // totalDiscountPrice = sum of (item.discountPrice * quantity) - actual amount to pay
   const originalTotal = cart?.totalPrice || 0;
-  const discountedTotal = cart?.totalDiscountPrice || 0;
-  const discountAmount = originalTotal - discountedTotal;
-  const total = discountedTotal;
+  const discountedTotal = cart?.totalDiscountPrice || cart?.totalPrice || 0;
+  const discountAmount = originalTotal - discountedTotal; // savings shown to user
 
   if (cartLoading) {
     return (
@@ -99,12 +117,13 @@ export default function Checkout() {
       <h1>Checkout</h1>
 
       <div className="checkout-container">
-        {/* Form */}
+        {/* Checkout Form Section */}
         <form className="checkout-form-section" onSubmit={handleSubmit}>
-          {/* Shipping */}
+          {/* Shipping Address Section */}
           <h3 className="section-title"><FiMapPin /> Shipping Address</h3>
           <div className="section-content">
             <div className="shipping-form">
+              {/* Name and Phone row */}
               <div className="form-row">
                 <div className="form-group">
                   <label>Full Name *</label>
@@ -130,6 +149,7 @@ export default function Checkout() {
                 </div>
               </div>
 
+              {/* Address textarea */}
               <div className="form-group full-width">
                 <label>Address *</label>
                 <textarea
@@ -142,6 +162,7 @@ export default function Checkout() {
                 />
               </div>
 
+              {/* City and Postal Code row */}
               <div className="form-row">
                 <div className="form-group">
                   <label>City *</label>
@@ -167,6 +188,7 @@ export default function Checkout() {
                 </div>
               </div>
 
+              {/* Country dropdown */}
               <div className="form-group">
                 <label>Country</label>
                 <select name="country" value={form.country} onChange={handleChange}>
@@ -178,10 +200,11 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Payment */}
+          {/* Payment Method Section */}
           <h3 className="section-title"><FiCreditCard /> Payment Method</h3>
           <div className="section-content">
             <div className="payment-methods">
+              {/* Cash on Delivery option */}
               <label className={`payment-option ${form.paymentMethod === 'COD' ? 'selected' : ''}`}>
                 <input
                   type="radio"
@@ -193,7 +216,7 @@ export default function Checkout() {
                 <span className="payment-name">Cash on Delivery</span>
               </label>
 
-              {/* Online payment - ready for payment gateway integration */}
+              {/* Online payment option - ready for payment gateway */}
               <label className={`payment-option ${form.paymentMethod === 'Online' ? 'selected' : ''}`}>
                 <input
                   type="radio"
@@ -207,54 +230,68 @@ export default function Checkout() {
             </div>
           </div>
 
+          {/* Submit Button */}
           <button type="submit" className="place-order-btn" disabled={submitting}>
             {submitting ? 'Placing Order...' : 'Place Order'}
           </button>
         </form>
 
-        {/* Summary */}
+        {/* ===== ORDER SUMMARY SECTION ===== */}
         <div className="checkout-summary">
           <h2>Order Summary</h2>
 
+          {/* List of cart items */}
           <div className="checkout-items">
-            {cart?.items?.map(item => (
-              <div key={item._id} className="checkout-item">
-                <div className="checkout-item-image">
-                  {item.product?.images?.[0] ? (
-                    <img src={item.product.images[0]} alt={item.product.title} />
-                  ) : (
-                    <div className="placeholder">No img</div>
-                  )}
+            {cart?.items?.map(item => {
+              // Get image URL - handle both {url: '...'} object and direct string formats
+              const imageUrl = item.product?.images?.[0]?.url || item.product?.images?.[0];
+              return (
+                <div key={item._id} className="checkout-item">
+                  {/* Product image */}
+                  <div className="checkout-item-image">
+                    {imageUrl ? (
+                      <img src={imageUrl} alt={item.product?.title} />
+                    ) : (
+                      <div className="placeholder">N/A</div>
+                    )}
+                  </div>
+                  {/* Product name and quantity */}
+                  <div className="checkout-item-info">
+                    <p className="checkout-item-name">{item.product?.title}</p>
+                    <p className="checkout-item-qty">{item.quantity} ×</p>    
+                  </div>
+                  {/* Item total price (pre-calculated from backend: discountPrice or price * qty) */}
+                  <div className="checkout-item-price">
+                    ₹{(item.discountPrice || item.price || 0).toLocaleString('en-IN')}
+                  </div>
                 </div>
-                <div className="checkout-item-info">
-                  <p className="checkout-item-name">{item.product?.title}</p>
-                  <p className="checkout-item-qty">Qty: {item.quantity}</p>
-                </div>
-                <div className="checkout-item-price">
-                  ₹{((item.product?.price - (item.product?.discountPrice || 0)) * item.quantity).toLocaleString('en-IN')}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
+          {/* Price breakdown */}
           <div className="checkout-totals">
+            {/* Original price before any discounts */}
             <div className="checkout-row">
               <span>Subtotal</span>
               <span>₹{originalTotal.toLocaleString('en-IN')}</span>
             </div>
+            {/* Show discount only if there is a discount */}
             {discountAmount > 0 && (
               <div className="checkout-row discount">
                 <span>Discount</span>
                 <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
               </div>
             )}
+            {/* Shipping cost */}
             <div className="checkout-row">
               <span>Shipping</span>
               <span style={{ color: 'var(--success)' }}>FREE</span>
             </div>
+            {/* Final amount to pay */}
             <div className="checkout-row total">
               <span>Total</span>
-              <span>₹{total.toLocaleString('en-IN')}</span>
+              <span>₹{discountedTotal.toLocaleString('en-IN')}</span>
             </div>
           </div>
 

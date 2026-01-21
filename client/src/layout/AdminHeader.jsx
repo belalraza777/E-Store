@@ -1,3 +1,4 @@
+// AdminHeader.jsx - Admin panel header with navigation menu
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
@@ -15,16 +16,20 @@ import {
 // Styles loaded via main.css
 
 export default function AdminHeader() {
+  // State for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Get user and logout from auth context
   const { user, handleLogout } = useAuth();
   const navigate = useNavigate();
 
+  // Handle logout and redirect to login
   const handleLogoutClick = async () => {
     await handleLogout();
     setMobileMenuOpen(false);
     navigate("/login");
   };
 
+  // Admin navigation menu items
   const adminMenus = [
     { label: "Dashboard", icon: FiBarChart2, href: "/admin/dashboard" },
     { label: "Products", icon: FiShoppingBag, href: "/admin/products" },
@@ -41,7 +46,7 @@ export default function AdminHeader() {
           <span>Admin Panel</span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation - loop through menu items */}
         <nav className="admin-nav">
           {adminMenus.map((menu) => {
             const Icon = menu.icon;
@@ -60,10 +65,12 @@ export default function AdminHeader() {
 
         {/* User Profile & Logout */}
         <div className="admin-header-right">
+          {/* Show admin name */}
           <div className="user-info">
             <FiUsers size={20} />
             <span>{user?.name || "Admin"}</span>
           </div>
+          {/* Logout button */}
           <button 
             className="logout-btn" 
             onClick={handleLogoutClick}
@@ -82,7 +89,7 @@ export default function AdminHeader() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation - shown when toggle clicked */}
       {mobileMenuOpen && (
         <nav className="admin-mobile-nav">
           {adminMenus.map((menu) => {

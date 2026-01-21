@@ -1,3 +1,4 @@
+// Header.jsx - Main site header with navigation, search, and cart
 import { use, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
@@ -7,23 +8,29 @@ import useCartStore from '../store/cartStore.js'
 
 
 export default function Header() {
+  // State for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Get user and logout function from auth context
   const { user, handleLogout } = useAuth();
+  // Get cart data from store
   const { cart, fetchCart } = useCartStore();
   const navigate = useNavigate();
+  // Track cart item count for badge
   const [cartItemCount, setCartItemCount] = useState(0);
 
+  // Fetch cart on component mount
   useEffect(() => {
     fetchCart();
   }, []);
   
+  // Update cart badge when cart changes
   useEffect(() => {
     if (cart && cart.items) {
       setCartItemCount(cart.items.length || 0);
     };
   }, [cart]);
 
-
+  // Handle logout and redirect to login
   const handleLogoutClick = async () => {
     await handleLogout();
     setMobileMenuOpen(false);
@@ -55,13 +62,15 @@ export default function Header() {
           <Link to="/contact" className="nav-link">Contact</Link>
         </nav>
 
-        {/* Right Actions */}
+        {/* Right Actions - Cart, Profile, Mobile Menu */}
         <div className="header-actions">
+          {/* Cart button with item count badge */}
           <button className="action-btn cart-btn" onClick={() => navigate('/cart')} >
             <FiShoppingCart />
             <span className="cart-badge">{cartItemCount}</span>
           </button>
 
+          {/* Show profile or login based on auth state */}
           {user ? (
             <Link to="/profile" className="action-btn user-btn profile-btn-with-name">
               <FiUser />
@@ -82,7 +91,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - shown when toggle is clicked */}
       {mobileMenuOpen && (
         <nav className="mobile-menu">
           <Link to="/" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>

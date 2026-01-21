@@ -1,3 +1,4 @@
+// OrderDetail.jsx - Admin order detail page with status update functionality
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -21,18 +22,25 @@ import useOrderStore from '../../store/orderStore.js';
 // Styles loaded via main.css
 
 export default function AdminOrderDetail() {
+  // Get order ID from URL params
   const { id } = useParams();
   const navigate = useNavigate();
+  // Get order data and update function from store
   const { orders, updateOrderStatus, loading } = useOrderStore();
 
+  // Current order state
   const [order, setOrder] = useState(null);
+  // Form state for status updates
   const [form, setForm] = useState({ orderStatus: '', paymentStatus: '' });
+  // Track form submission
   const [submitting, setSubmitting] = useState(false);
 
+  // Find order from store when ID changes
   useEffect(() => {
     const foundOrder = orders.find(o => o._id === id);
     if (foundOrder) {
       setOrder(foundOrder);
+      // Initialize form with current status values
       setForm({
         orderStatus: foundOrder.orderStatus,
         paymentStatus: foundOrder.paymentStatus || 'pending',
@@ -40,21 +48,25 @@ export default function AdminOrderDetail() {
     }
   }, [id, orders]);
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
+  // Handle status update submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
 
+    // Validate order status
     if (!form.orderStatus) {
       toast.error('Order status is required');
       return;
     }
 
     setSubmitting(true);
+    // Call API to update order status
     const result = await updateOrderStatus(id, {
       orderStatus: form.orderStatus,
       paymentStatus: form.paymentStatus,
@@ -69,6 +81,7 @@ export default function AdminOrderDetail() {
     }
   };
 
+  // Get appropriate icon for status type
   const getStatusIcon = (status) => {
     const icons = {
       placed: <FiPackage />,
@@ -82,6 +95,7 @@ export default function AdminOrderDetail() {
     return icons[status] || <FiInfo />;
   };
 
+  // Show loading while order is being fetched
   if (!order) {
     return (
       <div className="admin-order-detail-page">
@@ -93,13 +107,16 @@ export default function AdminOrderDetail() {
     );
   }
 
+  // Helper functions for date formatting
   const formatDate = (date) => new Date(date).toLocaleDateString();
   const formatDateTime = (date) => new Date(date).toLocaleString();
+  // Calculate subtotal and discount from items
   const subtotal = order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
   const discount = order.items?.reduce((sum, item) => sum + (item.discount * item.quantity), 0) || 0;
 
   return (
     <div className="admin-order-detail-page">
+      {/* Page Header */}
       <div className="header">
         <div className="header-content">
           <button onClick={() => navigate(-1)} className="back-btn"><FiArrowLeft /> Back to Orders</button>
@@ -110,8 +127,9 @@ export default function AdminOrderDetail() {
       </div>
 
       <div className="detail-content">
-        {/* Status Overview */}
+        {/* Status Overview Cards */}
         <div className="status-overview">
+          {/* Order Status Card */}
           <div className="status-card">
             <div className="status-icon">{getStatusIcon(order.orderStatus)}</div>
             <div className="status-info">
@@ -119,6 +137,7 @@ export default function AdminOrderDetail() {
               <p className={`status-value status-${order.orderStatus}`}>{order.orderStatus.toUpperCase()}</p>
             </div>
           </div>
+          {/* Payment Status Card */}
           <div className="status-card">
             <div className="status-icon">{getStatusIcon(order.paymentStatus)}</div>
             <div className="status-info">
@@ -126,6 +145,7 @@ export default function AdminOrderDetail() {
               <p className={`status-value payment-${order.paymentStatus}`}>{order.paymentStatus.toUpperCase()}</p>
             </div>
           </div>
+          {/* Order Total Card */}
           <div className="status-card">
             <div className="status-icon"><FiBarChart2 /></div>
             <div className="status-info">
@@ -136,7 +156,7 @@ export default function AdminOrderDetail() {
         </div>
 
         <div className="detail-grid">
-          {/* Customer Info */}
+          {/* Customer Information Card */}
           <section className="card">
             <div className="card-header">
               <h2><FiUser /> Customer Information</h2>
@@ -155,7 +175,7 @@ export default function AdminOrderDetail() {
             </div>
           </section>
 
-          {/* Shipping Address */}
+          {/* Shipping Address Card */}
           <section className="card">
             <div className="card-header">
               <h2><FiMapPin /> Shipping Address</h2>
@@ -169,7 +189,7 @@ export default function AdminOrderDetail() {
             </div>
           </section>
 
-          {/* Order Information */}
+          {/* Order Information Card */}
           <section className="card">
             <div className="card-header">
               <h2><FiInfo /> Order Information</h2>
@@ -189,13 +209,14 @@ export default function AdminOrderDetail() {
           </section>
         </div>
 
-        {/* Items */}
+        {/* Order Items Table */}
         <section className="card full-width">
           <div className="card-header">
             <h2><FiShoppingCart /> Order Items ({order.items?.length})</h2>
           </div>
           <div className="card-body">
             <div className="items-table">
+              {/* Table header */}
               <div className="table-header">
                 <div className="product-col">Product</div>
                 <div className="price-col">Price</div>
@@ -203,6 +224,7 @@ export default function AdminOrderDetail() {
                 <div className="discount-col">Discount</div>
                 <div className="total-col">Total</div>
               </div>
+              {/* Item rows */}
               {order.items?.map((item, idx) => (
                 <div key={idx} className="table-row">
                   <div className="product-col">
@@ -219,21 +241,24 @@ export default function AdminOrderDetail() {
           </div>
         </section>
 
-        {/* Totals */}
+        {/* Order Totals Section */}
         <section className="card full-width">
           <div className="card-header">
             <h2><FiDollarSign /> Order Totals</h2>
           </div>
           <div className="card-body">
             <div className="totals-box">
+              {/* Subtotal */}
               <div className="total-row">
                 <span className="total-label">Subtotal</span>
                 <span className="total-amount">₹{subtotal?.toLocaleString('en-IN')}</span>
               </div>
+              {/* Discount */}
               <div className="total-row">
                 <span className="total-label">Discount</span>
                 <span className="total-amount discount">-₹{Math.max(0, discount)?.toLocaleString('en-IN')}</span>
               </div>
+              {/* Grand Total */}
               <div className="total-row grand-total">
                 <span className="total-label">Total Amount</span>
                 <span className="total-amount">₹{order.totalAmount?.toLocaleString('en-IN')}</span>
@@ -242,7 +267,7 @@ export default function AdminOrderDetail() {
           </div>
         </section>
 
-        {/* Status Updates */}
+        {/* Status Update Form Section */}
         <section className="card full-width">
           <div className="card-header">
             <h2><FiSettings /> Update Status</h2>
@@ -250,6 +275,7 @@ export default function AdminOrderDetail() {
           <div className="card-body">
             <form onSubmit={handleSubmit} className="status-update-form">
               <div className="update-grid">
+                {/* Order Status Dropdown */}
                 <div className="update-box">
                   <label className="form-label">Order Status</label>
                   <p className="update-desc">Update the fulfillment status of this order</p>
@@ -261,6 +287,7 @@ export default function AdminOrderDetail() {
                     <option value="cancelled">Cancelled</option>
                   </select>
                 </div>
+                {/* Payment Status Dropdown */}
                 <div className="update-box">
                   <label className="form-label">Payment Status</label>
                   <p className="update-desc">Update the payment status of this order</p>
@@ -271,11 +298,13 @@ export default function AdminOrderDetail() {
                   </select>
                 </div>
               </div>
+              {/* Submit Button */}
               <button type="submit" disabled={submitting || loading} className="submit-btn">
                 {submitting ? 'Updating...' : <><FiCheckCircle /> Update Status</>}
               </button>
             </form>
 
+            {/* Show cancellation reason if order was cancelled */}
             {order.cancelReason && (
               <div className="cancel-reason-box">
                 <strong>Cancellation Reason:</strong> {order.cancelReason}

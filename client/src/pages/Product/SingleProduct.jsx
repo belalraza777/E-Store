@@ -1,3 +1,4 @@
+// SingleProduct.jsx - Individual product detail page with images, info and reviews
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useProductStore from '../../store/productStore.js'
@@ -7,15 +8,16 @@ import ReviewsSection from '../../components/reviews/ReviewsSection.jsx'
 // Styles loaded via main.css
 
 export default function SingleProduct() {
-  // Get product slug from URL
+  // Get product slug from URL params
   const { slug } = useParams();
   
   // Get product and review data from stores
   const { currentProduct: product, loading: productLoading, fetchProductBySlug } = useProductStore();
   const { reviews, averageRating, totalReviews, loading: reviewsLoading, fetchProductReviews } = useReviewStore();
   
-  // Local state for quantity and image selection
+  // Local state for quantity selection
   const [quantity, setQuantity] = useState(1);
+  // Track which image is selected in gallery
   const [selectedImage, setSelectedImage] = useState(0);
 
   // Fetch product when slug changes
@@ -34,26 +36,29 @@ export default function SingleProduct() {
 
   // Show loading state
   if (productLoading) return <div className="loading-container"><div className="spinner-large"></div><p>Loading product...</p></div>;
+  // Show error if product not found
   if (!product) return <div className="error-container"><p>❌ Product not found</p></div>;
 
-  // Calculate discount details
-
+  // Calculate discount percentage if applicable
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
   const discountPercent = hasDiscount 
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
     : 0;
+  // Check stock availability
   const inStock = product.stock > 0;
 
   return (
     <div className="single-product">
-      {/* Product Details */}
+      {/* Product Details Section */}
       <div className="product-details">
-        {/* Images */}
+        {/* Product Images Gallery */}
         <div className="product-images">
+          {/* Main selected image */}
           <div className="main-image">
             {product.images && product.images.length > 0 ? (
               <>
-                <img src={product.images[selectedImage].url} alt={product.title} />
+                <img src={product.images[selectedImage].url || product.images[selectedImage]} alt={product.title} />
+                {/* Discount badge overlay */}
                 {hasDiscount && <div className="discount-badge">-{discountPercent}%</div>}
               </>
             ) : (
@@ -61,12 +66,13 @@ export default function SingleProduct() {
             )}
           </div>
           
+          {/* Thumbnail gallery - only show if multiple images */}
           {product.images && product.images.length > 1 && (
             <div className="thumbnail-images">
               {product.images.map((img, idx) => (
                 <img
                   key={idx}
-                  src={img.url}
+                  src={img.url || img}
                   alt={`${product.title} ${idx + 1}`}
                   className={`thumbnail ${selectedImage === idx ? 'active' : ''}`}
                   onClick={() => setSelectedImage(idx)}
@@ -76,12 +82,14 @@ export default function SingleProduct() {
           )}
         </div>
 
-        {/* Info */}
+        {/* Product Info Section */}
         <div className="product-info">
+          {/* Category tag */}
           <div className="category-badge">{product.category}</div>
 
           <h1 className="product-title">{product.title}</h1>
 
+          {/* Rating display with stars */}
           <div className="rating-section">
             <div className="stars-display">
               {'★'.repeat(Math.round(averageRating))}<span className="empty-stars">{'☆'.repeat(5 - Math.round(averageRating))}</span>
@@ -90,6 +98,7 @@ export default function SingleProduct() {
             <span className="reviews-link">({totalReviews} reviews)</span>
           </div>
 
+          {/* Price display with discount if applicable */}
           <div className="price-section">
             <div className="price-display">
               {hasDiscount ? (
@@ -104,16 +113,18 @@ export default function SingleProduct() {
             {hasDiscount && <div className="save-badge">Save {discountPercent}%</div>}
           </div>
 
+          {/* Product description */}
           <p className="description">{product.description}</p>
 
-          {/* Stock Status */}
+          {/* Stock Status Indicator */}
           <div className={`stock-status ${inStock ? 'in-stock' : 'out-of-stock'}`}>
             <span className="status-icon">{inStock ? '✓' : '✕'}</span>
             {inStock ? `In Stock - ${product.stock} available` : 'Out of Stock'}
           </div>
 
-          {/* Quantity & Add to Cart */}
+          {/* Quantity Selector & Add to Cart Button */}
           <div className="actions">
+            {/* Quantity controls */}
             <div className="quantity-selector">
               <button 
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
@@ -136,12 +147,13 @@ export default function SingleProduct() {
                 +
               </button>
             </div>
+            {/* Add to cart button component */}
             <AddCartBtn productId={product._id} quantity={quantity} />
           </div>
         </div>
       </div>
 
-      {/* Reviews Section Component */}
+      {/* Reviews Section - displays and adds reviews */}
       <ReviewsSection 
         productId={product._id}
         reviews={reviews}

@@ -1,4 +1,4 @@
-// routes/AppRoutes.jsx
+// AppRoutes.jsx - Defines all application routes and their access rules
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
@@ -16,10 +16,11 @@ import AdminOrderDetail from '../pages/Admin/OrderDetail.jsx';
 import { useAuth } from '../context/authContext.jsx';
 
 const AppRoutes = () => {
+    // Get current user to determine routing
     const { user } = useAuth();
     return (
         <Routes>
-            {/* Public Routes */}
+            {/* ===== PUBLIC ROUTES - accessible by anyone ===== */}
             <Route
                 path="/" element={user?.role === 'admin' ? <Navigate to="/admin/dashboard" /> : <div><h1 style={{ textAlign: "center" }}>Home</h1></div>}
             />
@@ -27,12 +28,12 @@ const AppRoutes = () => {
             <Route path="/products/:slug" element={<SingleProduct />} />
             <Route path="/cart" element={<Cart />} />
 
-            {/* Auth Routes */}
+            {/* ===== AUTH ROUTES - login/register pages ===== */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/oauth-success" element={<OAuthSuccess />} />
 
-            {/* User Routes */}
+            {/* ===== USER ROUTES - requires user role ===== */}
             <Route
                 path="/checkout"
                 element={
@@ -58,7 +59,7 @@ const AppRoutes = () => {
                 }
             />
 
-            {/* Admin Routes */}
+            {/* ===== ADMIN ROUTES - requires admin role ===== */}
             <Route
                 path="/admin/dashboard"
                 element={

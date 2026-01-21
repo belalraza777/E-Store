@@ -5,8 +5,13 @@ const getAllProducts = async (req, res, next) => {
     const { page = 1, limit = 20 } = req.query;
     const skip = (page - 1) * limit;
 
-    // Build filter for active products only
+    // Build filter for active products only [users]
     const filter = { isActive: true };
+
+    //If Admin , No filter
+    if (req?.user && req?.user?.role === 'admin') {
+        delete filter.isActive;
+    }
 
     // Fetch products
     const products = await Product.find(filter)
@@ -28,8 +33,8 @@ const getAllProducts = async (req, res, next) => {
 
 // Get single product by slug
 const getProductBySlug = async (req, res, next) => {
-    const product = await Product.findOne({ slug: req.params.slug, isActive: true })
-        .populate('category', 'name slug');
+    const product = await Product.findOne({ slug: req?.params?.slug, isActive: true })
+        .populate('category', 'name slug').lean();
 
     if (!product) {
         return res.status(404).json({ success: false, message: "Product not found" });

@@ -1,29 +1,29 @@
+// authContext.jsx - Global authentication state management
 import { createContext, useContext, useState, useEffect } from "react";
 import { register, login, logout, checkAuth, resetPassword } from "../api/authApi";
 import { connectSocket, disconnectSocket } from "../socket";
 
-// Create context
+// Create auth context for sharing auth state across components
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    // Load user and token from localStorage if available
+    // Initialize user and token from localStorage
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
     const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [loading, setLoading] = useState(true);
 
-    // Function to save user data (token is handled by httpOnly cookie)
+    // Save user data to state and localStorage
     const saveAuthData = (userData) => {
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
         // Token is stored in httpOnly cookie by backend
-        // Also store token in localStorage for axios interceptor
         const tokenFromStorage = localStorage.getItem("token");
         if (tokenFromStorage) {
             setToken(tokenFromStorage);
         }
     };
 
-    // Function to clear user and token
+    // Clear all auth data on logout
     const clearAuthData = () => {
         setUser(null);
         setToken(null);
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         disconnectSocket();
     };
 
-    // Check if user is authenticated on first load
+    // Check if user is authenticated on app load
     useEffect(() => {
         const checkUser = async () => {
             const token = localStorage.getItem("token");
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
         checkUser();
     }, []);
 
-    // Effect to manage socket connection based on token
+    // Connect/disconnect socket based on token
     useEffect(() => {
         if (token) {
             connectSocket(token);
@@ -61,13 +61,10 @@ export const AuthProvider = ({ children }) => {
         };
     }, [token]);
 
-    // Handle login with email/password
+    // Handle user login
     const handleLogin = async (credentials) => {
         const result = await login(credentials);
         if (result.success) {
-            // Backend sets httpOnly cookie, we just save user data
-            // For Bearer token support, we need to extract token from cookie or use a different approach
-            // Since backend uses httpOnly cookie, we'll store a placeholder for axios interceptor
             localStorage.setItem("token", "cookie-auth");
             setToken("cookie-auth");
             saveAuthData(result.data);
@@ -75,7 +72,7 @@ export const AuthProvider = ({ children }) => {
         return result;
     };
 
-    // Refresh current authenticated user from server
+    // Refresh user data from server
     const refreshUser = async () => {
         const result = await checkAuth();
         if (result.success && result.authenticated) {
@@ -87,11 +84,10 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Handle register new user
+    // Handle new user registration
     const handleRegister = async (credentials) => {
         const result = await register(credentials);
         if (result.success) {
-            // Backend sets httpOnly cookie
             localStorage.setItem("token", "cookie-auth");
             setToken("cookie-auth");
             saveAuthData(result.data);
@@ -99,18 +95,19 @@ export const AuthProvider = ({ children }) => {
         return result;
     };
 
-    // Handle logout
+    // Handle user logout
     const handleLogout = async () => {
         const result = await logout();
         clearAuthData();
         return result;
     };
 
-    // Reset password
+    // Handle password reset
     const handleResetPassword = async (passwordData) => {
         return await resetPassword(passwordData);
     };
 
+    // Provide auth state and functions to children
     return (
         <AuthContext.Provider value={{
             user,
@@ -123,10 +120,11 @@ export const AuthProvider = ({ children }) => {
             handleResetPassword,
             refreshUser
         }}>
+            {/* Only render children after loading is complete */}
             {!loading && children}
         </AuthContext.Provider>
     );
 };
 
-// Hook for consuming auth context
+// Custom hook to use auth context
 export const useAuth = () => useContext(AuthContext);

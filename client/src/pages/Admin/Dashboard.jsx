@@ -1,3 +1,4 @@
+// Dashboard.jsx - Admin dashboard with stats, recent orders, and low stock alerts
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -17,6 +18,7 @@ import {
 } from 'react-icons/fi';
 import useOrderStore from '../../store/orderStore.js';
 import useProductStore from '../../store/productStore.js';
+// Helper functions for calculating stats
 import { 
   calculateTotalRevenue,
   calculateTodayStats,
@@ -28,25 +30,31 @@ import {
 // Styles loaded via main.css
 
 export default function AdminDashboard() {
+  // Get orders and products data from stores
   const { orders, loading: ordersLoading, fetchAllOrders } = useOrderStore();
   const { products, loading: productsLoading, fetchProducts } = useProductStore();
+  // Calculated stats state
   const [stats, setStats] = useState(null);
 
+  // Load data on mount
   useEffect(() => {
     loadData();
   }, []);
 
+  // Recalculate stats when orders or products change
   useEffect(() => {
     if (orders.length > 0 || products.length > 0) {
       calculateStats();
     }
   }, [orders, products]);
 
+  // Fetch all orders and products
   const loadData = async () => {
     await fetchAllOrders();
     await fetchProducts({ page: 1, limit: 100 });
   };
 
+  // Calculate dashboard statistics
   const calculateStats = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -54,12 +62,13 @@ export default function AdminDashboard() {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // Today vs Yesterday revenue for growth
+    // Calculate today's revenue
     const todayOrders = orders.filter(o => new Date(o.createdAt) >= today);
     const todayRevenue = todayOrders
       .filter(o => o.paymentStatus === 'paid')
       .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
 
+    // Calculate yesterday's revenue for comparison
     const yesterdayOrders = orders.filter(o => {
       const orderDate = new Date(o.createdAt);
       return orderDate >= yesterday && orderDate < today;
@@ -68,10 +77,12 @@ export default function AdminDashboard() {
       .filter(o => o.paymentStatus === 'paid')
       .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
 
+    // Calculate revenue growth percentage
     const revenueGrowth = yesterdayRevenue > 0 
       ? ((todayRevenue - yesterdayRevenue) / yesterdayRevenue) * 100 
       : 0;
 
+    // Set all stats using helper functions
     setStats({
       revenue: calculateTotalRevenue(orders),
       totalOrders: orders.length,
@@ -85,6 +96,7 @@ export default function AdminDashboard() {
 
   const loading = ordersLoading || productsLoading;
 
+  // Show loading state
   if (loading && orders.length === 0) {
     return (
       <div className="admin-dashboard">
@@ -96,14 +108,16 @@ export default function AdminDashboard() {
     );
   }
 
+  // Wait for stats to be calculated
   if (!stats) return null;
 
+  // Get recent orders and low stock products for display
   const recentOrders = getRecentOrders(orders, 5);
   const lowStockItems = getLowStockProducts(products, 10, 5);
 
   return (
     <div className="admin-dashboard">
-      {/* Header */}
+      {/* Dashboard Header */}
       <div className="dashboard-header">
         <div>
           <p className="eyebrow"><FiBarChart2 /> Admin</p>
@@ -112,8 +126,9 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards Grid */}
       <div className="stats-grid">
+        {/* Revenue Card */}
         <div className="stat-card revenue">
           <div className="stat-icon">
             <FiDollarSign />
@@ -122,6 +137,7 @@ export default function AdminDashboard() {
             <p className="stat-label">Total Revenue</p>
             <h2 className="stat-value">₹{stats.revenue.toLocaleString('en-IN')}</h2>
             <div className="stat-footer">
+              {/* Growth indicator - positive or negative */}
               <span className={`stat-change ${stats.revenueGrowth >= 0 ? 'positive' : 'negative'}`}>
                 {stats.revenueGrowth >= 0 ? <FiTrendingUp /> : <FiTrendingDown />}
                 {Math.abs(stats.revenueGrowth).toFixed(1)}% from yesterday
@@ -130,6 +146,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Orders Card */}
         <div className="stat-card orders">
           <div className="stat-icon">
             <FiShoppingCart />
@@ -143,6 +160,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Products Card */}
         <div className="stat-card products">
           <div className="stat-icon">
             <FiShoppingBag />
@@ -158,6 +176,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Pending Orders Card */}
         <div className="stat-card pending">
           <div className="stat-icon">
             <FiClock />
@@ -172,12 +191,13 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Today's Stats */}
+      {/* Today's Performance Section */}
       <div className="today-stats">
         <div className="section-header">
           <h3>Today's Performance</h3>
         </div>
         <div className="today-grid">
+          {/* Today's Orders */}
           <div className="today-card">
             <div className="today-icon">
               <FiShoppingCart />
@@ -187,6 +207,7 @@ export default function AdminDashboard() {
               <p className="today-value">{stats.today.orders}</p>
             </div>
           </div>
+          {/* Today's Revenue */}
           <div className="today-card">
             <div className="today-icon">
               <FiDollarSign />
@@ -196,6 +217,7 @@ export default function AdminDashboard() {
               <p className="today-value">₹{stats.today.revenue.toLocaleString('en-IN')}</p>
             </div>
           </div>
+          {/* Pending Count */}
           <div className="today-card">
             <div className="today-icon">
               <FiPackage />
@@ -209,7 +231,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="dashboard-content">
-        {/* Recent Orders */}
+        {/* Recent Orders Section */}
         <section className="dashboard-section">
           <div className="section-header">
             <h3><FiPackage /> Recent Orders</h3>
@@ -218,6 +240,7 @@ export default function AdminDashboard() {
             </Link>
           </div>
           
+          {/* Empty state or orders table */}
           {recentOrders.length === 0 ? (
             <div className="empty-state">
               <FiPackage size={40} />
@@ -225,6 +248,7 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div className="orders-table">
+              {/* Table header */}
               <div className="table-header">
                 <div className="col-id">Order ID</div>
                 <div className="col-customer">Customer</div>
@@ -232,6 +256,7 @@ export default function AdminDashboard() {
                 <div className="col-status">Status</div>
                 <div className="col-date">Date</div>
               </div>
+              {/* Order rows */}
               {recentOrders.map((order) => (
                 <Link 
                   key={order._id} 
@@ -244,6 +269,7 @@ export default function AdminDashboard() {
                     <div className="customer-email">{order.user?.email}</div>
                   </div>
                   <div className="col-amount">₹{order.totalAmount?.toLocaleString('en-IN')}</div>
+                  {/* Status badge with icon */}
                   <div className="col-status">
                     <span className={`status-badge status-${order.orderStatus}`}>
                       {order.orderStatus === 'placed' && <FiPackage />}
@@ -260,7 +286,7 @@ export default function AdminDashboard() {
           )}
         </section>
 
-        {/* Low Stock Products */}
+        {/* Low Stock Products Section */}
         <section className="dashboard-section">
           <div className="section-header">
             <h3><FiAlertCircle /> Low Stock Alert</h3>
@@ -269,6 +295,7 @@ export default function AdminDashboard() {
             </Link>
           </div>
           
+          {/* Empty state or stock list */}
           {lowStockItems.length === 0 ? (
             <div className="empty-state">
               <FiCheckCircle size={40} />
@@ -276,6 +303,7 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div className="stock-list">
+              {/* List low stock products */}
               {lowStockItems.map((product) => (
                 <Link
                   key={product._id}
@@ -293,6 +321,7 @@ export default function AdminDashboard() {
                       <p className="stock-category">{product.category}</p>
                     </div>
                   </div>
+                  {/* Stock count with status class */}
                   <div className={`stock-count ${(product.stock || 0) === 0 ? 'out-of-stock' : 'low-stock'}`}>
                     {product.stock || 0} left
                   </div>
@@ -303,7 +332,7 @@ export default function AdminDashboard() {
         </section>
       </div>
 
-      {/* Quick Actions */}
+      {/* Quick Actions Grid */}
       <div className="quick-actions">
         <h3>Quick Actions</h3>
         <div className="actions-grid">

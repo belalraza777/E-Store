@@ -1,3 +1,4 @@
+// Product.jsx - Products listing page with infinite scroll
 import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useProductStore from '../../store/productStore.js'
@@ -11,9 +12,13 @@ export default function Product() {
   
   // Local state for product list and pagination
   const [allProducts, setAllProducts] = useState([]);
+  // Current page number
   const [page, setPage] = useState(1);
+  // Total pages available
   const [totalPages, setTotalPages] = useState(0);
+  // Whether more pages exist
   const [hasMore, setHasMore] = useState(true);
+  // Loading state for initial load
   const [loading, setLoading] = useState(true);
 
   // Load first page when component mounts
@@ -26,6 +31,7 @@ export default function Product() {
     setLoading(true);
     const result = await fetchProducts({ page: 1 });
     if (result.success) {
+      // Set products and pagination info
       setAllProducts(result.data);
       setTotalPages(result.pagination.totalPages);
       setPage(1);
@@ -33,14 +39,16 @@ export default function Product() {
     }
     setLoading(false);
   };
-// Infinite scroll - fetch next page
-  
+
+  // Infinite scroll - fetch next page and append to list
   const fetchMore = async () => {
     const nextPage = page + 1;
     const result = await fetchProducts({ page: nextPage });
     if (result.success) {
+      // Append new products to existing list
       setAllProducts(prev => [...prev, ...result.data]);
       setPage(nextPage);
+      // Check if more pages available
       setHasMore(nextPage < totalPages);
     }
   };
@@ -49,6 +57,7 @@ export default function Product() {
     <div className="product-page">
       <h1>Products</h1>
       
+      {/* Infinite scroll wrapper - auto loads more on scroll */}
       <InfiniteScroll
         dataLength={allProducts.length}
         next={fetchMore}
@@ -56,6 +65,7 @@ export default function Product() {
         loader={<div className="loader">Loading more...</div>}
         endMessage={<div className="end-message">No more products</div>}
       >
+        {/* Product grid - shows loading only on first page */}
         <ProductList products={allProducts} loading={loading && page === 1} />
       </InfiniteScroll>
     </div>

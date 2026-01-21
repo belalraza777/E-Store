@@ -1,9 +1,11 @@
+// ProductList.jsx - Displays grid of product cards with loading and empty states
 import React from 'react'
 import ProductCard from './ProductCard.jsx'
 // Styles loaded via main.css
 
 export default function ProductList({ products, loading = false }) {
 
+  // Show loading spinner while fetching products
   if (loading) {
     return (
       <div className="product-list-loading">
@@ -13,6 +15,7 @@ export default function ProductList({ products, loading = false }) {
     )
   }
 
+  // Show empty state if no products found
   if (!products || products.length === 0) {
     return (
       <div className="product-list-empty">
@@ -34,6 +37,7 @@ export default function ProductList({ products, loading = false }) {
     )
   }
 
+  // Render grid of product cards
   return (
     <div className="product-list">
       {products.map((product) => (
