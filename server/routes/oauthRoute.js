@@ -21,7 +21,7 @@ router.get(
             return res.status(404).json({ success: false, message: "User not exist!", error: "Authentication Failed" });
         }
         // Generating JWT token
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "5d" });
+        const token = jwt.sign({ id: user._id ,role: user.role}, process.env.JWT_SECRET, { expiresIn: "5d" });
         // Setting token in cookie (5 days to match JWT expiry)
         res.cookie("token", token, {
             httpOnly: true,
