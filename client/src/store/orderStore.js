@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { createOrder, getMyOrders, cancelOrder, getAllOrders, filterOrders, updateOrderStatus } from '../api/orderApi';
+import { createOrder, getMyOrders, getOrderById, cancelOrder, getAllOrders, filterOrders, updateOrderStatus } from '../api/orderApi';
 
 const useOrderStore = create((set, get) => ({
     orders: [],
@@ -25,6 +25,18 @@ const useOrderStore = create((set, get) => ({
         const result = await getMyOrders();
         if (result.success) {
             set({ orders: result.data, loading: false });
+        } else {
+            set({ error: result.message, loading: false });
+        }
+        return result;
+    },
+
+    // Fetch single order by ID
+    fetchOrderById: async (orderId) => {
+        set({ loading: true, error: null });
+        const result = await getOrderById(orderId);
+        if (result.success) {
+            set({ currentOrder: result.data, loading: false });
         } else {
             set({ error: result.message, loading: false });
         }

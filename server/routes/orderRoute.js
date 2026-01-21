@@ -25,6 +25,13 @@ router.get(
     asyncWrapper(userOrderController.getMyOrders)
 );
 
+// Get single order by ID (user)
+router.get(
+    "/:id",
+    verifyAuth,
+    asyncWrapper(userOrderController.getOrderById)
+);
+
 // Cancel order by user
 router.put(
     "/:id/cancel",

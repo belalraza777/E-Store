@@ -24,6 +24,18 @@ export const getMyOrders = async () => {
     }
 };
 
+export const getOrderById = async (orderId) => {
+    try {
+        const response = await axiosInstance.get(`/orders/${orderId}`);
+        return { success: true, data: response.data.data };
+    } catch (error) {
+        return { 
+            success: false, 
+            message: error.response?.data?.message || 'Failed to fetch order details' 
+        };
+    }
+};
+
 export const cancelOrder = async (orderId, reason) => {
     try {
         const response = await axiosInstance.put(`/orders/${orderId}/cancel`, { reason });

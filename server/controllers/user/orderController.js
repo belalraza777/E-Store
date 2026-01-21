@@ -60,10 +60,31 @@ const createOrder = async (req, res, next) => {
 const getMyOrders = async (req, res, next) => {
     const userId = req.user.id;
     const orders = await Order.find({ user: userId })
-        .populate("items.product", "title slug price discount")
+        .populate("items.product", "title slug price discount images")
         .sort({ createdAt: -1 });
 
     return res.status(200).json({ success: true, data: orders });
+};
+
+
+// Get single order by ID
+const getOrderById = async (req, res, next) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const order = await Order.findById(id)
+        .populate("items.product", "title slug price discount images");
+
+    if (!order) {
+        return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Verify order belongs to user
+    if (order.user.toString() !== userId) {
+        return res.status(403).json({ success: false, message: "Not authorized to view this order" });
+    }
+
+    return res.status(200).json({ success: true, data: order });
 };
 
 
@@ -116,5 +137,6 @@ const cancelOrder = async (req, res, next) => {
 export default {
     createOrder,
     getMyOrders,
+    getOrderById,
     cancelOrder,
 };
