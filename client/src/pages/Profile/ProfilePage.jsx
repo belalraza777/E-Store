@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import ProfileInfo from "../components/profile/ProfileInfo.jsx";
-import AddressManager from "../components/profile/AddressManager.jsx";
-import ResetPassword from "../components/profile/ResetPassword.jsx";
-import useProfileStore from "../store/profileStore";
+import ProfileInfo from "../../components/profile/ProfileInfo.jsx";
+import AddressManager from "../../components/profile/AddressManager.jsx";
+import ResetPassword from "../../components/profile/ResetPassword.jsx";
+import useProfileStore from "../../store/profileStore.js";
 import { FiUser, FiMapPin, FiLock } from "react-icons/fi";
+import Skeleton from "../../components/ui/Skeleton/Skeleton.jsx";
 import "./ProfilePage.css";
 
 const ProfilePage = () => {
@@ -16,9 +17,10 @@ const ProfilePage = () => {
     }, [profile, fetchProfile]);
 
     if (!profile) return (
-        <div className="profile-page__loading">
-            <div className="profile-page__spinner"></div>
-            <p>Loading your profile...</p>
+        <div className="profile-page__loading" aria-busy="true">
+            <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading your profile" />
+            <Skeleton variant="text" width="240px" />
+            <Skeleton variant="text" width="180px" />
         </div>
     );
 

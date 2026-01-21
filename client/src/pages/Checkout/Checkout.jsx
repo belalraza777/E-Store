@@ -6,6 +6,7 @@ import { FiMapPin, FiCreditCard, FiLock } from 'react-icons/fi';
 import useCartStore from '../../store/cartStore.js';
 import useOrderStore from '../../store/orderStore.js';
 import { useAuth } from '../../context/authContext.jsx';
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
 import './Checkout.css';
 
 export default function Checkout() {
@@ -106,8 +107,9 @@ export default function Checkout() {
     return (
       <div className="checkout-page">
         <div className="checkout-page__loading-container">
-          <div className="checkout-page__spinner-large"></div>
-          <p>Loading...</p>
+          <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading checkout" />
+          <Skeleton variant="text" width="200px" />
+          <Skeleton variant="text" width="160px" />
         </div>
       </div>
     );

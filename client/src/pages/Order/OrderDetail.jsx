@@ -4,6 +4,7 @@ import CancelOrderModal from './CancelOrderModal';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import useOrderStore from '../../store/orderStore';
 import { toast } from 'sonner';
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
 import './OrderDetail.css';
 
 export default function OrderDetail() {
@@ -68,9 +69,10 @@ export default function OrderDetail() {
   if (loading || !currentOrder) {
     return (
       <div className="order-detail">
-        <div className="order-detail__loading">
-          <div className="order-detail__spinner"></div>
-          <p>Loading order details...</p>
+        <div className="order-detail__loading" aria-busy="true">
+          <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading order details" />
+          <Skeleton variant="text" width="260px" />
+          <Skeleton variant="text" width="200px" />
         </div>
       </div>
     );

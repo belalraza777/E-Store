@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import useReviewStore from '../../store/reviewStore.js'
 import { toast } from 'sonner'
+import Skeleton from '../ui/Skeleton/Skeleton.jsx'
 import './ReviewsSection.css';
 
 export default function ReviewsSection({ productId, reviews, averageRating, totalReviews, reviewsLoading, fetchProductReviews }) {
@@ -99,8 +100,16 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
         {/* Loading state */}
         {reviewsLoading ? (
           <div className="loading">
-            <div className="spinner-small"></div>
-            Loading reviews...
+            <Skeleton variant="text" width="180px" aria-label="Loading reviews" />
+            <div className="reviews-list-section__skeletons" aria-hidden="true">
+              {Array.from({ length: 3 }).map((_, idx) => (
+                <div key={idx} className="reviews-list-section__skeleton-item">
+                  <Skeleton variant="text" width="40%" />
+                  <Skeleton variant="text" width="85%" />
+                  <Skeleton variant="text" width="65%" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : reviews.length === 0 ? (
           // Empty state when no reviews

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/authContext.jsx';
 import { toast } from 'sonner';
 import './Oauth_success.css';
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
 
 const OAuthSuccess = () => {
     // Navigation and auth context
@@ -42,7 +43,7 @@ const OAuthSuccess = () => {
 
     return (
         <div className="oauth-success-page">
-            <div className="oauth-success-page__spinner" />
+            <Skeleton variant="circle" width="56px" height="56px" aria-label="Completing login" />
             <p className="oauth-success-page__message">Completing login...</p>
         </div>
     );

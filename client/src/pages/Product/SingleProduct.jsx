@@ -5,6 +5,7 @@ import useProductStore from '../../store/productStore.js'
 import useReviewStore from '../../store/reviewStore.js'
 import AddCartBtn from '../../components/FunctionalBtn/AddCartbtn.jsx'
 import ReviewsSection from '../../components/reviews/ReviewsSection.jsx'
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx'
 import './SingleProduct.css'
 
 export default function SingleProduct() {
@@ -38,9 +39,10 @@ export default function SingleProduct() {
   if (productLoading) {
     return (
       <div className="single-product">
-        <div className="single-product__loading">
-          <div className="single-product__spinner"></div>
-          <p>Loading product...</p>
+        <div className="single-product__loading" aria-busy="true">
+          <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading product" />
+          <Skeleton variant="text" width="240px" />
+          <Skeleton variant="text" width="180px" />
         </div>
       </div>
     );

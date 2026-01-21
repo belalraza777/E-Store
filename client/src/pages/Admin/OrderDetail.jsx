@@ -20,6 +20,7 @@ import {
 } from 'react-icons/fi';
 import './OrderDetail.css';
 import useOrderStore from '../../store/orderStore.js';
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
 // Styles loaded via main.css
 
 export default function AdminOrderDetail() {
@@ -100,9 +101,10 @@ export default function AdminOrderDetail() {
   if (!order) {
     return (
       <div className="admin-order-detail-page">
-        <div className="admin-order-detail-page__loading">
-          <div className="admin-order-detail-page__spinner"></div>
-          <p>Loading order details...</p>
+        <div className="admin-order-detail-page__loading" aria-busy="true">
+          <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading order details" />
+          <Skeleton variant="text" width="280px" />
+          <Skeleton variant="text" width="220px" />
         </div>
       </div>
     );

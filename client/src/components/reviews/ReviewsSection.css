@@ -7,6 +7,19 @@
     margin-top: var(--spacing-2xl);
 }
 
+/* Skeleton loading (reusable Skeleton component) */
+.reviews-list-section__skeletons {
+    display: grid;
+    gap: var(--spacing-sm);
+    width: 100%;
+}
+
+.reviews-list-section__skeleton-item {
+    display: grid;
+    gap: var(--spacing-sm);
+    width: 100%;
+}
+
 .reviews-header {
     display: flex;
     justify-content: space-between;

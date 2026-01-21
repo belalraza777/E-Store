@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useOrderStore from '../../store/orderStore';
 import { toast } from 'sonner';
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
 import './Orders.css';
 
 export default function Orders() {
@@ -35,9 +36,10 @@ export default function Orders() {
     if (loading && orders.length === 0) {
         return (
             <div className="orders-page">
-                <div className="orders-page__loading">
-                    <div className="orders-page__spinner"></div>
-                    <p>Loading orders...</p>
+                <div className="orders-page__loading" aria-busy="true">
+                    <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading orders" />
+                    <Skeleton variant="text" width="220px" />
+                    <Skeleton variant="text" width="180px" />
                 </div>
             </div>
         );

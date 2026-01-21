@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useCartStore from '../../store/cartStore.js'
 import { toast } from 'sonner'
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx'
 import './Cart.css'
 
 export default function Cart() {
@@ -59,9 +60,10 @@ export default function Cart() {
   if (loading) {
     return (
       <div className="cart-page">
-        <div className="cart-page__loading-container">
-          <div className="cart-page__spinner-large"></div>
-          <p>Loading cart...</p>
+        <div className="cart-page__loading-container" aria-busy="true">
+          <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading cart" />
+          <Skeleton variant="text" width="220px" />
+          <Skeleton variant="text" width="180px" />
         </div>
       </div>
     );

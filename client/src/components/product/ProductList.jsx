@@ -1,6 +1,7 @@
 // ProductList.jsx - Displays grid of product cards with loading and empty states
 import React from 'react'
 import ProductCard from './ProductCard.jsx'
+import Skeleton from '../ui/Skeleton/Skeleton.jsx'
 import './ProductList.css';
 
 export default function ProductList({ products, loading = false }) {
@@ -9,8 +10,16 @@ export default function ProductList({ products, loading = false }) {
   if (loading) {
     return (
       <div className="product-list-loading">
-        <div className="spinner"></div>
-        <p>Loading products...</p>
+        <Skeleton variant="text" width="220px" aria-label="Loading products" />
+        <div className="product-list-loading__grid" aria-hidden="true">
+          {Array.from({ length: 8 }).map((_, idx) => (
+            <div key={idx} className="product-list-loading__card">
+              <Skeleton width="100%" height="180px" />
+              <Skeleton variant="text" width="80%" />
+              <Skeleton variant="text" width="55%" />
+            </div>
+          ))}
+        </div>
       </div>
     )
   }

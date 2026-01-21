@@ -19,6 +19,7 @@ import {
 } from 'react-icons/fi';
 import useOrderStore from '../../store/orderStore.js';
 import useProductStore from '../../store/productStore.js';
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
 // Helper functions for calculating stats
 import { 
   calculateTotalRevenue,
@@ -101,9 +102,10 @@ export default function AdminDashboard() {
   if (loading && orders.length === 0) {
     return (
       <div className="admin-dashboard">
-        <div className="admin-dashboard__loading">
-          <div className="admin-dashboard__spinner"></div>
-          <p>Loading dashboard...</p>
+        <div className="admin-dashboard__loading" aria-busy="true">
+          <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading dashboard" />
+          <Skeleton variant="text" width="260px" />
+          <Skeleton variant="text" width="200px" />
         </div>
       </div>
     );

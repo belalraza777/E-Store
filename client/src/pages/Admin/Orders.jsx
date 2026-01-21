@@ -16,6 +16,7 @@ import {
 } from 'react-icons/fi';
 import useOrderStore from '../../store/orderStore.js';
 import './Orders.css';
+import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
 
 export default function AdminOrders() {
   // Get orders data and fetch function from store
@@ -119,9 +120,10 @@ export default function AdminOrders() {
       {/* Orders List */}
       {loading && orders.length === 0 ? (
         // Loading state
-        <div className="admin-orders-page__loading">
-          <div className="admin-orders-page__spinner"></div>
-          <p>Loading orders...</p>
+        <div className="admin-orders-page__loading" aria-busy="true">
+          <Skeleton variant="circle" width="56px" height="56px" aria-label="Loading orders" />
+          <Skeleton variant="text" width="240px" />
+          <Skeleton variant="text" width="180px" />
         </div>
       ) : filteredOrders.length === 0 ? (
         // Empty state
