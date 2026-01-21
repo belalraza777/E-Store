@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/authContext.jsx';
 import { toast } from 'sonner';
+import './Oauth_success.css';
 
 const OAuthSuccess = () => {
     // Navigation and auth context
@@ -40,21 +41,9 @@ const OAuthSuccess = () => {
     }, [navigate, refreshUser, loading]);
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-            <div style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                background: '#667eea',
-                margin: '0 auto',
-                animation: 'spin 1s linear infinite'
-            }} />
-            <p style={{ marginTop: '1rem', fontSize: '1.1rem' }}>Completing login...</p>
-            <style>{`
-                @keyframes spin {
-                    to { transform: rotate(360deg); }
-                }
-            `}</style>
+        <div className="oauth-success-page">
+            <div className="oauth-success-page__spinner" />
+            <p className="oauth-success-page__message">Completing login...</p>
         </div>
     );
 };

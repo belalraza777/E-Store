@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useCartStore from '../../store/cartStore.js'
 import { toast } from 'sonner'
-// Styles loaded via main.css
+import './Cart.css'
 
 export default function Cart() {
   // Get cart state and actions from store
@@ -59,8 +59,8 @@ export default function Cart() {
   if (loading) {
     return (
       <div className="cart-page">
-        <div className="loading-container">
-          <div className="spinner-large"></div>
+        <div className="cart-page__loading-container">
+          <div className="cart-page__spinner-large"></div>
           <p>Loading cart...</p>
         </div>
       </div>
@@ -71,7 +71,7 @@ export default function Cart() {
   if (!cart || cart.items.length === 0) {
     return (
       <div className="cart-page">
-        <div className="empty-cart">
+        <div className="cart-page__empty-cart">
           {/* Cart icon SVG */}
           <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <circle cx="9" cy="21" r="1" />
@@ -80,7 +80,7 @@ export default function Cart() {
           </svg>
           <h2>Your cart is empty</h2>
           <p>Add some products to get started!</p>
-          <Link to="/products" className="continue-shopping-btn">
+          <Link to="/products" className="cart-page__continue-shopping-btn">
             Continue Shopping
           </Link>
         </div>
@@ -100,23 +100,23 @@ export default function Cart() {
     <div className="cart-page">
       <h1>Shopping Cart</h1>
 
-      <div className="cart-container">
+      <div className="cart-page__container">
         {/* Cart Items Section */}
-        <div className="cart-items">
+        <div className="cart-page__items-section">
           {/* Items count header */}
-          <div className="items-header">
+          <div className="cart-page__items-header">
             <span>{cart.items.length} item{cart.items.length !== 1 ? 's' : ''}</span>
           </div>
 
           {/* List of cart items */}
-          <div className="items-list">
+          <div className="cart-page__items-list">
             {cart.items.map(item => {
               // Get image URL - handle both {url: '...'} object and direct string formats
               const imageUrl = item.product?.images?.[0]?.url || item.product?.images?.[0];
               return (
-                <div key={item._id} className="cart-item">
+                <div key={item._id} className="cart-page__item">
                   {/* Product Image */}
-                  <div className="item-image">
+                  <div className="cart-page__item-image">
                     {imageUrl ? (
                       <img src={imageUrl} alt={item.product?.title} />
                     ) : (
@@ -125,30 +125,30 @@ export default function Cart() {
                   </div>
 
                   {/* Product Info - title, SKU, pricing */}
-                  <div className="item-details">
-                    <Link to={`/products/${item.product?.slug}`} className="item-title">
+                  <div className="cart-page__item-details">
+                    <Link to={`/products/${item.product?.slug}`} className="cart-page__item-title">
                       {item.product?.title}
                     </Link>
-                    <p className="item-sku">SKU: {item.product?._id?.substring(0, 8)}</p>
+                    <p className="cart-page__item-sku">SKU: {item.product?._id?.substring(0, 8)}</p>
                   
                   {/* Price display - show original and discount if applicable */}
-                  <div className="item-pricing">
+                  <div className="cart-page__item-pricing">
                     {item.discountPrice ? (
                       <>
-                        <span className="original-price">₹{item.price.toFixed(2)}</span>
-                        <span className="discount-price">₹{item.discountPrice.toFixed(2)}</span>
+                        <span className="cart-page__original-price">₹{item.price.toFixed(2)}</span>
+                        <span className="cart-page__discount-price">₹{item.discountPrice.toFixed(2)}</span>
                       </>
                     ) : (
-                      <span className="price">₹{item.price.toFixed(2)}</span>
+                      <span className="cart-page__price">₹{item.price.toFixed(2)}</span>
                     )}
                   </div>
                 </div>
 
                 {/* Quantity Controls - decrease, input, increase */}
-                <div className="item-quantity">
+                <div className="cart-page__item-quantity">
                   <button 
                     onClick={() => handleQuantityChange(item._id, quantities[item._id] - 1)}
-                    className="qty-btn"
+                    className="cart-page__qty-btn"
                     disabled={quantities[item._id] <= 1 || updatingId === item._id}
                   >
                     −
@@ -161,13 +161,13 @@ export default function Cart() {
                       handleQuantityChange(item._id, val);
                     }}
                     min="1"
-                    className="qty-input"
+                    className="cart-page__qty-input"
                     disabled={updatingId === item._id}
                   />
                 {/* Increase quantity button */}
                   <button 
                     onClick={() => handleQuantityChange(item._id, quantities[item._id] + 1)}
-                    className="qty-btn"
+                    className="cart-page__qty-btn"
                     disabled={updatingId === item._id}
                   >
                     +
@@ -175,14 +175,14 @@ export default function Cart() {
                 </div>
 
                 {/* Item Total - price × quantity */}
-                <div className="item-total">
+                <div className="cart-page__item-total">
                   <span>₹{((item.discountPrice || item.price) * item.quantity).toFixed(2)}</span>
                 </div>
 
                 {/* Remove Item Button */}
                 <button 
                   onClick={() => handleRemoveItem(item._id)}
-                  className="remove-btn"
+                  className="cart-page__remove-btn"
                   title="Remove from cart"
                   disabled={updatingId === item._id}
                 >
@@ -195,56 +195,56 @@ export default function Cart() {
         </div>
 
         {/* Order Summary Sidebar */}
-        <div className="order-summary">
+        <div className="cart-page__order-summary">
           <h2>Order Summary</h2>
 
-          <div className="summary-content">
+          <div className="cart-page__summary-content">
             {/* Original price row */}
-            <div className="summary-row">
+            <div className="cart-page__summary-row">
               <span>Price (Original)</span>
               <span>₹{originalTotal.toFixed(2)}</span>
             </div>
 
             {/* Discount amount row - only show if discount exists */}
             {discountAmount > 0 && (
-              <div className="summary-row discount">
+              <div className="cart-page__summary-row cart-page__summary-row--discount">
                 <span>Discount</span>
                 <span className="save-amount">-₹{discountAmount.toFixed(2)}</span>
               </div>
             )}
 
             {/* Subtotal row */}
-            <div className="summary-row">
+            <div className="cart-page__summary-row">
               <span>Subtotal</span>
               <span>₹{subtotal.toFixed(2)}</span>
             </div>
 
             {/* Shipping info */}
-            <div className="summary-row shipping">
+            <div className="cart-page__summary-row cart-page__summary-row--shipping">
               <span>Shipping</span>
               <span className="free">FREE</span>
             </div>
 
-            <div className="summary-divider"></div>
+            <div className="cart-page__summary-divider"></div>
 
             {/* Total amount */}
-            <div className="summary-row total">
+            <div className="cart-page__summary-row cart-page__summary-row--total">
               <span>Total</span>
               <span>₹{total.toFixed(2)}</span>
             </div>
 
             {/* Checkout button */}
-            <button onClick={handleCheckout} className="checkout-btn">
+            <button onClick={handleCheckout} className="cart-page__checkout-btn">
               Proceed to Checkout
             </button>
 
             {/* Continue shopping link */}
-            <Link to="/products" className="continue-shopping-link">
+            <Link to="/products" className="cart-page__continue-shopping-link">
               Continue Shopping
             </Link>
 
             {/* Cart Info - benefits */}
-            <div className="cart-info">
+            <div className="cart-page__cart-info">
               <p>✓ Free shipping on all orders</p>
               <p>✓ Secure checkout</p>
             </div>

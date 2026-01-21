@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiLogOut } from "react-icons/fi";
 import { useAuth } from '../../context/AuthContext.jsx';
-import '../../styles/components/LogoutBtn.css';
+import './Logout.css';
 
 /**
  * Logout button component for reuse in admin/user panels.

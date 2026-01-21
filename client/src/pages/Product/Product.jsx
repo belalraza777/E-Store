@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useProductStore from '../../store/productStore.js'
 import ProductList from '../../components/product/ProductList.jsx'
-// Styles loaded via main.css
+import './Product.css'
 import { Link } from 'react-router-dom'
 
 export default function Product() {
@@ -55,15 +55,15 @@ export default function Product() {
 
   return (
     <div className="product-page">
-      <h1>Products</h1>
+      <h1 className="product-page__title">Products</h1>
       
       {/* Infinite scroll wrapper - auto loads more on scroll */}
       <InfiniteScroll
         dataLength={allProducts.length}
         next={fetchMore}
         hasMore={hasMore}
-        loader={<div className="loader">Loading more...</div>}
-        endMessage={<div className="end-message">No more products</div>}
+        loader={<div className="product-page__loader">Loading more...</div>}
+        endMessage={<div className="product-page__end">No more products</div>}
       >
         {/* Product grid - shows loading only on first page */}
         <ProductList products={allProducts} loading={loading && page === 1} />

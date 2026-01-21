@@ -5,7 +5,7 @@ import useProductStore from '../../store/productStore.js'
 import useReviewStore from '../../store/reviewStore.js'
 import AddCartBtn from '../../components/FunctionalBtn/AddCartbtn.jsx'
 import ReviewsSection from '../../components/reviews/ReviewsSection.jsx'
-// Styles loaded via main.css
+import './SingleProduct.css'
 
 export default function SingleProduct() {
   // Get product slug from URL params
@@ -35,9 +35,26 @@ export default function SingleProduct() {
   }, [product?._id]);
 
   // Show loading state
-  if (productLoading) return <div className="loading-container"><div className="spinner-large"></div><p>Loading product...</p></div>;
+  if (productLoading) {
+    return (
+      <div className="single-product">
+        <div className="single-product__loading">
+          <div className="single-product__spinner"></div>
+          <p>Loading product...</p>
+        </div>
+      </div>
+    );
+  }
   // Show error if product not found
-  if (!product) return <div className="error-container"><p>❌ Product not found</p></div>;
+  if (!product) {
+    return (
+      <div className="single-product">
+        <div className="single-product__error">
+          <p>Product not found</p>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate discount percentage if applicable
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
@@ -50,31 +67,35 @@ export default function SingleProduct() {
   return (
     <div className="single-product">
       {/* Product Details Section */}
-      <div className="product-details">
+      <div className="single-product__details">
         {/* Product Images Gallery */}
-        <div className="product-images">
+        <div className="single-product__gallery">
           {/* Main selected image */}
-          <div className="main-image">
+          <div className="single-product__main-image">
             {product.images && product.images.length > 0 ? (
               <>
-                <img src={product.images[selectedImage].url || product.images[selectedImage]} alt={product.title} />
+                <img
+                  className="single-product__main-image-img"
+                  src={product.images[selectedImage].url || product.images[selectedImage]}
+                  alt={product.title}
+                />
                 {/* Discount badge overlay */}
-                {hasDiscount && <div className="discount-badge">-{discountPercent}%</div>}
+                {hasDiscount && <div className="single-product__discount-badge">-{discountPercent}%</div>}
               </>
             ) : (
-              <div className="placeholder">No Image Available</div>
+              <div className="single-product__placeholder">No Image Available</div>
             )}
           </div>
           
           {/* Thumbnail gallery - only show if multiple images */}
           {product.images && product.images.length > 1 && (
-            <div className="thumbnail-images">
+            <div className="single-product__thumbnails">
               {product.images.map((img, idx) => (
                 <img
                   key={idx}
                   src={img.url || img}
                   alt={`${product.title} ${idx + 1}`}
-                  className={`thumbnail ${selectedImage === idx ? 'active' : ''}`}
+                  className={`single-product__thumbnail ${selectedImage === idx ? 'single-product__thumbnail--active' : ''}`}
                   onClick={() => setSelectedImage(idx)}
                 />
               ))}
@@ -83,52 +104,53 @@ export default function SingleProduct() {
         </div>
 
         {/* Product Info Section */}
-        <div className="product-info">
+        <div className="single-product__info">
           {/* Category tag */}
-          <div className="category-badge">{product.category}</div>
+          <div className="single-product__category">{product.category}</div>
 
-          <h1 className="product-title">{product.title}</h1>
+          <h1 className="single-product__title">{product.title}</h1>
 
           {/* Rating display with stars */}
-          <div className="rating-section">
-            <div className="stars-display">
-              {'★'.repeat(Math.round(averageRating))}<span className="empty-stars">{'☆'.repeat(5 - Math.round(averageRating))}</span>
+          <div className="single-product__rating">
+            <div className="single-product__stars" aria-label={`Average rating ${averageRating.toFixed(1)} out of 5`}>
+              {'★'.repeat(Math.round(averageRating))}
+              <span className="single-product__stars-empty">{'☆'.repeat(5 - Math.round(averageRating))}</span>
             </div>
-            <span className="rating-value">{averageRating.toFixed(1)}</span>
-            <span className="reviews-link">({totalReviews} reviews)</span>
+            <span className="single-product__rating-value">{averageRating.toFixed(1)}</span>
+            <span className="single-product__reviews-link">({totalReviews} reviews)</span>
           </div>
 
           {/* Price display with discount if applicable */}
-          <div className="price-section">
-            <div className="price-display">
+          <div className="single-product__price">
+            <div className="single-product__price-display">
               {hasDiscount ? (
                 <>
-                  <span className="original-price">₹{product.price.toFixed(2)}</span>
-                  <span className="current-price">₹{product.discountPrice.toFixed(2)}</span>
+                  <span className="single-product__price-original">₹{product.price.toFixed(2)}</span>
+                  <span className="single-product__price-current">₹{product.discountPrice.toFixed(2)}</span>
                 </>
               ) : (
-                <span className="current-price">₹{product.price.toFixed(2)}</span>
+                <span className="single-product__price-current">₹{product.price.toFixed(2)}</span>
               )}
             </div>
-            {hasDiscount && <div className="save-badge">Save {discountPercent}%</div>}
+            {hasDiscount && <div className="single-product__save-badge">Save {discountPercent}%</div>}
           </div>
 
           {/* Product description */}
-          <p className="description">{product.description}</p>
+          <p className="single-product__description">{product.description}</p>
 
           {/* Stock Status Indicator */}
-          <div className={`stock-status ${inStock ? 'in-stock' : 'out-of-stock'}`}>
-            <span className="status-icon">{inStock ? '✓' : '✕'}</span>
+          <div className={`single-product__stock ${inStock ? 'single-product__stock--in' : 'single-product__stock--out'}`}>
+            <span className="single-product__stock-icon" aria-hidden="true">{inStock ? '✓' : '✕'}</span>
             {inStock ? `In Stock - ${product.stock} available` : 'Out of Stock'}
           </div>
 
           {/* Quantity Selector & Add to Cart Button */}
-          <div className="actions">
+          <div className="single-product__actions">
             {/* Quantity controls */}
-            <div className="quantity-selector">
+            <div className="single-product__qty">
               <button 
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                className="qty-btn qty-minus"
+                className="single-product__qty-btn"
               >
                 −
               </button>
@@ -138,11 +160,11 @@ export default function SingleProduct() {
                 onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                 min="1"
                 max={product.stock}
-                className="qty-input"
+                className="single-product__qty-input"
               />
               <button 
                 onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
-                className="qty-btn qty-plus"
+                className="single-product__qty-btn"
               >
                 +
               </button>

@@ -1,7 +1,7 @@
 // ProductCard.jsx - Displays single product with image, price, and add to cart
 import React, { useState } from 'react'
 import AddCartBtn from '../FunctionalBtn/AddCartbtn.jsx'
-// Styles loaded via main.css
+import './ProductCard.css';
 import { Link } from 'react-router-dom'
 
 export default function ProductCard({ product }) {

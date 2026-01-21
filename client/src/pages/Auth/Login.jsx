@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../context/authContext";
-// Styles loaded via main.css
+import "./login.css";
 import { FcGoogle } from "react-icons/fc";
 import { FiMail, FiLock } from "react-icons/fi";
 
@@ -59,36 +59,38 @@ const LoginPage = () => {
 
     if (authLoading) {
         return (
-            <div className="login-loading">
-                <div className="loading-dot" />
-                <p>Checking your session...</p>
+            <div className="auth-page">
+                <div className="auth-page__loading">
+                    <div className="auth-page__loading-dot" />
+                    <p>Checking your session...</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="login-wrap">
-            <div className="login-card simple">
-                <div className="login-header">
-                    <div className="login-logo">
-                        <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store logo" className="brand-logo" />
+        <div className="auth-page">
+            <div className="auth-page__card">
+                <div className="auth-page__header">
+                    <div className="auth-page__logo">
+                        <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store logo" className="auth-page__logo-img" />
                     </div>
-                    <h2>Welcome back</h2>
-                    <p className="muted">Sign in to continue</p>
+                    <h2 className="auth-page__title">Welcome back</h2>
+                    <p className="auth-page__subtitle">Sign in to continue</p>
                 </div>
 
-                <a href={googleAuthUrl} className="login-btn btn-google">
+                <a href={googleAuthUrl} className="auth-page__btn auth-page__btn--google">
                     <FcGoogle size={20} />
                     Continue with Google
                 </a>
 
-                <div className="divider">or</div>
+                <div className="auth-page__divider">or</div>
 
-                <form onSubmit={handlePasswordSubmit} className="login-form">
-                    <label className="form-group">
-                        <span className="form-label">Email</span>
-                        <div className="input-with-icon">
-                            <FiMail className="input-icon" aria-hidden="true" />
+                <form onSubmit={handlePasswordSubmit} className="auth-page__form">
+                    <label className="auth-page__form-group">
+                        <span className="auth-page__form-label">Email</span>
+                        <div className="auth-page__input-wrapper">
+                            <FiMail className="auth-page__input-icon" aria-hidden="true" />
                             <input
                                 type="email"
                                 name="email"
@@ -100,10 +102,10 @@ const LoginPage = () => {
                         </div>
                     </label>
 
-                    <label className="form-group">
-                        <span className="form-label">Password</span>
-                        <div className="input-with-icon">
-                            <FiLock className="input-icon" aria-hidden="true" />
+                    <label className="auth-page__form-group">
+                        <span className="auth-page__form-label">Password</span>
+                        <div className="auth-page__input-wrapper">
+                            <FiLock className="auth-page__input-icon" aria-hidden="true" />
                             <input
                                 type="password"
                                 name="password"
@@ -115,14 +117,14 @@ const LoginPage = () => {
                         </div>
                     </label>
 
-                    <button type="submit" disabled={submitting} className="login-btn btn-primary">
+                    <button type="submit" disabled={submitting} className="auth-page__btn auth-page__btn--primary">
                         {submitting ? "Signing in..." : "Sign In"}
                     </button>
                 </form>
 
-                <div className="login-footer">
-                    <span className="muted">New here?</span>
-                    <Link to="/register" className="signup-link">Create account</Link>
+                <div className="auth-page__footer">
+                    <span>New here?</span>
+                    <Link to="/register" className="auth-page__link">Create account</Link>
                 </div>
             </div>
         </div>

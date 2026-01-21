@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../context/authContext";
-// Styles loaded via main.css
+import "./login.css";
 import { FiMail, FiLock, FiPhone, FiUser } from "react-icons/fi";
 
 
@@ -95,29 +95,31 @@ const RegisterPage = () => {
 
   if (authLoading) {
     return (
-      <div className="login-loading">
-        <div className="loading-dot" />
-        <p>Checking your session...</p>
+      <div className="auth-page">
+        <div className="auth-page__loading">
+          <div className="auth-page__loading-dot" />
+          <p>Checking your session...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="login-wrap">
-      <div className="login-card simple">
-        <div className="login-header">
-          <div className="login-logo">
-            <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store logo" className="brand-logo" />
+    <div className="auth-page">
+      <div className="auth-page__card">
+        <div className="auth-page__header">
+          <div className="auth-page__logo">
+            <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store logo" className="auth-page__logo-img" />
           </div>
-          <h2>Create your account</h2>
-          <p className="muted">Join E-Store to start shopping.</p>
+          <h2 className="auth-page__title">Create your account</h2>
+          <p className="auth-page__subtitle">Join E-Store to start shopping.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
-          <label className="form-group">
-            <span className="form-label">Full Name</span>
-            <div className="input-with-icon">
-              <FiUser className="input-icon" aria-hidden="true" />
+        <form onSubmit={handleSubmit} className="auth-page__form">
+          <label className="auth-page__form-group">
+            <span className="auth-page__form-label">Full Name</span>
+            <div className="auth-page__input-wrapper">
+              <FiUser className="auth-page__input-icon" aria-hidden="true" />
               <input
                 type="text"
                 name="name"
@@ -127,13 +129,13 @@ const RegisterPage = () => {
                 autoComplete="name"
               />
             </div>
-            {errors.name && <span className="field-error">{errors.name}</span>}
+            {errors.name && <span className="auth-page__field-error">{errors.name}</span>}
           </label>
 
-          <label className="form-group">
-            <span className="form-label">Email</span>
-            <div className="input-with-icon">
-              <FiMail className="input-icon" aria-hidden="true" />
+          <label className="auth-page__form-group">
+            <span className="auth-page__form-label">Email</span>
+            <div className="auth-page__input-wrapper">
+              <FiMail className="auth-page__input-icon" aria-hidden="true" />
               <input
                 type="email"
                 name="email"
@@ -143,13 +145,13 @@ const RegisterPage = () => {
                 autoComplete="email"
               />
             </div>
-            {errors.email && <span className="field-error">{errors.email}</span>}
+            {errors.email && <span className="auth-page__field-error">{errors.email}</span>}
           </label>
 
-          <label className="form-group">
-            <span className="form-label">Phone Number</span>
-            <div className="input-with-icon">
-              <FiPhone className="input-icon" aria-hidden="true" />
+          <label className="auth-page__form-group">
+            <span className="auth-page__form-label">Phone Number</span>
+            <div className="auth-page__input-wrapper">
+              <FiPhone className="auth-page__input-icon" aria-hidden="true" />
               <input
                 type="tel"
                 name="phone"
@@ -159,13 +161,13 @@ const RegisterPage = () => {
                 autoComplete="tel"
               />
             </div>
-            {errors.phone && <span className="field-error">{errors.phone}</span>}
+            {errors.phone && <span className="auth-page__field-error">{errors.phone}</span>}
           </label>
 
-          <label className="form-group">
-            <span className="form-label">Password</span>
-            <div className="input-with-icon">
-              <FiLock className="input-icon" aria-hidden="true" />
+          <label className="auth-page__form-group">
+            <span className="auth-page__form-label">Password</span>
+            <div className="auth-page__input-wrapper">
+              <FiLock className="auth-page__input-icon" aria-hidden="true" />
               <input
                 type="password"
                 name="password"
@@ -175,17 +177,17 @@ const RegisterPage = () => {
                 autoComplete="new-password"
               />
             </div>
-            {errors.password && <span className="field-error">{errors.password}</span>}
+            {errors.password && <span className="auth-page__field-error">{errors.password}</span>}
           </label>
 
-          <button type="submit" disabled={submitting} className="login-btn btn-primary">
+          <button type="submit" disabled={submitting} className="auth-page__btn auth-page__btn--primary">
             {submitting ? "Creating..." : "Create account"}
           </button>
         </form>
 
-        <div className="login-footer">
-          <span className="muted">Already have an account?</span>
-          <Link to="/login" className="signup-link">Sign in</Link>
+        <div className="auth-page__footer">
+          <span>Already have an account?</span>
+          <Link to="/login" className="auth-page__link">Sign in</Link>
         </div>
       </div>
     </div>

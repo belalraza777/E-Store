@@ -1,7 +1,7 @@
 // ProductList.jsx - Displays grid of product cards with loading and empty states
 import React from 'react'
 import ProductCard from './ProductCard.jsx'
-// Styles loaded via main.css
+import './ProductList.css';
 
 export default function ProductList({ products, loading = false }) {
 

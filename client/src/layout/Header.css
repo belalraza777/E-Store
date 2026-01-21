@@ -1,0 +1,191 @@
+/* Header (User) - component-scoped BEM */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: color-mix(in oklab, var(--color-panel), transparent 10%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.site-header__logo {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header__brand-text {
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.site-header__search {
+  flex: 1 1 auto;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.site-header__search-input {
+  flex: 1 1 auto;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  padding: var(--space-2) var(--space-3);
+}
+
+.site-header__search-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  transition: background var(--transition-base), transform var(--transition-base);
+  color: var(--color-text);
+}
+
+.site-header__search-btn:hover {
+  transform: translateY(-1px);
+  background: color-mix(in oklab, var(--color-panel), var(--color-accent-soft) 18%);
+}
+
+.site-header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.site-header__nav-link {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  transition: color var(--transition-base), background var(--transition-base);
+}
+
+.site-header__nav-link:hover {
+  color: var(--color-text);
+  background: color-mix(in oklab, var(--color-surface), var(--color-accent-soft) 16%);
+}
+
+.site-header__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.site-header__action {
+  height: 40px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-panel);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+  transition: transform var(--transition-base), background var(--transition-base);
+}
+
+.site-header__action:hover {
+  transform: translateY(-1px);
+  background: color-mix(in oklab, var(--color-panel), var(--color-accent-soft) 18%);
+}
+
+.site-header__cart-badge {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-panel);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-header__user-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-header__menu-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-panel);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+}
+
+.site-header__mobile-menu {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-panel);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.site-header__mobile-link {
+  display: block;
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+}
+
+.site-header__mobile-link:hover {
+  color: var(--color-text);
+  background: color-mix(in oklab, var(--color-surface), var(--color-accent-soft) 16%);
+}
+
+.site-header__nav--desktop {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .site-header__nav--desktop {
+    display: flex;
+  }
+  .site-header__menu-toggle {
+    display: none;
+  }
+  .site-header__mobile-menu {
+    display: none;
+  }
+}
+

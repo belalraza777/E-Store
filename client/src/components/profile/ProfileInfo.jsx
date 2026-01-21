@@ -1,4 +1,6 @@
 
+
+import './ProfileInfo.css';
 // ProfileInfo: Displays and allows editing of user's personal information
 // Props:
 //   profile: user profile object (name, email, phone)
@@ -107,38 +109,38 @@ const ProfileInfo = ({ profile }) => {
   };
 
   return (
-    <div className="profile-info-section">
+    <div className="profile-info">
       {!editMode ? (
         // View Mode
-        <div className="profile-info-view">
-          <div className="info-grid">
-            <div className="info-item">
-              <div className="info-label">
-                <FiUser className="info-icon" />
+        <div className="profile-info__view">
+          <div className="profile-info__grid">
+            <div className="profile-info__item">
+              <div className="profile-info__label">
+                <FiUser className="profile-info__icon" />
                 <span>Name</span>
               </div>
-              <div className="info-value">{profile?.name || "Not provided"}</div>
+              <div className="profile-info__value">{profile?.name || "Not provided"}</div>
             </div>
             
-            <div className="info-item">
-              <div className="info-label">
-                <FiMail className="info-icon" />
+            <div className="profile-info__item">
+              <div className="profile-info__label">
+                <FiMail className="profile-info__icon" />
                 <span>Email</span>
               </div>
-              <div className="info-value">{profile?.email || "Not provided"}</div>
+              <div className="profile-info__value">{profile?.email || "Not provided"}</div>
             </div>
             
-            <div className="info-item">
-              <div className="info-label">
-                <FiPhone className="info-icon" />
+            <div className="profile-info__item">
+              <div className="profile-info__label">
+                <FiPhone className="profile-info__icon" />
                 <span>Phone</span>
               </div>
-              <div className="info-value">{profile?.phone || "Not provided"}</div>
+              <div className="profile-info__value">{profile?.phone || "Not provided"}</div>
             </div>
           </div>
           
           <button 
-            className="btn btn-outline edit-profile-btn"
+            className="profile-info__button profile-info__button--outline"
             onClick={() => setEditMode(true)}
           >
             <FiEdit2 /> Edit Profile
@@ -146,9 +148,9 @@ const ProfileInfo = ({ profile }) => {
         </div>
       ) : (
         // Edit Mode
-        <form className="profile-info-form" onSubmit={handleSubmit}>
-          <div className="form-grid">
-            <div className="form-group">
+        <form className="profile-info__form" onSubmit={handleSubmit}>
+          <div className="profile-info__form-grid">
+            <div className="profile-info__form-group">
               <label htmlFor="name">
                 <FiUser /> Full Name *
               </label>
@@ -159,12 +161,12 @@ const ProfileInfo = ({ profile }) => {
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter your full name"
-                className="form-input"
+                className="profile-info__input"
                 required
               />
             </div>
             
-            <div className="form-group">
+            <div className="profile-info__form-group">
               <label htmlFor="email">
                 <FiMail /> Email Address *
               </label>
@@ -175,12 +177,12 @@ const ProfileInfo = ({ profile }) => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Enter your email"
-                className="form-input"
+                className="profile-info__input"
                 required
               />
             </div>
             
-            <div className="form-group">
+            <div className="profile-info__form-group">
               <label htmlFor="phone">
                 <FiPhone /> Phone Number
               </label>
@@ -191,33 +193,33 @@ const ProfileInfo = ({ profile }) => {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="Enter your phone number"
-                className="form-input"
+                className="profile-info__input"
               />
-              <p className="input-hint">Optional</p>
+              <p className="profile-info__hint">Optional</p>
             </div>
           </div>
           
           {error && (
-            <div className="error-message">
+            <div className="profile-info__message profile-info__message--error">
               <FiX /> {error}
             </div>
           )}
           
           {success && (
-            <div className="success-message">
+            <div className="profile-info__message profile-info__message--success">
               <FiCheck /> {success}
             </div>
           )}
           
-          <div className="form-actions">
+          <div className="profile-info__actions">
             <button
               type="submit"
-              className="btn btn-primary"
+              className="profile-info__button profile-info__button--primary"
               disabled={loading || !isFormChanged()}
             >
               {loading ? (
                 <>
-                  <div className="spinner-small"></div>
+                  <div className="profile-info__spinner profile-info__spinner--sm"></div>
                   Saving...
                 </>
               ) : (
@@ -229,7 +231,7 @@ const ProfileInfo = ({ profile }) => {
             
             <button
               type="button"
-              className="btn btn-secondary"
+              className="profile-info__button profile-info__button--secondary"
               onClick={handleCancel}
               disabled={loading}
             >

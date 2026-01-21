@@ -1,62 +1,56 @@
 .product-page {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md);
 }
 
-.product-page h1 {
-    font-size: 32px;
-    color: #333;
-    margin: 0 0 40px 0;
-    text-align: center;
+.product-page__title {
+  font-size: var(--font-size-3xl);
+  color: var(--text);
+  margin: 0 0 var(--spacing-xl) 0;
+  text-align: center;
 }
 
-/* Infinite Scroll Loader */
-.loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    font-size: 16px;
-    color: #666;
+.product-page__loader,
+.product-page__end {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  font-size: var(--font-size-base);
+  color: var(--text-muted);
+  text-align: center;
 }
 
-.end-message {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    font-size: 16px;
-    color: #999;
-    text-align: center;
+.product-page__end {
+  color: var(--text-light);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-    .product-page {
-        padding: 16px;
-    }
+  .product-page {
+    padding: var(--spacing-md);
+  }
 
-    .product-page h1 {
-        font-size: 24px;
-        margin-bottom: 24px;
-    }
+  .product-page__title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-lg);
+  }
 
-    .loader,
-    .end-message {
-        padding: 30px 16px;
-        font-size: 14px;
-    }
+  .product-page__loader,
+  .product-page__end {
+    padding: var(--spacing-lg) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
 }
 
 @media (max-width: 480px) {
-    .product-page h1 {
-        font-size: 20px;
-    }
+  .product-page__title {
+    font-size: var(--font-size-xl);
+  }
 
-    .loader,
-    .end-message {
-        padding: 24px 12px;
-        font-size: 13px;
-    }
+  .product-page__loader,
+  .product-page__end {
+    padding: var(--spacing-lg) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
 }

@@ -1,4 +1,5 @@
 // Dashboard.jsx - Admin dashboard with stats, recent orders, and low stock alerts
+import './Dashboard.css';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -100,8 +101,8 @@ export default function AdminDashboard() {
   if (loading && orders.length === 0) {
     return (
       <div className="admin-dashboard">
-        <div className="loading-box">
-          <div className="spinner"></div>
+        <div className="admin-dashboard__loading">
+          <div className="admin-dashboard__spinner"></div>
           <p>Loading dashboard...</p>
         </div>
       </div>
@@ -118,27 +119,27 @@ export default function AdminDashboard() {
   return (
     <div className="admin-dashboard">
       {/* Dashboard Header */}
-      <div className="dashboard-header">
+      <div className="admin-dashboard__header">
         <div>
-          <p className="eyebrow"><FiBarChart2 /> Admin</p>
+          <p className="admin-dashboard__eyebrow"><FiBarChart2 /> Admin</p>
           <h1>Dashboard</h1>
-          <p className="subtext">Overview of your e-store performance</p>
+          <p className="admin-dashboard__subtext">Overview of your e-store performance</p>
         </div>
       </div>
 
       {/* Stats Cards Grid */}
-      <div className="stats-grid">
+      <div className="admin-dashboard__stats-grid">
         {/* Revenue Card */}
-        <div className="stat-card revenue">
-          <div className="stat-icon">
+        <div className="admin-dashboard__stat-card admin-dashboard__stat-card--revenue">
+          <div className="admin-dashboard__stat-icon">
             <FiDollarSign />
           </div>
-          <div className="stat-content">
-            <p className="stat-label">Total Revenue</p>
-            <h2 className="stat-value">₹{stats.revenue.toLocaleString('en-IN')}</h2>
-            <div className="stat-footer">
+          <div className="admin-dashboard__stat-content">
+            <p className="admin-dashboard__stat-label">Total Revenue</p>
+            <h2 className="admin-dashboard__stat-value">₹{stats.revenue.toLocaleString('en-IN')}</h2>
+            <div className="admin-dashboard__stat-footer">
               {/* Growth indicator - positive or negative */}
-              <span className={`stat-change ${stats.revenueGrowth >= 0 ? 'positive' : 'negative'}`}>
+              <span className={`admin-dashboard__stat-change ${stats.revenueGrowth >= 0 ? 'admin-dashboard__stat-change--positive' : 'admin-dashboard__stat-change--negative'}`}>
                 {stats.revenueGrowth >= 0 ? <FiTrendingUp /> : <FiTrendingDown />}
                 {Math.abs(stats.revenueGrowth).toFixed(1)}% from yesterday
               </span>
@@ -147,29 +148,29 @@ export default function AdminDashboard() {
         </div>
 
         {/* Orders Card */}
-        <div className="stat-card orders">
-          <div className="stat-icon">
+        <div className="admin-dashboard__stat-card admin-dashboard__stat-card--orders">
+          <div className="admin-dashboard__stat-icon">
             <FiShoppingCart />
           </div>
-          <div className="stat-content">
-            <p className="stat-label">Total Orders</p>
-            <h2 className="stat-value">{stats.totalOrders}</h2>
-            <div className="stat-footer">
-              <span className="stat-detail">{stats.today.orders} orders today</span>
+          <div className="admin-dashboard__stat-content">
+            <p className="admin-dashboard__stat-label">Total Orders</p>
+            <h2 className="admin-dashboard__stat-value">{stats.totalOrders}</h2>
+            <div className="admin-dashboard__stat-footer">
+              <span className="admin-dashboard__stat-detail">{stats.today.orders} orders today</span>
             </div>
           </div>
         </div>
 
         {/* Products Card */}
-        <div className="stat-card products">
-          <div className="stat-icon">
+        <div className="admin-dashboard__stat-card admin-dashboard__stat-card--products">
+          <div className="admin-dashboard__stat-icon">
             <FiShoppingBag />
           </div>
-          <div className="stat-content">
-            <p className="stat-label">Total Products</p>
-            <h2 className="stat-value">{stats.totalProducts}</h2>
-            <div className="stat-footer">
-              <span className="stat-detail">
+          <div className="admin-dashboard__stat-content">
+            <p className="admin-dashboard__stat-label">Total Products</p>
+            <h2 className="admin-dashboard__stat-value">{stats.totalProducts}</h2>
+            <div className="admin-dashboard__stat-footer">
+              <span className="admin-dashboard__stat-detail">
                 <FiAlertCircle /> {stats.lowStockProducts} low stock
               </span>
             </div>
@@ -177,101 +178,101 @@ export default function AdminDashboard() {
         </div>
 
         {/* Pending Orders Card */}
-        <div className="stat-card pending">
-          <div className="stat-icon">
+        <div className="admin-dashboard__stat-card admin-dashboard__stat-card--pending">
+          <div className="admin-dashboard__stat-icon">
             <FiClock />
           </div>
-          <div className="stat-content">
-            <p className="stat-label">Pending Orders</p>
-            <h2 className="stat-value">{stats.pendingOrders}</h2>
-            <div className="stat-footer">
-              <span className="stat-detail">Requires attention</span>
+          <div className="admin-dashboard__stat-content">
+            <p className="admin-dashboard__stat-label">Pending Orders</p>
+            <h2 className="admin-dashboard__stat-value">{stats.pendingOrders}</h2>
+            <div className="admin-dashboard__stat-footer">
+              <span className="admin-dashboard__stat-detail">Requires attention</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Today's Performance Section */}
-      <div className="today-stats">
-        <div className="section-header">
+      <div className="admin-dashboard__today-stats">
+        <div className="admin-dashboard__section-header">
           <h3>Today's Performance</h3>
         </div>
-        <div className="today-grid">
+        <div className="admin-dashboard__today-grid">
           {/* Today's Orders */}
-          <div className="today-card">
-            <div className="today-icon">
+          <div className="admin-dashboard__today-card">
+            <div className="admin-dashboard__today-icon">
               <FiShoppingCart />
             </div>
             <div>
-              <p className="today-label">Orders</p>
-              <p className="today-value">{stats.today.orders}</p>
+              <p className="admin-dashboard__today-label">Orders</p>
+              <p className="admin-dashboard__today-value">{stats.today.orders}</p>
             </div>
           </div>
           {/* Today's Revenue */}
-          <div className="today-card">
-            <div className="today-icon">
+          <div className="admin-dashboard__today-card">
+            <div className="admin-dashboard__today-icon">
               <FiDollarSign />
             </div>
             <div>
-              <p className="today-label">Revenue</p>
-              <p className="today-value">₹{stats.today.revenue.toLocaleString('en-IN')}</p>
+              <p className="admin-dashboard__today-label">Revenue</p>
+              <p className="admin-dashboard__today-value">₹{stats.today.revenue.toLocaleString('en-IN')}</p>
             </div>
           </div>
           {/* Pending Count */}
-          <div className="today-card">
-            <div className="today-icon">
+          <div className="admin-dashboard__today-card">
+            <div className="admin-dashboard__today-icon">
               <FiPackage />
             </div>
             <div>
-              <p className="today-label">Pending</p>
-              <p className="today-value">{stats.pendingOrders}</p>
+              <p className="admin-dashboard__today-label">Pending</p>
+              <p className="admin-dashboard__today-value">{stats.pendingOrders}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="dashboard-content">
+      <div className="admin-dashboard__content">
         {/* Recent Orders Section */}
-        <section className="dashboard-section">
-          <div className="section-header">
+        <section className="admin-dashboard__section">
+          <div className="admin-dashboard__section-header">
             <h3><FiPackage /> Recent Orders</h3>
-            <Link to="/admin/orders" className="view-all">
+            <Link to="/admin/orders" className="admin-dashboard__view-all">
               View All <FiArrowRight />
             </Link>
           </div>
           
           {/* Empty state or orders table */}
           {recentOrders.length === 0 ? (
-            <div className="empty-state">
+            <div className="admin-dashboard__empty-state">
               <FiPackage size={40} />
               <p>No orders yet</p>
             </div>
           ) : (
-            <div className="orders-table">
+            <div className="admin-dashboard__orders-table">
               {/* Table header */}
-              <div className="table-header">
-                <div className="col-id">Order ID</div>
-                <div className="col-customer">Customer</div>
-                <div className="col-amount">Amount</div>
-                <div className="col-status">Status</div>
-                <div className="col-date">Date</div>
+              <div className="admin-dashboard__table-header">
+                <div className="admin-dashboard__col-id">Order ID</div>
+                <div className="admin-dashboard__col-customer">Customer</div>
+                <div className="admin-dashboard__col-amount">Amount</div>
+                <div className="admin-dashboard__col-status">Status</div>
+                <div className="admin-dashboard__col-date">Date</div>
               </div>
               {/* Order rows */}
               {recentOrders.map((order) => (
                 <Link 
                   key={order._id} 
                   to={`/admin/orders/${order._id}`}
-                  className="table-row"
+                  className="admin-dashboard__table-row"
                 >
-                  <div className="col-id">#{order._id.slice(-6).toUpperCase()}</div>
-                  <div className="col-customer">
-                    <div className="customer-name">{order.user?.name}</div>
-                    <div className="customer-email">{order.user?.email}</div>
+                  <div className="admin-dashboard__col-id">#{order._id.slice(-6).toUpperCase()}</div>
+                  <div className="admin-dashboard__col-customer">
+                    <div className="admin-dashboard__customer-name">{order.user?.name}</div>
+                    <div className="admin-dashboard__customer-email">{order.user?.email}</div>
                   </div>
-                  <div className="col-amount">₹{order.totalAmount?.toLocaleString('en-IN')}</div>
+                  <div className="admin-dashboard__col-amount">₹{order.totalAmount?.toLocaleString('en-IN')}</div>
                   {/* Status badge with icon */}
-                  <div className="col-status">
-                    <span className={`status-badge status-${order.orderStatus}`}>
+                  <div className="admin-dashboard__col-status">
+                    <span className={`admin-dashboard__status-badge admin-dashboard__status-badge--${order.orderStatus}`}>
                       {order.orderStatus === 'placed' && <FiPackage />}
                       {order.orderStatus === 'shipped' && <FiTruck />}
                       {order.orderStatus === 'delivered' && <FiCheckCircle />}
@@ -279,7 +280,7 @@ export default function AdminDashboard() {
                       {order.orderStatus}
                     </span>
                   </div>
-                  <div className="col-date">{new Date(order.createdAt).toLocaleDateString()}</div>
+                  <div className="admin-dashboard__col-date">{new Date(order.createdAt).toLocaleDateString()}</div>
                 </Link>
               ))}
             </div>
@@ -287,42 +288,42 @@ export default function AdminDashboard() {
         </section>
 
         {/* Low Stock Products Section */}
-        <section className="dashboard-section">
-          <div className="section-header">
+        <section className="admin-dashboard__section">
+          <div className="admin-dashboard__section-header">
             <h3><FiAlertCircle /> Low Stock Alert</h3>
-            <Link to="/admin/products" className="view-all">
+            <Link to="/admin/products" className="admin-dashboard__view-all">
               View All <FiArrowRight />
             </Link>
           </div>
           
           {/* Empty state or stock list */}
           {lowStockItems.length === 0 ? (
-            <div className="empty-state">
+            <div className="admin-dashboard__empty-state">
               <FiCheckCircle size={40} />
               <p>All products have sufficient stock</p>
             </div>
           ) : (
-            <div className="stock-list">
+            <div className="admin-dashboard__stock-list">
               {/* List low stock products */}
               {lowStockItems.map((product) => (
                 <Link
                   key={product._id}
                   to={`/admin/products/${product.slug}/edit`}
-                  className="stock-item"
+                  className="admin-dashboard__stock-item"
                 >
-                  <div className="stock-product">
+                  <div className="admin-dashboard__stock-product">
                     <img 
                       src={product.images?.[0] || '/placeholder.jpg'} 
                       alt={product.title}
-                      className="stock-image"
+                      className="admin-dashboard__stock-image"
                     />
-                    <div className="stock-info">
-                      <p className="stock-name">{product.title}</p>
-                      <p className="stock-category">{product.category}</p>
+                    <div className="admin-dashboard__stock-info">
+                      <p className="admin-dashboard__stock-name">{product.title}</p>
+                      <p className="admin-dashboard__stock-category">{product.category}</p>
                     </div>
                   </div>
                   {/* Stock count with status class */}
-                  <div className={`stock-count ${(product.stock || 0) === 0 ? 'out-of-stock' : 'low-stock'}`}>
+                  <div className={`admin-dashboard__stock-count ${(product.stock || 0) === 0 ? 'admin-dashboard__stock-count--out-of-stock' : 'admin-dashboard__stock-count--low-stock'}`}>
                     {product.stock || 0} left
                   </div>
                 </Link>
@@ -333,18 +334,18 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions Grid */}
-      <div className="quick-actions">
+      <div className="admin-dashboard__quick-actions">
         <h3>Quick Actions</h3>
-        <div className="actions-grid">
-          <Link to="/admin/products/new" className="action-card">
+        <div className="admin-dashboard__actions-grid">
+          <Link to="/admin/products/new" className="admin-dashboard__action-card">
             <FiShoppingBag size={24} />
             <span>Add Product</span>
           </Link>
-          <Link to="/admin/orders" className="action-card">
+          <Link to="/admin/orders" className="admin-dashboard__action-card">
             <FiPackage size={24} />
             <span>Manage Orders</span>
           </Link>
-          <Link to="/admin/products" className="action-card">
+          <Link to="/admin/products" className="admin-dashboard__action-card">
             <FiShoppingCart size={24} />
             <span>View Products</span>
           </Link>

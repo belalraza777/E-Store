@@ -1,4 +1,5 @@
 import React from 'react';
+import './CancelOrderModal.css';
 
 export default function CancelOrderModal({
   show,
@@ -10,21 +11,22 @@ export default function CancelOrderModal({
 }) {
   if (!show) return null;
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <h3>Cancel Order</h3>
-        <p>Please provide a reason for cancelling this order:</p>
+    <div className="cancel-order-modal" onClick={onClose}>
+      <div className="cancel-order-modal__panel" onClick={e => e.stopPropagation()}>
+        <h3 className="cancel-order-modal__title">Cancel Order</h3>
+        <p className="cancel-order-modal__text">Please provide a reason for cancelling this order:</p>
         <textarea
           value={cancelReason}
           onChange={e => setCancelReason(e.target.value)}
           placeholder="Enter cancellation reason..."
           rows={4}
+          className="cancel-order-modal__textarea"
         />
-        <div className="modal-actions">
-          <button className="btn-secondary" onClick={onClose}>
+        <div className="cancel-order-modal__actions">
+          <button className="cancel-order-modal__button" onClick={onClose}>
             Keep Order
           </button>
-          <button className="btn-danger" onClick={onSubmit} disabled={cancelling}>
+          <button className="cancel-order-modal__button cancel-order-modal__button--danger" onClick={onSubmit} disabled={cancelling}>
             {cancelling ? 'Cancelling...' : 'Confirm Cancel'}
           </button>
         </div>

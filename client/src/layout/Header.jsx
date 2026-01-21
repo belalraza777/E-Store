@@ -3,7 +3,7 @@ import { use, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { FiMenu, FiX, FiShoppingCart, FiUser, FiLogOut, FiSearch } from "react-icons/fi";
-// Styles loaded via main.css
+import './Header.css'
 import useCartStore from '../store/cartStore.js'
 
 
@@ -38,51 +38,51 @@ export default function Header() {
   };
 
   return (
-    <header className="header">
-      <div className="header-container">
+    <header className="site-header">
+      <div className="site-header__inner">
         {/* Logo */}
-        <Link to="/" className="header-logo">
-          <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store" className="logo-img" />
-          <span className="logo-text">E-Store</span>
+        <Link to="/" className="site-header__brand">
+          <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store" className="site-header__logo" />
+          <span className="site-header__brand-text">E-Store</span>
         </Link>
 
         {/* Search Bar */}
-        <div className="header-search">
-          <input type="text" placeholder="Search products..." className="search-input" />
-          <button className="search-btn">
+        <div className="site-header__search">
+          <input type="text" placeholder="Search products..." className="site-header__search-input" />
+          <button className="site-header__search-btn" aria-label="Search">
             <FiSearch />
           </button>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="header-nav desktop-nav">
-          <Link to="/" className="nav-link">Home</Link>
-          <Link to="/products" className="nav-link">Products</Link>
-          <Link to="/orders" className="nav-link">Orders</Link>
-          <Link to="/contact" className="nav-link">Contact</Link>
+        <nav className="site-header__nav site-header__nav--desktop">
+          <Link to="/" className="site-header__nav-link">Home</Link>
+          <Link to="/products" className="site-header__nav-link">Products</Link>
+          <Link to="/orders" className="site-header__nav-link">Orders</Link>
+          <Link to="/contact" className="site-header__nav-link">Contact</Link>
         </nav>
 
         {/* Right Actions - Cart, Profile, Mobile Menu */}
-        <div className="header-actions">
+        <div className="site-header__actions">
           {/* Cart button with item count badge */}
-          <button className="action-btn cart-btn" onClick={() => navigate('/cart')} >
+          <button className="site-header__action" onClick={() => navigate('/cart')} aria-label="Cart">
             <FiShoppingCart />
-            <span className="cart-badge">{cartItemCount}</span>
+            <span className="site-header__cart-badge">{cartItemCount}</span>
           </button>
 
           {/* Show profile or login based on auth state */}
           {user ? (
-            <Link to="/profile" className="action-btn user-btn profile-btn-with-name">
+            <Link to="/profile" className="site-header__action" aria-label="Profile">
               <FiUser />
-              <span className="user-name">{user?.name}</span>
+              <span className="site-header__user-name">{user?.name}</span>
             </Link>
           ) : (
-            <Link to="/login" className="action-btn login-btn">Sign In</Link>
+            <Link to="/login" className="site-header__action">Sign In</Link>
           )}
 
           {/* Mobile Menu Toggle */}
           <button
-            className="mobile-menu-btn"
+            className="site-header__menu-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -93,13 +93,13 @@ export default function Header() {
 
       {/* Mobile Menu - shown when toggle is clicked */}
       {mobileMenuOpen && (
-        <nav className="mobile-menu">
-          <Link to="/" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-          <Link to="/products" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Products</Link>
-          <Link to="/orders" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
-          <Link to="/contact" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+        <nav className="site-header__mobile-menu">
+          <Link to="/" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+          <Link to="/products" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Products</Link>
+          <Link to="/orders" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
+          <Link to="/contact" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
           {!user && (
-            <Link to="/login" className="mobile-nav-link login-link" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+            <Link to="/login" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
           )}
         </nav>
       )}

@@ -1,0 +1,89 @@
+/* CancelOrderModal - component-scoped BEM */
+
+.cancel-order-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal-backdrop);
+  background: rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.cancel-order-modal__panel {
+  width: 100%;
+  max-width: 520px;
+  border-radius: var(--radius-2xl);
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-8);
+}
+
+.cancel-order-modal__title {
+  margin: 0 0 var(--space-2) 0;
+  color: var(--color-text);
+}
+
+.cancel-order-modal__text {
+  margin: 0 0 var(--space-4) 0;
+  color: var(--color-text-secondary);
+}
+
+.cancel-order-modal__textarea {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-4);
+  resize: vertical;
+  min-height: 120px;
+}
+
+.cancel-order-modal__textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+  background: var(--color-panel);
+}
+
+.cancel-order-modal__actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: var(--space-6);
+}
+
+.cancel-order-modal__button {
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-panel);
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.cancel-order-modal__button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: color-mix(in oklab, var(--color-panel), var(--color-accent-soft) 10%);
+}
+
+.cancel-order-modal__button--danger {
+  background: var(--color-danger);
+  color: var(--color-panel);
+  border-color: var(--color-danger);
+}
+
+.cancel-order-modal__button--danger:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--color-danger), black 12%);
+}
+
+.cancel-order-modal__button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+

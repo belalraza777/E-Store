@@ -4,7 +4,7 @@ import CancelOrderModal from './CancelOrderModal';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import useOrderStore from '../../store/orderStore';
 import { toast } from 'sonner';
-// Styles loaded via main.css
+import './OrderDetail.css';
 
 export default function OrderDetail() {
   // Get order ID from URL params
@@ -67,9 +67,9 @@ export default function OrderDetail() {
   // Show loading state
   if (loading || !currentOrder) {
     return (
-      <div className="order-detail-page">
-        <div className="loading-container">
-          <div className="spinner-large"></div>
+      <div className="order-detail">
+        <div className="order-detail__loading">
+          <div className="order-detail__spinner"></div>
           <p>Loading order details...</p>
         </div>
       </div>
@@ -80,53 +80,49 @@ export default function OrderDetail() {
   const currentStepIndex = getCurrentStepIndex(order.orderStatus);
 
   return (
-    <div className="order-detail-page">
+    <div className="order-detail">
       {/* Header with back link */}
-      <div className="order-detail-header">
-        <Link to="/orders" className="back-link">
+      <div className="order-detail__header">
+        <Link to="/orders" className="order-detail__back">
           ← Back to Orders
         </Link>
         <h1>Order #{order._id.slice(-8).toUpperCase()}</h1>
-        <p className="order-date">Placed on {formatDate(order.createdAt)}</p>
+        <p className="order-detail__date">Placed on {formatDate(order.createdAt)}</p>
       </div>
 
       {/* Order Status Tracker - visual progress indicator */}
       {order.orderStatus !== 'cancelled' ? (
-        <div className="order-tracker">
-          <div className="tracker-steps">
+        <div className="order-detail__tracker">
+          <div className="order-detail__steps">
             {statusSteps.map((status, index) => (
               <div 
                 key={status}
-                className={`tracker-step ${
-                  index < currentStepIndex ? 'completed' : 
-                  index === currentStepIndex ? 'active' : ''
+                className={`order-detail__step ${
+                  index < currentStepIndex ? 'order-detail__step--completed' : 
+                  index === currentStepIndex ? 'order-detail__step--active' : ''
                 }`}
               >
-                <div className="tracker-icon">
+                <div className="order-detail__step-icon" aria-hidden="true">
                   {index < currentStepIndex ? '✓' : 
                    status === 'placed' ? '📋' :
                    status === 'shipped' ? '🚚' : '📦'}
                 </div>
-                <span className="tracker-label">
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </span>
-                {index <= currentStepIndex && order[`${status}At`] && (
-                  <span className="tracker-date">
-                    {formatDate(order[`${status}At`])}
-                  </span>
-                )}
+                <div>
+                  <div className="order-detail__step-label">{status.charAt(0).toUpperCase() + status.slice(1)}</div>
+                  {index <= currentStepIndex && order[`${status}At`] && (
+                    <div className="order-detail__step-date">{formatDate(order[`${status}At`])}</div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         </div>
       ) : (
         // Cancelled order banner
-        <div className="order-tracker" style={{ background: 'rgba(239, 68, 68, 0.1)', textAlign: 'center' }}>
-          <p style={{ color: 'var(--danger)', fontWeight: 600, margin: 0 }}>
-            ❌ This order was cancelled
-          </p>
+        <div className="order-detail__tracker order-detail__tracker--cancelled">
+          <p className="order-detail__cancelled-title">This order was cancelled</p>
           {order.cancelReason && (
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: '0.5rem 0 0' }}>
+            <p className="order-detail__cancelled-reason">
               Reason: {order.cancelReason}
             </p>
           )}
@@ -134,23 +130,23 @@ export default function OrderDetail() {
       )}
 
       {/* Order Details Grid */}
-      <div className="order-detail-grid">
+      <div className="order-detail__grid">
         {/* Shipping Address Card */}
-        <div className="detail-card">
-          <h3>📍 Shipping Address</h3>
+        <div className="order-detail__card">
+          <h3 className="order-detail__card-title">Shipping Address</h3>
           <p>
-            <span className="highlight">{order.shippingAddress?.address}</span><br />
+            <span className="order-detail__highlight">{order.shippingAddress?.address}</span><br />
             {order.shippingAddress?.city}, {order.shippingAddress?.postalCode}<br />
             {order.shippingAddress?.country}
           </p>
         </div>
 
         {/* Payment Info Card */}
-        <div className="detail-card">
-          <h3>💳 Payment Information</h3>
+        <div className="order-detail__card">
+          <h3 className="order-detail__card-title">Payment Information</h3>
           <p>
-            Method: <span className="highlight">{order.paymentMethod}</span><br />
-            Status: <span className={`highlight ${order.paymentStatus === 'paid' ? 'text-success' : ''}`}>
+            Method: <span className="order-detail__highlight">{order.paymentMethod}</span><br />
+            Status: <span className="order-detail__highlight">
               {order.paymentStatus?.charAt(0).toUpperCase() + order.paymentStatus?.slice(1)}
             </span>
           </p>
@@ -158,34 +154,34 @@ export default function OrderDetail() {
       </div>
 
       {/* Order Items Card */}
-      <div className="order-card" style={{ marginBottom: '1.5rem' }}>
-        <div className="order-header">
-          <h3 style={{ margin: 0 }}>Order Items ({order.items.length})</h3>
+      <div className="order-detail__items-card">
+        <div className="order-detail__items-header">
+          <h3>Order Items ({order.items.length})</h3>
         </div>
-        <div className="order-items">
+        <div className="order-detail__items">
           {order.items.map(item => (
-            <div key={item._id} className="order-item">
+            <div key={item._id} className="order-detail__item">
               {/* Product image */}
-              <div className="order-item-image">
+              <div className="order-detail__item-image">
                 <img 
                   src={Array.isArray(item.product.images) && item.product.images[0] ? item.product.images[0].url : '/placeholder.png'} 
                   alt={item.product?.title || 'Product'} 
                 />
               </div>
               {/* Product details */}
-              <div className="order-item-details">
-                <h4 className="order-item-name">
+              <div>
+                <h4 className="order-detail__item-name">
                   <Link to={`/products/${item.product?.slug}`}>
                     {item.product?.title || 'Product'}
                   </Link>
                 </h4>
-                <p className="order-item-meta">
+                <p className="order-detail__item-meta">
                   Qty: {item.quantity} × ₹{Number(item.discount || item.price).toLocaleString()}
                 </p>
               </div>
               {/* Item total - use discount if available, else regular price */}
-              <div className="order-item-price">
-                <p className="order-item-total">
+              <div>
+                <p className="order-detail__item-total">
                   ₹{Number((item.discount || item.price) * item.quantity).toLocaleString()}
                 </p>
               </div>
@@ -194,24 +190,24 @@ export default function OrderDetail() {
         </div>
         
         {/* Order Summary Footer */}
-        <div className="order-footer">
-          <div className="order-total">
-            <span className="order-total-label">Order Total</span>
-            <span className="order-total-amount">₹{Number(order.totalAmount).toLocaleString()}</span>
+        <div className="order-detail__items-footer">
+          <div className="order-detail__total">
+            <span className="order-detail__total-label">Order Total</span>
+            <span className="order-detail__total-amount">₹{Number(order.totalAmount).toLocaleString()}</span>
           </div>
           {/* Cancel button */}
-          <div className="order-actions">
+          <div>
             {order.orderStatus === 'cancelled' ? (
-              <button className="btn-cancelled" disabled>
+              <button className="order-detail__button" disabled>
                 Cancelled
               </button>
             ) : order.orderStatus === 'shipped' || order.orderStatus === 'delivered' ? (
-              <span className="order-status-info">
+              <span className="order-detail__highlight">
                 Order {order.orderStatus}
               </span>
             ) : (
               <button 
-                className="cancel-order-btn"
+                className="order-detail__button order-detail__button--danger"
                 onClick={() => setShowCancelModal(true)}
               >
                 Cancel Order

@@ -1,60 +1,60 @@
+
 .reviews-section {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-    padding: 40px;
-    margin-top: 60px;
+    background: var(--panel);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-2xl);
+    margin-top: var(--spacing-2xl);
 }
 
 .reviews-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
-    padding-bottom: 24px;
-    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: var(--spacing-2xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 2px solid var(--border-light);
 }
 
 .reviews-header h2 {
-    font-size: 28px;
-    color: #222;
+    font-size: var(--font-size-2xl);
+    color: var(--text);
     margin: 0;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .reviews-summary {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--spacing-md);
 }
 
 .avg-rating {
-    font-size: 24px;
-    font-weight: 700;
-    color: #222;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text);
 }
 
 .stars-small {
-    font-size: 16px;
-    color: #ffc107;
+    font-size: var(--font-size-base);
+    color: var(--accent);
     letter-spacing: 1px;
 }
 
 .stars-small .empty {
-    color: #ddd;
+    color: var(--border);
 }
 
 .total-reviews {
-    color: #666;
-    font-size: 14px;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
 }
 
-/* Add Review Section */
 .add-review-section {
-    background: #f8f9fa;
-    padding: 32px;
-    border-radius: 12px;
-    margin-bottom: 40px;
+    background: var(--bg-secondary);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--spacing-2xl);
 }
 
 .add-review-section h3 {

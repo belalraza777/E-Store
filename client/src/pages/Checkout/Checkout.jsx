@@ -6,6 +6,7 @@ import { FiMapPin, FiCreditCard, FiLock } from 'react-icons/fi';
 import useCartStore from '../../store/cartStore.js';
 import useOrderStore from '../../store/orderStore.js';
 import { useAuth } from '../../context/authContext.jsx';
+import './Checkout.css';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -104,8 +105,8 @@ export default function Checkout() {
   if (cartLoading) {
     return (
       <div className="checkout-page">
-        <div className="loading-container">
-          <div className="spinner-large"></div>
+        <div className="checkout-page__loading-container">
+          <div className="checkout-page__spinner-large"></div>
           <p>Loading...</p>
         </div>
       </div>
@@ -116,16 +117,16 @@ export default function Checkout() {
     <div className="checkout-page">
       <h1>Checkout</h1>
 
-      <div className="checkout-container">
+      <div className="checkout-page__container">
         {/* Checkout Form Section */}
-        <form className="checkout-form-section" onSubmit={handleSubmit}>
+        <form className="checkout-page__form-section" onSubmit={handleSubmit}>
           {/* Shipping Address Section */}
-          <h3 className="section-title"><FiMapPin /> Shipping Address</h3>
-          <div className="section-content">
-            <div className="shipping-form">
+          <h3 className="checkout-page__section-title"><FiMapPin /> Shipping Address</h3>
+          <div className="checkout-page__section-content">
+            <div className="checkout-page__shipping-form">
               {/* Name and Phone row */}
-              <div className="form-row">
-                <div className="form-group">
+              <div className="checkout-page__form-row">
+                <div className="checkout-page__form-group">
                   <label>Full Name *</label>
                   <input
                     type="text"
@@ -136,7 +137,7 @@ export default function Checkout() {
                     required
                   />
                 </div>
-                <div className="form-group">
+                <div className="checkout-page__form-group">
                   <label>Phone *</label>
                   <input
                     type="tel"
@@ -150,7 +151,7 @@ export default function Checkout() {
               </div>
 
               {/* Address textarea */}
-              <div className="form-group full-width">
+              <div className="checkout-page__form-group checkout-page__form-group--full-width">
                 <label>Address *</label>
                 <textarea
                   name="address"
@@ -163,8 +164,8 @@ export default function Checkout() {
               </div>
 
               {/* City and Postal Code row */}
-              <div className="form-row">
-                <div className="form-group">
+              <div className="checkout-page__form-row">
+                <div className="checkout-page__form-group">
                   <label>City *</label>
                   <input
                     type="text"
@@ -175,7 +176,7 @@ export default function Checkout() {
                     required
                   />
                 </div>
-                <div className="form-group">
+                <div className="checkout-page__form-group">
                   <label>Postal Code *</label>
                   <input
                     type="text"
@@ -189,7 +190,7 @@ export default function Checkout() {
               </div>
 
               {/* Country dropdown */}
-              <div className="form-group">
+              <div className="checkout-page__form-group">
                 <label>Country</label>
                 <select name="country" value={form.country} onChange={handleChange}>
                   <option value="India">India</option>
@@ -201,11 +202,11 @@ export default function Checkout() {
           </div>
 
           {/* Payment Method Section */}
-          <h3 className="section-title"><FiCreditCard /> Payment Method</h3>
-          <div className="section-content">
-            <div className="payment-methods">
+          <h3 className="checkout-page__section-title"><FiCreditCard /> Payment Method</h3>
+          <div className="checkout-page__section-content">
+            <div className="checkout-page__payment-methods">
               {/* Cash on Delivery option */}
-              <label className={`payment-option ${form.paymentMethod === 'COD' ? 'selected' : ''}`}>
+              <label className={`checkout-page__payment-option ${form.paymentMethod === 'COD' ? 'checkout-page__payment-option--selected' : ''}`}>
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -213,11 +214,11 @@ export default function Checkout() {
                   checked={form.paymentMethod === 'COD'}
                   onChange={handleChange}
                 />
-                <span className="payment-name">Cash on Delivery</span>
+                <span className="checkout-page__payment-name">Cash on Delivery</span>
               </label>
 
               {/* Online payment option - ready for payment gateway */}
-              <label className={`payment-option ${form.paymentMethod === 'Online' ? 'selected' : ''}`}>
+              <label className={`checkout-page__payment-option ${form.paymentMethod === 'Online' ? 'checkout-page__payment-option--selected' : ''}`}>
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -225,30 +226,30 @@ export default function Checkout() {
                   checked={form.paymentMethod === 'Online'}
                   onChange={handleChange}
                 />
-                <span className="payment-name">Pay Online</span>
+                <span className="checkout-page__payment-name">Pay Online</span>
               </label>
             </div>
           </div>
 
           {/* Submit Button */}
-          <button type="submit" className="place-order-btn" disabled={submitting}>
+          <button type="submit" className="checkout-page__place-order-btn" disabled={submitting}>
             {submitting ? 'Placing Order...' : 'Place Order'}
           </button>
         </form>
 
         {/* ===== ORDER SUMMARY SECTION ===== */}
-        <div className="checkout-summary">
+        <div className="checkout-page__summary">
           <h2>Order Summary</h2>
 
           {/* List of cart items */}
-          <div className="checkout-items">
+          <div className="checkout-page__items">
             {cart?.items?.map(item => {
               // Get image URL - handle both {url: '...'} object and direct string formats
               const imageUrl = item.product?.images?.[0]?.url || item.product?.images?.[0];
               return (
-                <div key={item._id} className="checkout-item">
+                <div key={item._id} className="checkout-page__item">
                   {/* Product image */}
-                  <div className="checkout-item-image">
+                  <div className="checkout-page__item-image">
                     {imageUrl ? (
                       <img src={imageUrl} alt={item.product?.title} />
                     ) : (
@@ -256,12 +257,12 @@ export default function Checkout() {
                     )}
                   </div>
                   {/* Product name and quantity */}
-                  <div className="checkout-item-info">
-                    <p className="checkout-item-name">{item.product?.title}</p>
-                    <p className="checkout-item-qty">{item.quantity} ×</p>    
+                  <div className="checkout-page__item-info">
+                    <p className="checkout-page__item-name">{item.product?.title}</p>
+                    <p className="checkout-page__item-qty">{item.quantity} ×</p>    
                   </div>
                   {/* Item total price (pre-calculated from backend: discountPrice or price * qty) */}
-                  <div className="checkout-item-price">
+                  <div className="checkout-page__item-price">
                     ₹{(item.discountPrice || item.price || 0).toLocaleString('en-IN')}
                   </div>
                 </div>
@@ -270,32 +271,32 @@ export default function Checkout() {
           </div>
 
           {/* Price breakdown */}
-          <div className="checkout-totals">
+          <div className="checkout-page__totals">
             {/* Original price before any discounts */}
-            <div className="checkout-row">
+            <div className="checkout-page__row">
               <span>Subtotal</span>
               <span>₹{originalTotal.toLocaleString('en-IN')}</span>
             </div>
             {/* Show discount only if there is a discount */}
             {discountAmount > 0 && (
-              <div className="checkout-row discount">
+              <div className="checkout-page__row checkout-page__row--discount">
                 <span>Discount</span>
                 <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
               </div>
             )}
             {/* Shipping cost */}
-            <div className="checkout-row">
+            <div className="checkout-page__row">
               <span>Shipping</span>
               <span style={{ color: 'var(--success)' }}>FREE</span>
             </div>
             {/* Final amount to pay */}
-            <div className="checkout-row total">
+            <div className="checkout-page__row checkout-page__row--total">
               <span>Total</span>
               <span>₹{discountedTotal.toLocaleString('en-IN')}</span>
             </div>
           </div>
 
-          <div className="checkout-secure">
+          <div className="checkout-page__secure">
             <FiLock /> Secure checkout
           </div>
         </div>

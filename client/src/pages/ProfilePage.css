@@ -1,0 +1,111 @@
+/* ProfilePage - component-scoped BEM */
+
+.profile-page {
+  max-width: 720px;
+  margin: var(--space-8) auto;
+  padding: 0 var(--space-4);
+}
+
+.profile-page__loading {
+  display: grid;
+  place-items: center;
+  gap: var(--space-4);
+  min-height: 420px;
+  color: var(--color-text-secondary);
+}
+
+.profile-page__spinner {
+  width: 52px;
+  height: 52px;
+  border: 3px solid color-mix(in oklab, var(--color-border), transparent 40%);
+  border-top: 3px solid var(--color-primary);
+  border-radius: var(--radius-pill);
+  animation: profile-page__spin 1s linear infinite;
+}
+
+@keyframes profile-page__spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.profile-page__header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-10) var(--space-8);
+  text-align: center;
+  color: var(--color-panel);
+  margin-bottom: var(--space-8);
+  box-shadow: 0 10px 30px rgba(var(--color-primary-rgb), 0.22);
+  border: 1px solid color-mix(in oklab, var(--color-primary), var(--color-panel) 18%);
+}
+
+.profile-page__avatar {
+  width: 84px;
+  height: 84px;
+  background: var(--color-panel);
+  border-radius: var(--radius-pill);
+  display: grid;
+  place-items: center;
+  font-size: 2.4rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-primary);
+  margin: 0 auto var(--space-5);
+  border: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-page__welcome-title {
+  margin-bottom: var(--space-2);
+  color: var(--color-panel);
+}
+
+.profile-page__member-since {
+  opacity: 0.92;
+  font-size: var(--font-size-sm);
+}
+
+.profile-page__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.profile-page__section {
+  background: var(--color-panel);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.profile-page__section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.profile-page__section-icon {
+  color: var(--color-primary);
+}
+
+.profile-page__section-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+@media (max-width: 640px) {
+  .profile-page__header {
+    padding: var(--space-8) var(--space-6);
+  }
+  .profile-page__section {
+    padding: var(--space-6);
+  }
+}
+

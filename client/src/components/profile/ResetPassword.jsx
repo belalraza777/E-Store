@@ -1,4 +1,6 @@
 
+
+import './ResetPassword.css';
 // ResetPassword: Allows user to change their password
 // No props required; uses local state and API call
 
@@ -65,15 +67,15 @@ const ResetPassword = () => {
   // Render password reset form and toggle
   return (
     <div className="reset-password">
-      <div className="password-header" onClick={() => setIsOpen(!isOpen)} style={{ cursor: 'pointer' }}>
-        <FiLock className="password-icon" />
-        <div className="password-title">
+      <div className="reset-password__header" onClick={() => setIsOpen(!isOpen)}>
+        <FiLock className="reset-password__icon" />
+        <div className="reset-password__title">
           <h4>Change Password</h4>
           <p>Update your password to keep your account secure</p>
         </div>
         <button 
           type="button"
-          className="toggle-form-btn"
+          className="reset-password__toggle"
           onClick={(e) => {
             e.stopPropagation();
             setIsOpen(!isOpen);
@@ -84,11 +86,11 @@ const ResetPassword = () => {
       </div>
       
       {isOpen && (
-        <div className="password-form-container">
-          <form className="password-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Current Password</label>
-              <div className="password-input-wrapper">
+        <div className="reset-password__panel">
+          <form className="reset-password__form" onSubmit={handleSubmit}>
+            <div className="reset-password__group">
+              <label className="reset-password__label">Current Password</label>
+              <div className="reset-password__input-wrap">
                 <input 
                   type={showOldPassword ? "text" : "password"} 
                   name="oldPassword" 
@@ -96,20 +98,22 @@ const ResetPassword = () => {
                   onChange={handleChange}
                   placeholder="Enter current password"
                   autoComplete="current-password"
+                  className="reset-password__input"
                 />
                 <button 
                   type="button"
-                  className="toggle-password"
+                  className="reset-password__reveal"
                   onClick={() => setShowOldPassword(!showOldPassword)}
+                  aria-label={showOldPassword ? "Hide password" : "Show password"}
                 >
                   {showOldPassword ? <FiEyeOff /> : <FiEye />}
                 </button>
               </div>
             </div>
             
-            <div className="form-group">
-              <label>New Password</label>
-              <div className="password-input-wrapper">
+            <div className="reset-password__group">
+              <label className="reset-password__label">New Password</label>
+              <div className="reset-password__input-wrap">
                 <input 
                   type={showNewPassword ? "text" : "password"} 
                   name="newPassword" 
@@ -117,20 +121,22 @@ const ResetPassword = () => {
                   onChange={handleChange}
                   placeholder="Enter new password (min. 6 characters)"
                   autoComplete="new-password"
+                  className="reset-password__input"
                 />
                 <button 
                   type="button"
-                  className="toggle-password"
+                  className="reset-password__reveal"
                   onClick={() => setShowNewPassword(!showNewPassword)}
+                  aria-label={showNewPassword ? "Hide password" : "Show password"}
                 >
                   {showNewPassword ? <FiEyeOff /> : <FiEye />}
                 </button>
               </div>
             </div>
             
-            <div className="form-group">
-              <label>Confirm New Password</label>
-              <div className="password-input-wrapper">
+            <div className="reset-password__group">
+              <label className="reset-password__label">Confirm New Password</label>
+              <div className="reset-password__input-wrap">
                 <input 
                   type={showConfirmPassword ? "text" : "password"} 
                   name="confirmPassword" 
@@ -138,11 +144,13 @@ const ResetPassword = () => {
                   onChange={handleChange}
                   placeholder="Confirm new password"
                   autoComplete="new-password"
+                  className="reset-password__input"
                 />
                 <button 
                   type="button"
-                  className="toggle-password"
+                  className="reset-password__reveal"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
                 </button>
@@ -151,15 +159,15 @@ const ResetPassword = () => {
             
             {/* No inline error/success message, handled by toast */}
             
-            <div className="form-actions">
+            <div className="reset-password__actions">
               <button 
                 type="submit" 
-                className="btn btn-primary"
+                className="reset-password__button reset-password__button--primary"
                 disabled={loading}
               >
                 {loading ? (
                   <>
-                    <span className="spinner"></span>
+                    <span className="reset-password__spinner" aria-hidden="true"></span>
                     Updating...
                   </>
                 ) : (
@@ -168,7 +176,7 @@ const ResetPassword = () => {
               </button>
               <button 
                 type="button" 
-                className="btn btn-secondary"
+                className="reset-password__button reset-password__button--secondary"
                 onClick={handleClose}
                 disabled={loading}
               >

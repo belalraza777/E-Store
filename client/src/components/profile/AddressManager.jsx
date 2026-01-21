@@ -1,5 +1,6 @@
 
 // AddressManager: Displays and allows editing of user's shipping address
+import './AddressManager.css';
 // Props:
 //   address: user address object (address, city, postalCode, country)
 
@@ -47,62 +48,66 @@ const AddressManager = ({ address }) => {
   return (
     <div className="address-manager">
       {editMode ? (
-        <form className="address-form" onSubmit={handleSubmit}>
-          <div className="form-grid">
-            <div className="form-group">
-              <label>Address</label>
+        <form className="address-manager__form" onSubmit={handleSubmit}>
+          <div className="address-manager__grid">
+            <div className="address-manager__group">
+              <label className="address-manager__label">Address</label>
               <input 
                 type="text" 
                 name="address" 
                 value={form.address} 
                 onChange={handleChange}
                 placeholder="Enter your street address"
+                className="address-manager__input"
                 required
               />
             </div>
-            <div className="form-group">
-              <label>City</label>
+            <div className="address-manager__group">
+              <label className="address-manager__label">City</label>
               <input 
                 type="text" 
                 name="city" 
                 value={form.city} 
                 onChange={handleChange}
                 placeholder="Enter city"
+                className="address-manager__input"
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Postal Code</label>
+            <div className="address-manager__group">
+              <label className="address-manager__label">Postal Code</label>
               <input 
                 type="text" 
                 name="postalCode" 
                 value={form.postalCode} 
                 onChange={handleChange}
                 placeholder="Enter postal code"
+                className="address-manager__input"
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Country</label>
+            <div className="address-manager__group">
+              <label className="address-manager__label">Country</label>
               <input 
                 type="text" 
                 name="country" 
                 value={form.country} 
                 onChange={handleChange}
                 placeholder="Enter country"
+                className="address-manager__input"
                 required
               />
             </div>
           </div>
-          <div className="form-actions">
+          <div className="address-manager__actions">
             <button 
               type="submit" 
-              className="btn btn-primary"
+              className="address-manager__button address-manager__button--primary"
               disabled={loading}
             >
               {loading ? (
                 <>
-                  <span className="spinner"></span>
+                  <span className="address-manager__spinner" aria-hidden="true"></span>
                   Saving...
                 </>
               ) : (
@@ -113,7 +118,7 @@ const AddressManager = ({ address }) => {
             </button>
             <button 
               type="button" 
-              className="btn btn-secondary"
+              className="address-manager__button address-manager__button--secondary"
               onClick={() => setEditMode(false)}
               disabled={loading}
             >
@@ -122,32 +127,32 @@ const AddressManager = ({ address }) => {
           </div>
         </form>
       ) : (
-        <div className="address-display">
+        <div className="address-manager__display">
           {address?.address ? (
             <>
-              <div className="address-icon">
+              <div className="address-manager__icon" aria-hidden="true">
                 <FiMapPin />
               </div>
-              <div className="address-details">
-                <p className="address-line">{address.address}</p>
-                <p className="address-city">
+              <div className="address-manager__details">
+                <p className="address-manager__line">{address.address}</p>
+                <p className="address-manager__meta">
                   {address.city}, {address.postalCode}
                 </p>
-                <p className="address-country">{address.country}</p>
+                <p className="address-manager__meta">{address.country}</p>
               </div>
               <button 
-                className="btn btn-outline edit-btn"
+                className="address-manager__button address-manager__button--outline"
                 onClick={() => setEditMode(true)}
               >
                 <FiEdit /> Edit
               </button>
             </>
           ) : (
-            <div className="no-address">
-              <FiMapPin className="empty-icon" />
+            <div className="address-manager__empty">
+              <FiMapPin className="address-manager__empty-icon" aria-hidden="true" />
               <p>No address saved yet</p>
               <button 
-                className="btn btn-primary"
+                className="address-manager__button address-manager__button--primary"
                 onClick={() => setEditMode(true)}
               >
                 <FiEdit /> Add Address

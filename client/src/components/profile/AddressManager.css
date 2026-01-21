@@ -1,0 +1,172 @@
+/* AddressManager.css - component-scoped BEM, consumes only CSS variables */
+
+.address-manager {
+  display: block;
+}
+
+.address-manager__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.address-manager__grid {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.address-manager__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.address-manager__label {
+  font-weight: var(--font-weight-medium);
+  color: var(--text);
+}
+
+.address-manager__input {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.address-manager__input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--panel);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+.address-manager__actions {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.address-manager__button {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-weight: var(--font-weight-semibold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.address-manager__button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--bg-secondary);
+  border-color: var(--border-dark);
+}
+
+.address-manager__button--primary {
+  background: var(--primary);
+  color: var(--panel);
+  border-color: var(--primary);
+}
+
+.address-manager__button--primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.address-manager__button--secondary {
+  background: var(--bg-secondary);
+}
+
+.address-manager__button--outline {
+  background: transparent;
+  border-color: color-mix(in oklab, var(--primary), var(--border) 50%);
+  color: var(--primary);
+}
+
+.address-manager__button--outline:hover:not(:disabled) {
+  background: rgba(var(--primary-rgb), 0.08);
+  border-color: var(--primary);
+}
+
+.address-manager__button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.address-manager__spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: var(--panel);
+  animation: address-manager__spin 1s linear infinite;
+}
+
+@keyframes address-manager__spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.address-manager__display {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+}
+
+.address-manager__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--panel), var(--accent-light) 18%);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.address-manager__details {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.address-manager__line {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.address-manager__meta {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.address-manager__empty {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.address-manager__empty-icon {
+  font-size: 3rem;
+  color: var(--text-light);
+}
+
+@media (min-width: 700px) {
+  .address-manager__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

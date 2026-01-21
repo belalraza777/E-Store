@@ -1,0 +1,326 @@
+/* ==========================================================================
+   Global theme + variables + reset/base ONLY
+   - No component/page styles here
+   - Components must consume variables defined below
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* =====================================================
+   DESIGN TOKENS (LIGHT THEME DEFAULT)
+   ===================================================== */
+
+:root {
+  /* Brand palette */
+  --crushed-berry: #880d1e;
+  --raspberry: #dd2d4a;
+  --bubblegum-pink: #f26a8d;
+  --pink-mist: #f49cbb;
+  --light-cyan: #cbeef3;
+
+  /* Semantic */
+  --color-bg: #f9f7f8;
+  --color-bg-secondary: #f5f2f4;
+  --color-panel: #ffffff;
+  --color-surface: #f5f2f4;
+  --color-card: #ffffff;
+
+  --color-text: #2a2227;
+  --color-text-secondary: #5a5255;
+  --color-text-muted: #7a6d71;
+  --color-text-light: #a09598;
+
+  --color-primary: var(--raspberry);
+  --color-primary-strong: var(--crushed-berry);
+  --color-primary-soft: var(--bubblegum-pink);
+  --color-primary-rgb: 221, 45, 74;
+
+  --color-accent: var(--raspberry);
+  --color-accent-strong: var(--bubblegum-pink);
+  --color-accent-soft: var(--pink-mist);
+  --color-accent-dark: var(--crushed-berry);
+  --color-accent-rgb: 221, 45, 74;
+
+  --color-border: rgba(221, 45, 74, 0.1);
+  --color-border-soft: rgba(221, 45, 74, 0.08);
+  --color-border-strong: rgba(221, 45, 74, 0.2);
+
+  --color-danger: #ef4444;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Courier New', Consolas, monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+
+  /* Motion */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  /* Z-index */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+
+  /* App background */
+  --app-bg: linear-gradient(
+    135deg,
+    var(--color-bg) 0%,
+    var(--color-bg-secondary) 50%,
+    color-mix(in oklab, var(--color-bg-secondary), var(--color-bg) 50%) 100%
+  );
+
+  /* =====================================================
+     Backward-compatible aliases (legacy CSS)
+     Keep until all components are migrated to the new tokens.
+     ===================================================== */
+
+  /* Colors */
+  --bg: var(--color-bg);
+  --bg-secondary: var(--color-bg-secondary);
+  --panel: var(--color-panel);
+  --surface: var(--color-surface);
+  --card-bg: var(--color-card);
+
+  --text: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --text-light: var(--color-text-light);
+
+  --primary: var(--color-primary);
+  --primary-dark: var(--color-primary-strong);
+  --primary-light: var(--color-primary-soft);
+  --primary-rgb: var(--color-primary-rgb);
+
+  --accent: var(--color-accent);
+  --accent-strong: var(--color-accent-strong);
+  --accent-light: var(--color-accent-soft);
+  --accent-dark: var(--color-accent-dark);
+  --accent-rgb: var(--color-accent-rgb);
+
+  --border: var(--color-border);
+  --border-light: var(--color-border-soft);
+  --border-dark: var(--color-border-strong);
+
+  --danger: var(--color-danger);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
+  --info: var(--color-info);
+
+  /* Spacing */
+  --spacing-xs: var(--space-1);
+  --spacing-sm: var(--space-2);
+  --spacing-md: var(--space-4);
+  --spacing-lg: var(--space-6);
+  --spacing-xl: var(--space-8);
+  --spacing-2xl: var(--space-12);
+  --spacing-3xl: var(--space-16);
+
+  /* Radius */
+  --radius-full: var(--radius-pill);
+}
+
+/* =====================================================
+   DARK THEME OVERRIDES
+   Usage: set <html data-theme="dark">
+   ===================================================== */
+
+html[data-theme='dark'] {
+  --color-bg: #0f0c0d;
+  --color-bg-secondary: #171214;
+  --color-panel: #1f191c;
+  --color-surface: #171214;
+  --color-card: #1f191c;
+
+  --color-text: #f2eef0;
+  --color-text-secondary: #d6cfd2;
+  --color-text-muted: #b1a7ab;
+  --color-text-light: #8e8287;
+
+  --color-border: rgba(242, 106, 141, 0.18);
+  --color-border-soft: rgba(242, 106, 141, 0.12);
+  --color-border-strong: rgba(242, 106, 141, 0.26);
+
+  --app-bg: radial-gradient(
+      900px circle at 20% 0%,
+      rgba(221, 45, 74, 0.18),
+      transparent 50%
+    ),
+    radial-gradient(900px circle at 90% 20%, rgba(242, 106, 141, 0.14), transparent 55%),
+    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-secondary) 100%);
+}
+
+/* =====================================================
+   RESET + BASE ELEMENT STYLES
+   ===================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--app-bg);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+a:hover {
+  color: var(--color-accent-strong);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  line-height: var(--line-height-tight);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+h3 {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+}
+h4 {
+  font-size: var(--font-size-lg);
+}
+h5 {
+  font-size: var(--font-size-base);
+}
+h6 {
+  font-size: var(--font-size-sm);
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

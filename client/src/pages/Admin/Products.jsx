@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import './Products.css'; // Importing component-scoped styles
 import useProductStore from '../../store/productStore.js';
 // Styles loaded via main.css
 
@@ -60,26 +61,26 @@ export default function AdminProducts() {
   return (
     <div className="admin-products-page">
       {/* Page Header */}
-      <div className="admin-products-header">
+      <div className="admin-products-page__header">
         <div>
-          <p className="eyebrow">Admin</p>
+          <p className="admin-products-page__eyebrow">Admin</p>
           <h1>Products</h1>
-          <p className="subtext">Manage catalog, pricing, and stock</p>
+          <p className="admin-products-page__subtext">Manage catalog, pricing, and stock</p>
         </div>
         {/* Action buttons */}
-        <div className="actions">
-          <Link className="primary" to="/admin/products/new">Add Product</Link>
-          <button className="ghost" onClick={loadProducts} disabled={loading}>Refresh</button>
+        <div className="admin-products-page__actions">
+          <Link className="admin-products-page__btn admin-products-page__btn--primary" to="/admin/products/new">Add Product</Link>
+          <button className="admin-products-page__btn admin-products-page__btn--ghost" onClick={loadProducts} disabled={loading}>Refresh</button>
         </div>
       </div>
 
       {/* Loading state or products table */}
       {loading && products.length === 0 ? (
-        <div className="loading-box">Loading products...</div>
+        <div className="admin-products-page__loading">Loading products...</div>
       ) : (
-        <div className="table-card">
+        <div className="admin-products-page__table-card">
           {/* Table header */}
-          <div className="table-head">
+          <div className="admin-products-page__table-head">
             <span>Name</span>
             <span>Price</span>
             <span>Discount</span>
@@ -89,45 +90,45 @@ export default function AdminProducts() {
           </div>
           {/* Empty state */}
           {products.length === 0 && (
-            <div className="empty">No products found.</div>
+            <div className="admin-products-page__empty">No products found.</div>
           )}
           {/* Product rows */}
           {products.map((p) => (
-            <div key={p._id} className="table-row">
+            <div key={p._id} className="admin-products-page__table-row">
               {/* Product name with image */}
-              <div className="prod-main">
+              <div className="admin-products-page__prod-main">
                 {p.images?.[0]?.url || p.images?.[0] ? (
                   <img src={p.images[0]?.url || p.images[0]} alt={p.title} />
                 ) : (
-                  <div className="img-ph">NA</div>
+                  <div className="admin-products-page__img-placeholder">NA</div>
                 )}
                 <div>
-                  <div className="name">{p.title}</div>
-                  <div className="sku">{p.slug || p._id?.slice(0,8)}</div>
+                  <div className="admin-products-page__name">{p.title}</div>
+                  <div className="admin-products-page__sku">{p.slug || p._id?.slice(0,8)}</div>
                 </div>
               </div>
               {/* Price column */}
               <div>₹{p.price?.toFixed?.(2) || p.price}</div>
               {/* Discount price column */}
-              <div className={p.discountPrice ? 'discount' : 'muted'}>
+              <div className={p.discountPrice ? 'admin-products-page__discount' : 'admin-products-page__muted'}>
                 {p.discountPrice ? `₹${p.discountPrice.toFixed?.(2)}` : '—'}
               </div>
               {/* Stock column - danger style if 0 */}
-              <div className={p.stock === 0 ? 'danger' : ''}>{p.stock ?? '—'}</div>
+              <div className={p.stock === 0 ? 'admin-products-page__danger' : ''}>{p.stock ?? '—'}</div>
               {/* Category column */}
-              <div className="muted">{p.category || '—'}</div>
+              <div className="admin-products-page__muted">{p.category || '—'}</div>
               {/* Action buttons */}
-              <div className="row-actions">
-                <Link className="secondary" to={`/admin/products/${p.slug}/edit`}>Edit</Link>
+              <div className="admin-products-page__row-actions">
+                <Link className="admin-products-page__row-btn admin-products-page__row-btn--secondary" to={`/admin/products/${p.slug}/edit`}>Edit</Link>
                 <button 
-                  className="secondary"
+                  className="admin-products-page__row-btn admin-products-page__row-btn--secondary"
                   onClick={() => handleStockUpdate(p._id, p.title, p.stock)}
                   disabled={updatingId === p._id || loading}
                 >
                   {updatingId === p._id ? 'Updating...' : 'Stock'}
                 </button>
                 <button 
-                  className="danger"
+                  className="admin-products-page__row-btn admin-products-page__row-btn--danger"
                   onClick={() => handleDelete(p._id, p.title)}
                   disabled={loading}
                 >

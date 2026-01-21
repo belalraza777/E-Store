@@ -1,45 +1,45 @@
 // Footer.jsx - Site footer with links, contact info, and social media
 import { Link } from "react-router-dom";
 import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiMail, FiPhone, FiMapPin } from "react-icons/fi";
-// Styles loaded via main.css
+import './Footer.css'
 
 export default function Footer() {
   // Get current year for copyright
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="footer">
-      <div className="footer-container">
+    <footer className="site-footer">
+      <div className="site-footer__inner">
         {/* About Section - Logo and description */}
-        <div className="footer-section">
-          <div className="footer-logo">
-            <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store" className="footer-logo-img" />
-            <span className="footer-logo-text">E-Store</span>
+        <div className="site-footer__section">
+          <div className="site-footer__brand">
+            <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store" className="site-footer__logo" />
+            <span className="site-footer__brand-text">E-Store</span>
           </div>
-          <p className="footer-description">
+          <p className="site-footer__description">
             Your one-stop shop for quality products and exceptional service. Discover amazing deals and fast delivery.
           </p>
           {/* Social media links */}
-          <div className="social-links">
-            <a href="#facebook" className="social-icon" aria-label="Facebook">
+          <div className="site-footer__social">
+            <a href="#facebook" className="site-footer__social-link" aria-label="Facebook">
               <FiFacebook />
             </a>
-            <a href="#twitter" className="social-icon" aria-label="Twitter">
+            <a href="#twitter" className="site-footer__social-link" aria-label="Twitter">
               <FiTwitter />
             </a>
-            <a href="#instagram" className="social-icon" aria-label="Instagram">
+            <a href="#instagram" className="site-footer__social-link" aria-label="Instagram">
               <FiInstagram />
             </a>
-            <a href="#linkedin" className="social-icon" aria-label="LinkedIn">
+            <a href="#linkedin" className="site-footer__social-link" aria-label="LinkedIn">
               <FiLinkedin />
             </a>
           </div>
         </div>
 
         {/* Quick Links */}
-        <div className="footer-section">
-          <h3 className="footer-title">Quick Links</h3>
-          <ul className="footer-links">
+        <div className="site-footer__section">
+          <h3 className="site-footer__title">Quick Links</h3>
+          <ul className="site-footer__links">
             <li><Link to="/">Home</Link></li>
             <li><Link to="/products">Products</Link></li>
             <li><Link to="/orders">Orders</Link></li>
@@ -49,9 +49,9 @@ export default function Footer() {
         </div>
 
         {/* Categories */}
-        <div className="footer-section">
-          <h3 className="footer-title">Categories</h3>
-          <ul className="footer-links">
+        <div className="site-footer__section">
+          <h3 className="site-footer__title">Categories</h3>
+          <ul className="site-footer__links">
             <li><a href="#electronics">Electronics</a></li>
             <li><a href="#fashion">Fashion</a></li>
             <li><a href="#home">Home & Garden</a></li>
@@ -61,19 +61,19 @@ export default function Footer() {
         </div>
 
         {/* Contact Info */}
-        <div className="footer-section">
-          <h3 className="footer-title">Contact Us</h3>
-          <div className="contact-info">
-            <div className="contact-item">
-              <FiPhone className="contact-icon" />
+        <div className="site-footer__section">
+          <h3 className="site-footer__title">Contact Us</h3>
+          <div className="site-footer__contact">
+            <div className="site-footer__contact-item">
+              <FiPhone aria-hidden="true" />
               <a href="tel:+917004068598">+91 7004068598</a>
             </div>
-            <div className="contact-item">
-              <FiMail className="contact-icon" />
+            <div className="site-footer__contact-item">
+              <FiMail aria-hidden="true" />
               <a href="mailto:support@estore.com">belal@estore.com</a>
             </div>
-            <div className="contact-item">
-              <FiMapPin className="contact-icon" />
+            <div className="site-footer__contact-item">
+              <FiMapPin aria-hidden="true" />
               <span>123 Commerce St, Business City, BC 12345</span>
             </div>
           </div>
@@ -81,14 +81,14 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="footer-bottom">
-        <div className="footer-bottom-content">
+      <div className="site-footer__bottom">
+        <div className="site-footer__bottom-inner">
           <p>&copy; {currentYear} E-Store. All rights reserved.</p>
-          <div className="footer-legal">
+          <div className="site-footer__legal">
             <Link to="/privacy">Privacy Policy</Link>
-            <span className="divider">•</span>
+            <span className="site-footer__divider">•</span>
             <Link to="/terms">Terms of Service</Link>
-            <span className="divider">•</span>
+            <span className="site-footer__divider">•</span>
             <Link to="/shipping">Shipping Info</Link>
           </div>
         </div>

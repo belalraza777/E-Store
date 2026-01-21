@@ -1,4 +1,5 @@
 // ProductForm.jsx - Admin product create/edit form
+import './ProductForm.css';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -124,28 +125,28 @@ export default function ProductForm() {
   return (
     <div className="admin-product-form-page">
       {/* Page Header */}
-      <div className="header">
+      <div className="admin-product-form-page__header">
         <div>
-          <p className="eyebrow">Admin</p>
+          <p className="admin-product-form-page__eyebrow">Admin</p>
           <h1>{isEdit ? 'Edit Product' : 'Add Product'}</h1>
-          <p className="subtext">{isEdit ? 'Update product details' : 'Create a new catalog item'}</p>
+          <p className="admin-product-form-page__subtext">{isEdit ? 'Update product details' : 'Create a new catalog item'}</p>
         </div>
-        <div className="header-actions">
-          <Link to="/admin/products" className="ghost">Back</Link>
+        <div className="admin-product-form-page__header-actions">
+          <Link to="/admin/products" className="admin-product-form-page__back-btn">Back</Link>
         </div>
       </div>
 
       {/* Product Form */}
-      <form className="product-form" onSubmit={handleSubmit}>
-        <div className="grid">
+      <form className="admin-product-form-page__form" onSubmit={handleSubmit}>
+        <div className="admin-product-form-page__grid">
           {/* Title field */}
-          <label className="field">
+          <label className="admin-product-form-page__field">
             <span>Title *</span>
             <input name="title" value={form.title} onChange={handleChange} placeholder="Product title" required />
           </label>
 
           {/* Price field */}
-          <label className="field">
+          <label className="admin-product-form-page__field">
             <span>Price *</span>
             <input
               name="price"
@@ -160,7 +161,7 @@ export default function ProductForm() {
           </label>
 
           {/* Discount Price field */}
-          <label className="field">
+          <label className="admin-product-form-page__field">
             <span>Discount Price</span>
             <input
               name="discountPrice"
@@ -174,7 +175,7 @@ export default function ProductForm() {
           </label>
 
           {/* Stock field */}
-          <label className="field">
+          <label className="admin-product-form-page__field">
             <span>Stock</span>
             <input
               name="stock"
@@ -188,7 +189,7 @@ export default function ProductForm() {
           </label>
 
           {/* Category dropdown */}
-          <label className="field">
+          <label className="admin-product-form-page__field">
             <span>Category *</span>
             <select name="category" value={form.category} onChange={handleChange} required>
               <option value="">Select category</option>
@@ -199,14 +200,14 @@ export default function ProductForm() {
           </label>
 
           {/* Active status checkbox */}
-          <label className="field checkbox">
+          <label className="admin-product-form-page__field admin-product-form-page__field--checkbox">
             <input type="checkbox" name="isActive" checked={form.isActive} onChange={handleChange} />
             <span>Active (visible)</span>
           </label>
         </div>
 
         {/* Description textarea */}
-        <label className="field">
+        <label className="admin-product-form-page__field">
           <span>Description *</span>
           <textarea
             name="description"
@@ -219,12 +220,12 @@ export default function ProductForm() {
         </label>
 
         {/* Image upload field */}
-        <label className="field">
+        <label className="admin-product-form-page__field">
           <span>Images (optional, uploads will replace existing)</span>
           <input type="file" accept="image/*" multiple onChange={handleImages} />
           {/* Show existing images when editing */}
           {isEdit && currentProduct?.images?.length > 0 && (
-            <div className="thumbs">
+            <div className="admin-product-form-page__thumbs">
               {currentProduct.images.map((img, idx) => (
                 <img key={idx} src={img.url} alt={`img-${idx}`} />
               ))}
@@ -233,11 +234,11 @@ export default function ProductForm() {
         </label>
 
         {/* Form action buttons */}
-        <div className="form-actions">
-          <button type="submit" disabled={submitting || loading} className="primary">
+        <div className="admin-product-form-page__form-actions">
+          <button type="submit" disabled={submitting || loading} className="admin-product-form-page__submit-btn">
             {submitting ? (isEdit ? 'Updating...' : 'Creating...') : (isEdit ? 'Update Product' : 'Create Product')}
           </button>
-          <button type="button" className="ghost" onClick={() => navigate('/admin/products')}>
+          <button type="button" className="admin-product-form-page__cancel-btn" onClick={() => navigate('/admin/products')}>
             Cancel
           </button>
         </div>

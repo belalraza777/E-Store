@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import useReviewStore from '../../store/reviewStore.js'
 import { toast } from 'sonner'
-// Styles loaded via main.css
+import './ReviewsSection.css';
 
 export default function ReviewsSection({ productId, reviews, averageRating, totalReviews, reviewsLoading, fetchProductReviews }) {
   // Get addReview function from store
