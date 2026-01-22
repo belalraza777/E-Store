@@ -4,7 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { FiMenu, FiX, FiShoppingCart, FiUser, FiLogOut, FiSearch } from "react-icons/fi";
 import './Header.css'
-import useCartStore from '../store/cartStore.js'
+import useCartStore from '../store/cartStore.js';
+import logo from '../assets/estorelogo.png';
 
 
 export default function Header() {
@@ -42,7 +43,7 @@ export default function Header() {
       <div className="site-header__inner">
         {/* Logo */}
         <Link to="/" className="site-header__brand">
-          <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store" className="site-header__logo" />
+          <img src={logo} alt="E-Store" className="site-header__logo" />
           <span className="site-header__brand-text">E-Store</span>
         </Link>
 

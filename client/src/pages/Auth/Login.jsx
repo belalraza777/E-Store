@@ -5,6 +5,7 @@ import { useAuth } from "../../context/authContext";
 import "./login.css";
 import { FcGoogle } from "react-icons/fc";
 import { FiMail, FiLock } from "react-icons/fi";
+import logo from '../../assets/estorelogo.png';
 
 const LoginPage = () => {
     // Navigation hooks
@@ -73,7 +74,7 @@ const LoginPage = () => {
             <div className="auth-page__card">
                 <div className="auth-page__header">
                     <div className="auth-page__logo">
-                        <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store logo" className="auth-page__logo-img" />
+                        <img src={logo} alt="E-Store logo" className="auth-page__logo-img" />
                     </div>
                     <h2 className="auth-page__title">Welcome back</h2>
                     <p className="auth-page__subtitle">Sign in to continue</p>
