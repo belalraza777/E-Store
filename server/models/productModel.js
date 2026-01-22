@@ -70,4 +70,7 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+//indexes for better search performance
+productSchema.index({ category: 1, isActive: 1 });
+
 export default mongoose.model("Product", productSchema);
