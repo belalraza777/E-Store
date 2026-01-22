@@ -60,7 +60,7 @@ const createOrder = async (req, res, next) => {
         await sendEmail(
             user.email,
             "Order Confirmation - E-Store",
-            `Hi ${user.name},\n\nYour order has been placed successfully!\nOrder ID: ${order._id}\nTotal: $${order.totalAmount}\n\nThank you for shopping with us!\n\n- E-Store Team`
+            `Hi ${user.name},\n\nYour order has been placed successfully!\nOrder ID: ${order._id}\nTotal: ₹${order.totalAmount}\n\nThank you for shopping with us!\n\n- E-Store Team`
         );
     }
 

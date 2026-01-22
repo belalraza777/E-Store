@@ -1,34 +1,41 @@
-import FormData from "form-data";
-import Mailgun from "mailgun.js";
 import dotenv from "dotenv";
-
 dotenv.config();
+import nodemailer from "nodemailer";
 
-const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env;
 
-if (!MAILGUN_API_KEY || !MAILGUN_DOMAIN) {
-    process.exit(1);
+const { GMAIL_USER, GMAIL_APP_PASSWORD } = process.env;
+
+if (!GMAIL_USER || !GMAIL_APP_PASSWORD) {
+  console.error("Missing Gmail credentials");
+  process.exit(1);
 }
 
-const mailgun = new Mailgun(FormData);
-const mg = mailgun.client({
-    username: "api",
-    key: MAILGUN_API_KEY,
-    // If using EU domain:
-    // url: "https://api.eu.mailgun.net"
+// Create transporter
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: GMAIL_USER,
+    pass: GMAIL_APP_PASSWORD,
+  },
 });
 
 // ------- Send Email Notification -------
-export const sendEmail = async (to, subject, text, from = "E-Store <no-reply@estore.com>") => {
-    try {
-        const data = await mg.messages.create(MAILGUN_DOMAIN, {
-            from,
-            to,
-            subject,
-            text,
-        });
-        return data;
-    } catch (error) {
-        throw new Error(`Failed to send email: ${error.message || error}`);
-    }
+export const sendEmail = async (
+  to,
+  subject,
+  text,
+  from = `E-Store <${GMAIL_USER}>`
+) => {
+  try {
+    const info = await transporter.sendMail({
+      from,
+      to,
+      subject,
+      text,
+    });
+
+    return info;
+  } catch (error) {
+    throw new Error(`Failed to send email: ${error.message}`);
+  }
 };
