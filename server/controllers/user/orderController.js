@@ -1,5 +1,7 @@
 import Order from "../../models/orderModel.js";
 import Product from "../../models/productModel.js";
+import User from "../../models/userModel.js";
+import { sendEmail } from "../../config/email.js";
 
 // Create order
 // POST /api/v1/orders
@@ -50,6 +52,16 @@ const createOrder = async (req, res, next) => {
     //Reduce stock quantity for each product
     for (const item of orderItems) {
         await Product.findByIdAndUpdate(item.product, { $inc: { stockQuantity: -item.quantity } });
+    }
+
+    // Send order confirmation email
+    const user = await User.findById(userId);
+    if (user && user.email) {
+        await sendEmail(
+            user.email,
+            "Order Confirmation - E-Store",
+            `Hi ${user.name},\n\nYour order has been placed successfully!\nOrder ID: ${order._id}\nTotal: $${order.totalAmount}\n\nThank you for shopping with us!\n\n- E-Store Team`
+        );
     }
 
     return res.status(201).json({ success: true, message: "Order placed", data: order });
@@ -129,6 +141,16 @@ const cancelOrder = async (req, res, next) => {
     //Restock the products
     for (const item of order.items) {
         await Product.findByIdAndUpdate(item.product._id, { $inc: { stockQuantity: item.quantity } });
+    }
+
+    // Send order cancellation email
+    const userCancel = await User.findById(userId);
+    if (userCancel && userCancel.email) {
+        await sendEmail(
+            userCancel.email,
+            "Order Cancelled - E-Store",
+            `Hi ${userCancel.name},\n\nYour order (ID: ${order._id}) has been cancelled.\nReason: ${order.cancelReason || reason}\n\nIf you have questions, contact support.\n\n- E-Store Team`
+        );
     }
 
     return res.status(200).json({ success: true, message: "Order cancelled successfully", data: order });

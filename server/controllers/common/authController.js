@@ -1,6 +1,7 @@
 import User from "../../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../../config/email.js";
 // import { generateOTP } from "../../utils/otp.js";
 // import { sendOtpEmail } from "../../utils/email.js";
 // import Otp from "../../models/otpModel.js";
@@ -76,6 +77,12 @@ const register = async (req, res, next) => {
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
     });
+    // Send registration email
+    await sendEmail(
+        user.email,
+        "Welcome to E-Store!",
+        `Hi ${user.name},\n\nYour account has been created successfully.\n\nThank you for joining E-Store!\n\n- E-Store Team`
+    );
     // Returning success response with user data
     return res.status(201).json({ success: true, message: "Account Created Successfully!", data: user });
 };
@@ -150,6 +157,12 @@ const resetPassword = async (req, res, next) => {
     user.passwordHash = hash;
     // Saving the updated user data
     await user.save();
+    // Send password reset email
+    await sendEmail(
+        user.email,
+        "Password Changed - E-Store",
+        `Hi ${user.name},\n\nYour password has been changed successfully. If you did not perform this action, please contact support immediately.\n\n- E-Store Team`
+    );
     // Returning success response
     return res.status(201).json({ success: true, message: "Password Changed Successfully", data: "password changed" });
 }
