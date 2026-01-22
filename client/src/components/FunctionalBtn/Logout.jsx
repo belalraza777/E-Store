@@ -1,14 +1,10 @@
 import React from 'react';
 import { FiLogOut } from "react-icons/fi";
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../context/authContext.jsx';
 import './Logout.css';
 
-/**
- * Logout button component for reuse in admin/user panels.
- * @param {object} props
- * @param {string} [props.className] - Additional class names for styling
- * @param {function} [props.onClick] - Optional onClick handler (runs before logout)
- */
+// Functional logout button component
+// Accepts optional className and onClick props
 export default function Logout({ className = '', onClick }) {
     const { handleLogout } = useAuth();
 

@@ -1,17 +1,21 @@
-
-
+import React, { useState } from 'react';
+import { FiLock, FiEdit, FiEye, FiEyeOff } from 'react-icons/fi';
+import { toast } from 'sonner';
 import './ResetPassword.css';
+import { useAuth } from '../../context/authContext';
 // ResetPassword: Allows user to change their password
 // No props required; uses local state and API call
 
 const ResetPassword = () => {
+  //use context for auth
+  const { handleResetPassword } = useAuth();
   // State for toggling password form visibility
   const [isOpen, setIsOpen] = useState(false);
   // Form state for old, new, and confirm password
-  const [form, setForm] = useState({ 
-    oldPassword: "", 
-    newPassword: "", 
-    confirmPassword: "" 
+  const [form, setForm] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: ""
   });
   // State for loading indicator
   const [loading, setLoading] = useState(false);
@@ -46,7 +50,7 @@ const ResetPassword = () => {
       return;
     }
     try {
-      const res = await axiosInstance.patch("/auth/reset-password", {
+      const res = await handleResetPassword({
         oldPassword: form.oldPassword,
         newPassword: form.newPassword
       });
@@ -73,7 +77,7 @@ const ResetPassword = () => {
           <h4>Change Password</h4>
           <p>Update your password to keep your account secure</p>
         </div>
-        <button 
+        <button
           type="button"
           className="reset-password__toggle"
           onClick={(e) => {
@@ -84,23 +88,23 @@ const ResetPassword = () => {
           <FiEdit />
         </button>
       </div>
-      
+
       {isOpen && (
         <div className="reset-password__panel">
           <form className="reset-password__form" onSubmit={handleSubmit}>
             <div className="reset-password__group">
               <label className="reset-password__label">Current Password</label>
               <div className="reset-password__input-wrap">
-                <input 
-                  type={showOldPassword ? "text" : "password"} 
-                  name="oldPassword" 
-                  value={form.oldPassword} 
+                <input
+                  type={showOldPassword ? "text" : "password"}
+                  name="oldPassword"
+                  value={form.oldPassword}
                   onChange={handleChange}
                   placeholder="Enter current password"
                   autoComplete="current-password"
                   className="reset-password__input"
                 />
-                <button 
+                <button
                   type="button"
                   className="reset-password__reveal"
                   onClick={() => setShowOldPassword(!showOldPassword)}
@@ -110,20 +114,20 @@ const ResetPassword = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="reset-password__group">
               <label className="reset-password__label">New Password</label>
               <div className="reset-password__input-wrap">
-                <input 
-                  type={showNewPassword ? "text" : "password"} 
-                  name="newPassword" 
-                  value={form.newPassword} 
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  name="newPassword"
+                  value={form.newPassword}
                   onChange={handleChange}
                   placeholder="Enter new password (min. 6 characters)"
                   autoComplete="new-password"
                   className="reset-password__input"
                 />
-                <button 
+                <button
                   type="button"
                   className="reset-password__reveal"
                   onClick={() => setShowNewPassword(!showNewPassword)}
@@ -133,20 +137,20 @@ const ResetPassword = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="reset-password__group">
               <label className="reset-password__label">Confirm New Password</label>
               <div className="reset-password__input-wrap">
-                <input 
-                  type={showConfirmPassword ? "text" : "password"} 
-                  name="confirmPassword" 
-                  value={form.confirmPassword} 
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={form.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm new password"
                   autoComplete="new-password"
                   className="reset-password__input"
                 />
-                <button 
+                <button
                   type="button"
                   className="reset-password__reveal"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -156,12 +160,12 @@ const ResetPassword = () => {
                 </button>
               </div>
             </div>
-            
+
             {/* No inline error/success message, handled by toast */}
-            
+
             <div className="reset-password__actions">
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="reset-password__button reset-password__button--primary"
                 disabled={loading}
               >
@@ -174,8 +178,8 @@ const ResetPassword = () => {
                   "Update Password"
                 )}
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="reset-password__button reset-password__button--secondary"
                 onClick={handleClose}
                 disabled={loading}

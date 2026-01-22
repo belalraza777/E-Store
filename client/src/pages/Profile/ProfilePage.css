@@ -100,6 +100,21 @@
   color: var(--color-text);
 }
 
+.profile-page__role{
+  margin-top: var(--space-4);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-extrabold);
+  color: black;
+  border: 2px solid rgb(145, 0, 0);
+  border-radius: var(--radius-xl);
+  display: inline-block;
+  padding: var(--space-3) var(--space-6);
+  background: #ffffff;
+}
+.profile-page__role__user{
+  display: none;
+}
+
 @media (max-width: 640px) {
   .profile-page__header {
     padding: var(--space-8) var(--space-6);

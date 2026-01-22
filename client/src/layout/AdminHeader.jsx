@@ -12,7 +12,7 @@ import {
   FiLogOut,
   FiChevronDown
 } from "react-icons/fi";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/authContext.jsx";
 import Logout from "../components/FunctionalBtn/Logout.jsx";
 
 import './AdminHeader.css'
@@ -59,10 +59,12 @@ export default function AdminHeader() {
         {/* User Profile & Logout */}
         <div className="admin-header__right">
           {/* Show admin name */}
-          <div className="admin-header__user">
-            <FiUsers size={20} />
-            <span>{user?.name || "Admin"}</span>
-          </div>
+          <Link to="/profile">
+            <div className="admin-header__user">
+              <FiUsers size={20} />
+              <span>{user?.name || "Admin"}</span>
+            </div>
+          </Link>
 
           {/* Styled Logout button as component */}
           <Logout className="admin-logout-btn" />

@@ -1,0 +1,1052 @@
+/* ==========================================================================
+   Global Responsive Design System - Mobile-First Production Ready
+   ========================================================================== */
+
+/* =====================================================
+   Breakpoint Variables
+   ===================================================== */
+
+:root {
+  /* Breakpoints - Mobile First */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1536px;
+
+  /* Container Max Widths */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1400px;
+
+  /* Mobile-First Spacing (starts small, grows) */
+  --spacing-mobile-xs: 0.25rem;
+  --spacing-mobile-sm: 0.5rem;
+  --spacing-mobile-md: 1rem;
+  --spacing-mobile-lg: 1.5rem;
+  --spacing-mobile-xl: 2rem;
+
+  /* Responsive Spacing Scale - Fluid */
+  --spacing-responsive-xs: clamp(0.25rem, 0.5vw + 0.25rem, 0.5rem);
+  --spacing-responsive-sm: clamp(0.5rem, 1vw + 0.25rem, 0.75rem);
+  --spacing-responsive-md: clamp(0.75rem, 1.5vw + 0.5rem, 1.25rem);
+  --spacing-responsive-lg: clamp(1rem, 2vw + 0.5rem, 1.5rem);
+  --spacing-responsive-xl: clamp(1.5rem, 3vw + 1rem, 2.5rem);
+  --spacing-responsive-2xl: clamp(2rem, 4vw + 1.5rem, 3.5rem);
+
+  /* Mobile-First Font Sizes (optimized for readability) */
+  --font-mobile-xs: 0.75rem;
+  --font-mobile-sm: 0.875rem;
+  --font-mobile-base: 1rem;
+  --font-mobile-lg: 1.125rem;
+  --font-mobile-xl: 1.25rem;
+
+  /* Responsive Font Sizes - Fluid Typography */
+  --font-responsive-xs: clamp(0.75rem, 0.5vw + 0.625rem, 0.875rem);
+  --font-responsive-sm: clamp(0.875rem, 0.75vw + 0.625rem, 1rem);
+  --font-responsive-base: clamp(1rem, 1vw + 0.75rem, 1.125rem);
+  --font-responsive-lg: clamp(1.125rem, 1.25vw + 0.875rem, 1.375rem);
+  --font-responsive-xl: clamp(1.25rem, 1.5vw + 1rem, 1.5rem);
+  --font-responsive-2xl: clamp(1.5rem, 2vw + 1.25rem, 2rem);
+  --font-responsive-3xl: clamp(2rem, 3vw + 1.5rem, 2.75rem);
+  --font-responsive-4xl: clamp(2.5rem, 4vw + 2rem, 3.5rem);
+
+  /* Mobile Touch Targets (minimum 44x44px) */
+  --touch-target-min: 44px;
+  --touch-target-comfortable: 48px;
+
+  /* Mobile Safe Areas (for notches, etc.) */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+}
+
+/* =====================================================
+   Mobile-First Base Styles
+   ===================================================== */
+
+/* Ensure proper mobile rendering */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html {
+  /* Prevent font size adjustment on iOS */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Smooth scrolling on mobile */
+  scroll-behavior: smooth;
+  /* Better font rendering on mobile */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+  /* Better text rendering */
+  text-rendering: optimizeLegibility;
+  /* Prevent pull-to-refresh on mobile (can be overridden) */
+  overscroll-behavior-y: contain;
+}
+
+/* =====================================================
+   Mobile-First Container Utilities
+   ===================================================== */
+
+.container-responsive {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  /* Mobile-first: smaller padding */
+  padding-left: var(--spacing-mobile-md);
+  padding-right: var(--spacing-mobile-md);
+}
+
+/* Small phones (480px+) */
+@media (min-width: 480px) {
+  .container-responsive {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+}
+
+/* Large phones (640px+) */
+@media (min-width: 640px) {
+  .container-responsive {
+    max-width: var(--container-sm);
+    padding-left: var(--space-5);
+    padding-right: var(--space-5);
+  }
+}
+
+/* Tablets (768px+) */
+@media (min-width: 768px) {
+  .container-responsive {
+    max-width: var(--container-md);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+/* Small desktops (1024px+) */
+@media (min-width: 1024px) {
+  .container-responsive {
+    max-width: var(--container-lg);
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+}
+
+/* Large desktops (1280px+) */
+@media (min-width: 1280px) {
+  .container-responsive {
+    max-width: var(--container-xl);
+  }
+}
+
+/* Extra large (1536px+) */
+@media (min-width: 1536px) {
+  .container-responsive {
+    max-width: var(--container-2xl);
+  }
+}
+
+/* =====================================================
+   Mobile-First Grid System
+   ===================================================== */
+
+/* Base: Single column on mobile */
+.grid-responsive {
+  display: grid;
+  gap: var(--spacing-mobile-md);
+  grid-template-columns: 1fr;
+}
+
+/* Large phones: 2 columns */
+@media (min-width: 640px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-mobile-lg);
+  }
+}
+
+/* Tablets: 3 columns */
+@media (min-width: 768px) {
+  .grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+/* Desktops: 4 columns */
+@media (min-width: 1024px) {
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-8);
+  }
+}
+
+/* Auto-fill grid - Mobile First */
+.grid-auto-fill {
+  display: grid;
+  /* Mobile: 1 column, min 280px */
+  grid-template-columns: 1fr;
+  gap: var(--spacing-mobile-md);
+}
+
+/* Small phones: 2 columns */
+@media (min-width: 480px) {
+  .grid-auto-fill {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-mobile-sm);
+  }
+}
+
+/* Large phones: 2 columns, larger items */
+@media (min-width: 640px) {
+  .grid-auto-fill {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-mobile-lg);
+  }
+}
+
+/* Tablets: auto-fill with min 200px */
+@media (min-width: 768px) {
+  .grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-4);
+  }
+}
+
+/* Small desktops: auto-fill with min 250px */
+@media (min-width: 1024px) {
+  .grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-5);
+  }
+}
+
+/* Large desktops: auto-fill with min 280px */
+@media (min-width: 1200px) {
+  .grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+/* =====================================================
+   Mobile-First Flex Utilities
+   ===================================================== */
+
+.flex-responsive {
+  display: flex;
+  /* Mobile: column stack */
+  flex-direction: column;
+  gap: var(--spacing-mobile-md);
+}
+
+/* Tablets and up: row */
+@media (min-width: 768px) {
+  .flex-responsive {
+    flex-direction: row;
+    gap: var(--space-6);
+  }
+}
+
+.flex-wrap-responsive {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-mobile-md);
+}
+
+/* Mobile: force column */
+@media (max-width: 767px) {
+  .flex-wrap-responsive {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+}
+
+/* =====================================================
+   Mobile-First Visibility Utilities
+   ===================================================== */
+
+/* Hide on mobile, show on larger screens */
+.hide-mobile {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block !important;
+  }
+}
+
+.hide-mobile-flex {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile-flex {
+    display: flex !important;
+  }
+}
+
+.hide-mobile-inline {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile-inline {
+    display: inline !important;
+  }
+}
+
+/* Show on mobile, hide on larger screens */
+.show-mobile {
+  display: block !important;
+}
+
+@media (min-width: 768px) {
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+.show-mobile-flex {
+  display: flex !important;
+}
+
+@media (min-width: 768px) {
+  .show-mobile-flex {
+    display: none !important;
+  }
+}
+
+.show-mobile-inline {
+  display: inline !important;
+}
+
+@media (min-width: 768px) {
+  .show-mobile-inline {
+    display: none !important;
+  }
+}
+
+/* Hide on tablet and below */
+.hide-tablet {
+  display: block !important;
+}
+
+@media (max-width: 1023px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+/* Hide on desktop */
+.hide-desktop {
+  display: block !important;
+}
+
+@media (min-width: 1024px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* =====================================================
+   Mobile-First Typography
+   ===================================================== */
+
+.text-responsive {
+  font-size: var(--font-mobile-base);
+  line-height: var(--line-height-normal);
+}
+
+@media (min-width: 768px) {
+  .text-responsive {
+    font-size: var(--font-responsive-base);
+  }
+}
+
+.heading-responsive-1 {
+  font-size: clamp(1.75rem, 5vw, 3.5rem);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+}
+
+.heading-responsive-2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+}
+
+.heading-responsive-3 {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+}
+
+.heading-responsive-4 {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Mobile-optimized text sizes */
+.text-mobile-xs {
+  font-size: var(--font-mobile-xs);
+}
+
+.text-mobile-sm {
+  font-size: var(--font-mobile-sm);
+}
+
+.text-mobile-base {
+  font-size: var(--font-mobile-base);
+}
+
+.text-mobile-lg {
+  font-size: var(--font-mobile-lg);
+}
+
+.text-mobile-xl {
+  font-size: var(--font-mobile-xl);
+}
+
+/* =====================================================
+   Mobile-First Spacing Utilities
+   ===================================================== */
+
+.padding-responsive {
+  padding: var(--spacing-mobile-md);
+}
+
+@media (min-width: 768px) {
+  .padding-responsive {
+    padding: var(--spacing-responsive-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .padding-responsive {
+    padding: var(--spacing-responsive-xl);
+  }
+}
+
+.padding-mobile {
+  padding: var(--spacing-mobile-md);
+}
+
+.padding-mobile-sm {
+  padding: var(--spacing-mobile-sm);
+}
+
+.padding-mobile-lg {
+  padding: var(--spacing-mobile-lg);
+}
+
+.margin-responsive {
+  margin: var(--spacing-mobile-md);
+}
+
+@media (min-width: 768px) {
+  .margin-responsive {
+    margin: var(--spacing-responsive-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .margin-responsive {
+    margin: var(--spacing-responsive-xl);
+  }
+}
+
+/* =====================================================
+   Mobile-First Image & Media
+   ===================================================== */
+
+.img-responsive {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  /* Prevent image drag on mobile */
+  -webkit-user-drag: none;
+  user-select: none;
+  /* Better image rendering on mobile */
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.aspect-ratio-responsive {
+  /* Mobile: square */
+  aspect-ratio: 1 / 1;
+}
+
+@media (min-width: 640px) {
+  .aspect-ratio-responsive {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (min-width: 768px) {
+  .aspect-ratio-responsive {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* =====================================================
+   Mobile-First Layout Patterns
+   ===================================================== */
+
+/* Two-column layout - Mobile: stack */
+.layout-two-column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-mobile-lg);
+}
+
+@media (min-width: 768px) {
+  .layout-two-column {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+}
+
+/* Sidebar layout - Mobile: stack */
+.layout-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-mobile-lg);
+}
+
+@media (min-width: 1024px) {
+  .layout-sidebar {
+    grid-template-columns: 280px 1fr;
+    gap: var(--space-8);
+  }
+}
+
+/* Sticky sidebar - Mobile: static */
+.sidebar-sticky {
+  position: static;
+}
+
+@media (min-width: 1024px) {
+  .sidebar-sticky {
+    position: sticky;
+    top: var(--space-4);
+    align-self: start;
+    max-height: calc(100vh - var(--space-8));
+    overflow-y: auto;
+  }
+}
+
+/* =====================================================
+   Mobile-First Button & Form Elements
+   ===================================================== */
+
+.btn-responsive {
+  /* Mobile: full width, larger touch target */
+  width: 100%;
+  min-height: var(--touch-target-min);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-mobile-base);
+  /* Better touch feedback */
+  -webkit-tap-highlight-color: rgba(var(--color-primary-rgb), 0.1);
+}
+
+@media (min-width: 640px) {
+  .btn-responsive {
+    width: auto;
+    min-width: 120px;
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--font-responsive-base);
+  }
+}
+
+/* Mobile-optimized buttons */
+.btn-mobile {
+  width: 100%;
+  min-height: var(--touch-target-comfortable);
+  padding: var(--space-4);
+  font-size: var(--font-mobile-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Form inputs - Mobile optimized */
+.input-responsive {
+  width: 100%;
+  min-height: var(--touch-target-min);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-mobile-base);
+  /* Prevent zoom on iOS */
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+  .input-responsive {
+    padding: var(--space-4);
+    font-size: var(--font-responsive-base);
+  }
+}
+
+/* Prevent iOS zoom on input focus */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* =====================================================
+   Mobile-First Table Patterns
+   ===================================================== */
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Better scrolling on mobile */
+  scrollbar-width: thin;
+}
+
+.table-responsive table {
+  min-width: 600px;
+  width: 100%;
+}
+
+/* Mobile: Stack table rows */
+@media (max-width: 767px) {
+  .table-responsive table {
+    display: block;
+    min-width: 100%;
+  }
+
+  .table-responsive thead {
+    display: none;
+  }
+
+  .table-responsive tbody,
+  .table-responsive tr {
+    display: block;
+    width: 100%;
+  }
+
+  .table-responsive tr {
+    margin-bottom: var(--spacing-mobile-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-mobile-md);
+    background: var(--color-card);
+  }
+
+  .table-responsive td {
+    display: block;
+    width: 100%;
+    padding: var(--space-2) 0;
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+
+  .table-responsive td:last-child {
+    border-bottom: none;
+  }
+
+  .table-responsive td::before {
+    content: attr(data-label) ': ';
+    font-weight: var(--font-weight-semibold);
+    display: inline-block;
+    min-width: 100px;
+    color: var(--color-text-secondary);
+  }
+}
+
+/* =====================================================
+   Mobile-First Navigation Patterns
+   ===================================================== */
+
+.nav-responsive {
+  display: flex;
+  /* Mobile: column */
+  flex-direction: column;
+  gap: var(--spacing-mobile-sm);
+}
+
+@media (min-width: 768px) {
+  .nav-responsive {
+    flex-direction: row;
+    gap: var(--space-4);
+  }
+}
+
+/* Mobile menu overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-modal-backdrop);
+  backdrop-filter: blur(4px);
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-panel);
+  z-index: var(--z-modal);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--safe-area-top) var(--spacing-mobile-md) var(--safe-area-bottom);
+}
+
+/* =====================================================
+   Mobile-First Card Patterns
+   ===================================================== */
+
+.card-responsive {
+  padding: var(--spacing-mobile-md);
+  border-radius: var(--radius-md);
+  /* Better touch feedback */
+  -webkit-tap-highlight-color: rgba(var(--color-primary-rgb), 0.05);
+}
+
+@media (min-width: 768px) {
+  .card-responsive {
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* =====================================================
+   Mobile-First Modal & Overlay Patterns
+   ===================================================== */
+
+.modal-responsive {
+  width: 100%;
+  max-width: 100%;
+  max-height: 100vh;
+  margin: 0;
+  padding: var(--spacing-mobile-lg);
+  /* Safe area support */
+  padding-top: calc(var(--safe-area-top) + var(--spacing-mobile-lg));
+  padding-bottom: calc(var(--safe-area-bottom) + var(--spacing-mobile-lg));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 640px) {
+  .modal-responsive {
+    width: 90%;
+    max-width: 500px;
+    margin: var(--space-8) auto;
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .modal-responsive {
+    max-width: 600px;
+    padding: var(--space-8);
+  }
+}
+
+/* =====================================================
+   Mobile-First Text Alignment
+   ===================================================== */
+
+.text-center-mobile {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .text-center-mobile {
+    text-align: left;
+  }
+}
+
+.text-left-mobile {
+  text-align: left;
+}
+
+@media (max-width: 767px) {
+  .text-left-mobile {
+    text-align: center;
+  }
+}
+
+/* =====================================================
+   Mobile-First Gap Utilities
+   ===================================================== */
+
+.gap-responsive-sm {
+  gap: var(--spacing-mobile-sm);
+}
+
+@media (min-width: 768px) {
+  .gap-responsive-sm {
+    gap: var(--space-4);
+  }
+}
+
+.gap-responsive-md {
+  gap: var(--spacing-mobile-md);
+}
+
+@media (min-width: 768px) {
+  .gap-responsive-md {
+    gap: var(--space-6);
+  }
+}
+
+.gap-responsive-lg {
+  gap: var(--spacing-mobile-lg);
+}
+
+@media (min-width: 768px) {
+  .gap-responsive-lg {
+    gap: var(--space-8);
+  }
+}
+
+/* =====================================================
+   Mobile-Specific Utilities
+   ===================================================== */
+
+/* Safe area padding */
+.padding-safe {
+  padding-top: var(--safe-area-top);
+  padding-right: var(--safe-area-right);
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+}
+
+/* Mobile scroll snap */
+.scroll-snap-mobile {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-mobile > * {
+  scroll-snap-align: start;
+}
+
+/* Mobile-friendly scrollbar */
+.scrollbar-mobile {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.scrollbar-mobile::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-mobile::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-mobile::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+}
+
+/* =====================================================
+   Common Mobile Breakpoints
+   ===================================================== */
+
+/* Extra Small Devices (phones, 480px and down) */
+@media (max-width: 480px) {
+  :root {
+    --container-padding: var(--spacing-mobile-sm);
+  }
+
+  /* Smaller text on very small screens */
+  body {
+    font-size: var(--font-mobile-sm);
+  }
+}
+
+/* Small Devices (large phones, 640px and down) */
+@media (max-width: 640px) {
+  :root {
+    --container-padding: var(--spacing-mobile-md);
+  }
+}
+
+/* Medium Devices (tablets, 768px and down) */
+@media (max-width: 768px) {
+  :root {
+    --container-padding: var(--spacing-mobile-md);
+  }
+}
+
+/* Large Devices (desktops, 1024px and down) */
+@media (max-width: 1024px) {
+  :root {
+    --container-padding: var(--space-4);
+  }
+}
+
+/* =====================================================
+   Touch Device Optimizations
+   ===================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch target sizes */
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+  }
+
+  /* Better touch targets for icons */
+  .icon-button {
+    min-width: var(--touch-target-comfortable);
+    min-height: var(--touch-target-comfortable);
+    padding: var(--space-2);
+  }
+
+  /* Remove hover effects on touch devices */
+  *:hover {
+    transition: none;
+  }
+
+  /* Better focus states for touch */
+  *:focus-visible {
+    outline-width: 3px;
+    outline-offset: 2px;
+  }
+}
+
+/* =====================================================
+   Mobile Landscape Optimizations
+   ===================================================== */
+
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Optimize for landscape mobile */
+  .landscape-optimize {
+    padding: var(--spacing-mobile-sm);
+  }
+
+  /* Reduce header height in landscape */
+  .header-landscape {
+    padding: var(--spacing-mobile-sm) 0;
+  }
+
+  /* Stack elements more tightly */
+  .landscape-tight {
+    gap: var(--spacing-mobile-sm);
+  }
+}
+
+/* =====================================================
+   Print Styles
+   ===================================================== */
+
+@media print {
+  .hide-print {
+    display: none !important;
+  }
+
+  .show-print {
+    display: block !important;
+  }
+
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+
+  a[href]::after {
+    content: ' (' attr(href) ')';
+  }
+}
+
+/* =====================================================
+   High DPI / Retina Displays
+   ===================================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  /* Optimize for retina displays */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* =====================================================
+   Reduced Motion Support
+   ===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-responsive,
+  .flex-responsive,
+  .card-responsive,
+  .btn-responsive {
+    transition: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* =====================================================
+   Dark Mode Mobile Optimizations
+   ===================================================== */
+
+@media (prefers-color-scheme: dark) {
+  @media (max-width: 768px) {
+    /* Additional dark mode mobile optimizations */
+    .card-responsive {
+      border-color: var(--color-border-strong);
+    }
+  }
+}
+
+/* =====================================================
+   Mobile Performance Optimizations
+   ===================================================== */
+
+/* GPU acceleration for smooth scrolling */
+.smooth-scroll-mobile {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Prevent layout shifts on mobile */
+.img-loading {
+  background: var(--color-surface);
+  display: block;
+}
+
+/* Optimize repaints on mobile */
+.optimize-repaint {
+  contain: layout style paint;
+}

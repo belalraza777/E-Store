@@ -1,5 +1,7 @@
-
-
+import React, { useState } from 'react';
+import { FiEdit2, FiUser, FiMail, FiPhone, FiSave, FiX, FiCheck } from 'react-icons/fi';
+import { toast } from 'sonner';
+import useProfileStore from "../../store/profileStore.js";
 import './ProfileInfo.css';
 // ProfileInfo: Displays and allows editing of user's personal information
 // Props:

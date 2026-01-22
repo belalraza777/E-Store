@@ -1,63 +1,85 @@
-// Product.jsx - Products listing page with infinite scroll
 import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useProductStore from '../../store/productStore.js'
 import ProductList from '../../components/product/ProductList.jsx'
+import CategoryButtons from '../../components/product/CategoryButtons.jsx'
 import './Product.css'
-import { Link } from 'react-router-dom'
 
 export default function Product() {
-  // Get products fetching function from store
-  const { fetchProducts } = useProductStore();
-  
-  // Local state for product list and pagination
-  const [allProducts, setAllProducts] = useState([]);
-  // Current page number
-  const [page, setPage] = useState(1);
-  // Total pages available
-  const [totalPages, setTotalPages] = useState(0);
-  // Whether more pages exist
-  const [hasMore, setHasMore] = useState(true);
-  // Loading state for initial load
-  const [loading, setLoading] = useState(true);
+  // Fetch function from store
+  const { fetchProducts } = useProductStore()
+  // Products state
+  const [allProducts, setAllProducts] = useState([])
+  // Category state
+  const [currentCategory, setCurrentCategory] = useState('all')
+  // Pagination states
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
 
-  // Load first page when component mounts
+  // Loading state
+  const [loading, setLoading] = useState(false)
+
+  // Reload products on category change
   useEffect(() => {
-    loadFirstPage();
-  }, []);
+    loadFirstPage()
+  }, [currentCategory])
 
-  // Fetch first page of products
+  // Filter products by category
+  const filterByCategory = (products) => {
+    if (currentCategory === 'all') return products
+    return products.filter(
+      product => product?.category === currentCategory
+    )
+  }
+
+  // Load first page
   const loadFirstPage = async () => {
-    setLoading(true);
-    const result = await fetchProducts({ page: 1 });
-    if (result.success) {
-      // Set products and pagination info
-      setAllProducts(result.data);
-      setTotalPages(result.pagination.totalPages);
-      setPage(1);
-      setHasMore(result.pagination.totalPages > 1);
-    }
-    setLoading(false);
-  };
+    setLoading(true)
 
-  // Infinite scroll - fetch next page and append to list
+    const result = await fetchProducts({ page: 1 })
+    if (!result.success) return
+
+    const filteredProducts = filterByCategory(result.data)
+
+    setAllProducts(filteredProducts)
+    setPage(1)
+    setTotalPages(result.pagination.totalPages)
+    setHasMore(result.pagination.totalPages > 1)
+
+    setLoading(false)
+  }
+
+  // Load more products
   const fetchMore = async () => {
-    const nextPage = page + 1;
-    const result = await fetchProducts({ page: nextPage });
-    if (result.success) {
-      // Append new products to existing list
-      setAllProducts(prev => [...prev, ...result.data]);
-      setPage(nextPage);
-      // Check if more pages available
-      setHasMore(nextPage < totalPages);
+    const nextPage = page + 1
+    if (nextPage > totalPages) {
+      setHasMore(false)
+      return
     }
-  };
+
+    const result = await fetchProducts({ page: nextPage })
+    if (!result.success) return
+
+    const filteredProducts = filterByCategory(result.data)
+
+    setAllProducts(prev => [...prev, ...filteredProducts])
+    setPage(nextPage)
+    setHasMore(nextPage < totalPages)
+  }
 
   return (
     <div className="product-page">
+      {/* Page title */}
       <h1 className="product-page__title">Products</h1>
-      
-      {/* Infinite scroll wrapper - auto loads more on scroll */}
+
+      {/* Category buttons component */}
+      <CategoryButtons
+        currentCategory={currentCategory}
+        onChange={setCurrentCategory}
+      />
+
+      {/* Infinite scroll */}
       <InfiniteScroll
         dataLength={allProducts.length}
         next={fetchMore}
@@ -65,7 +87,7 @@ export default function Product() {
         loader={<div className="product-page__loader">Loading more...</div>}
         endMessage={<div className="product-page__end">No more products</div>}
       >
-        {/* Product grid - shows loading only on first page */}
+        {/* Product list */}
         <ProductList products={allProducts} loading={loading && page === 1} />
       </InfiniteScroll>
     </div>

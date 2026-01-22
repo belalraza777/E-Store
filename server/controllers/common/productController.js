@@ -31,6 +31,7 @@ const getAllProducts = async (req, res, next) => {
     });
 };
 
+
 // Get single product by slug
 const getProductBySlug = async (req, res, next) => {
     const product = await Product.findOne({ slug: req?.params?.slug, isActive: true })

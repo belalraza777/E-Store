@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
     const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     // Save user data to state and localStorage
     const saveAuthData = (userData) => {
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }) => {
                 if (result.success && result.authenticated) {
                     saveAuthData(result.data);
                 } else {
+                    setError(result.message || "Authentication check failed");
                     clearAuthData();
                 }
             }
@@ -50,16 +52,16 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     // Connect/disconnect socket based on token
-    useEffect(() => {
-        if (token) {
-            connectSocket(token);
-        }
-        return () => {
-            if (!token) {
-                disconnectSocket();
-            }
-        };
-    }, [token]);
+    // useEffect(() => {
+    //     if (token) {
+    //         connectSocket(token);
+    //     }
+    //     return () => {
+    //         if (!token) {
+    //             disconnectSocket();
+    //         }
+    //     };
+    // }, [token]);
 
     // Handle user login
     const handleLogin = async (credentials) => {
@@ -68,6 +70,8 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("token", "cookie-auth");
             setToken("cookie-auth");
             saveAuthData(result.data);
+        }else {
+            setError(result.message || "Login failed");
         }
         return result;
     };
@@ -79,6 +83,7 @@ export const AuthProvider = ({ children }) => {
             saveAuthData(result.data);
             return { success: true, data: result.data };
         } else {
+            setError(result.message || "Authentication check failed");
             clearAuthData();
             return { success: false };
         }
@@ -91,6 +96,8 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("token", "cookie-auth");
             setToken("cookie-auth");
             saveAuthData(result.data);
+        }else{
+            setError(result.message || "Registration failed");
         }
         return result;
     };
@@ -104,7 +111,11 @@ export const AuthProvider = ({ children }) => {
 
     // Handle password reset
     const handleResetPassword = async (passwordData) => {
-        return await resetPassword(passwordData);
+        const result = await resetPassword(passwordData);
+        if (!result.success) {
+            setError(result.message || "Password reset failed");
+        }
+        return result;
     };
 
     // Provide auth state and functions to children

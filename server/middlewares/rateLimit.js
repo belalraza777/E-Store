@@ -2,8 +2,8 @@ import rateLimit from "express-rate-limit";
 
 // Global limiter: applies to all routes
 export const globalLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 200, // limit each IP to 200 requests per window
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 400, // limit each IP to 400 requests per window
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -21,6 +21,6 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
   message: {
     success: false,
-    message: "Too many login/signup attempts. Please wait 15 minutes.",
+    message: "Too many Authentication attempts. Please wait 15 minutes.",
   },
 });

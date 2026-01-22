@@ -1,6 +1,10 @@
 
 // AddressManager: Displays and allows editing of user's shipping address
 import './AddressManager.css';
+import React, { useState } from 'react';
+import { FiEdit, FiMapPin, FiCheck, FiX } from 'react-icons/fi';
+import { toast } from 'sonner';
+import useProfileStore from "../../store/profileStore.js";
 // Props:
 //   address: user address object (address, city, postalCode, country)
 

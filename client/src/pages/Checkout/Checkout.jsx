@@ -227,8 +227,9 @@ export default function Checkout() {
                   value="Online"
                   checked={form.paymentMethod === 'Online'}
                   onChange={handleChange}
+                  disabled
                 />
-                <span className="checkout-page__payment-name">Pay Online</span>
+                <span className="checkout-page__payment-name">Pay Online (Coming Soon)</span>
               </label>
             </div>
           </div>
