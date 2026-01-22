@@ -13,6 +13,7 @@ passport.use(
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             callbackURL: process.env.GOOGLE_CALLBACK_URL || "http://localhost:3000/api/v1/auth/google/callback",
         },
+        // Verify callback function (called after successful authentication)
         async (_, __, profile, done) => {
             try {
                 // Extract the email from the profile
@@ -32,6 +33,7 @@ passport.use(
                     user = await User.create({
                         name,
                         email,
+                        isEmailVerified: true,
                         avatar: profile?.photos?.[0]?.value,
                         provider: "google",
                         providerId: profile.id,

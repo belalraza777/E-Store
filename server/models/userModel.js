@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
             match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
 
         },
+        isEmailVerified: {
+            type: Boolean,
+            default: false,
+        },
         phone: {
             type: String,
             unique: true,
