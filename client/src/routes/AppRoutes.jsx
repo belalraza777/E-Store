@@ -21,6 +21,8 @@ import ScrollToTop from './ScrollToTop';
 import ProfilePage from '../pages/Profile/ProfilePage.jsx';
 import Search from '../pages/search/Search.jsx';
 import TermsPolicy from '../pages/Legal/TermsPolicy.jsx';
+import NotFound from '../pages/Other/NotFound.jsx';
+import UnAuthorized from '../pages/Other/UnAuthorized.jsx';
 
 const AppRoutes = () => {
     // Get current user to determine routing
@@ -132,10 +134,10 @@ const AppRoutes = () => {
 
 
                 {/* Unauthorized Route */}
-                <Route path="/unauthorized" element={<div>Unauthorized</div>} />
+                <Route path="/unauthorized" element={<UnAuthorized />} />
 
                 {/* 404 */}
-                <Route path="*" element={<div>Page Not Found</div>} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </>
     );
