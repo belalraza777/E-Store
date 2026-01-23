@@ -66,6 +66,7 @@ export const orderCreateLimiter = rateLimit({
   max: 15, // 15 orders per 15 min per IP
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.user?.role === "admin",
   message: {
     success: false,
     message: "Too many orders. Please try again in a few minutes.",
