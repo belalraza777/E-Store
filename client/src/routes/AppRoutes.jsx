@@ -19,6 +19,7 @@ import AdminOrderDetail from '../pages/Admin/OrderDetail.jsx';
 import { useAuth } from '../context/authContext.jsx';
 import ScrollToTop from './ScrollToTop';
 import ProfilePage from '../pages/Profile/ProfilePage.jsx';
+import Search from '../pages/search/Search.jsx';
 
 const AppRoutes = () => {
     // Get current user to determine routing
@@ -34,6 +35,7 @@ const AppRoutes = () => {
                 <Route path="/products" element={<Product />} />
                 <Route path="/products/:slug" element={<SingleProduct />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/search" element={<Search/>} />
 
                 {/* ===== AUTH ROUTES - login/register pages ===== */}
                 <Route path="/login" element={<Login />} />

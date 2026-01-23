@@ -70,11 +70,11 @@ export default function Footer() {
             </div>
             <div className="site-footer__contact-item">
               <FiMail aria-hidden="true" />
-              <a href="mailto:support@estore.com">belal@estore.com</a>
+              <a href="mailto:support@estore.com">support@estore.com</a>
             </div>
             <div className="site-footer__contact-item">
               <FiMapPin aria-hidden="true" />
-              <span>123 Commerce St, Business City, BC 12345</span>
+              <span>Jhilli Chowk Akabrpur Mathurapur Samastipur Bihar 848101 India</span>
             </div>
           </div>
         </div>

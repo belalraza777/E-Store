@@ -12,6 +12,8 @@ import upload from "../middlewares/upload.js";
 // Public routes
 router.get("/", asyncWrapper(productController.getAllProducts));
 
+router.post("/search", asyncWrapper(productController.searchProducts));
+
 router.get("/categories", (req, res) => {
     return res.status(200).json({ success: true, data: CATEGORIES });
 });

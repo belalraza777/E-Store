@@ -6,6 +6,7 @@ import { FiMenu, FiX, FiShoppingCart, FiUser, FiLogOut, FiSearch } from "react-i
 import './Header.css'
 import useCartStore from '../store/cartStore.js';
 import logo from '../assets/estorelogo.png';
+import SearchBar from "../pages/search/SearchBar.jsx";
 
 
 export default function Header() {
@@ -23,7 +24,7 @@ export default function Header() {
   useEffect(() => {
     fetchCart();
   }, []);
-  
+
   // Update cart badge when cart changes
   useEffect(() => {
     if (cart && cart.items) {
@@ -48,12 +49,13 @@ export default function Header() {
         </Link>
 
         {/* Search Bar */}
-        <div className="site-header__search">
+        {/* <div className="site-header__search">
           <input type="text" placeholder="Search products..." className="site-header__search-input" />
           <button className="site-header__search-btn" aria-label="Search">
             <FiSearch />
           </button>
-        </div>
+        </div> */}
+        <SearchBar />
 
         {/* Desktop Navigation */}
         <nav className="site-header__nav site-header__nav--desktop">
