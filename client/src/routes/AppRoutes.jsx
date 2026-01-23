@@ -20,6 +20,7 @@ import { useAuth } from '../context/authContext.jsx';
 import ScrollToTop from './ScrollToTop';
 import ProfilePage from '../pages/Profile/ProfilePage.jsx';
 import Search from '../pages/search/Search.jsx';
+import TermsPolicy from '../pages/Legal/TermsPolicy.jsx';
 
 const AppRoutes = () => {
     // Get current user to determine routing
@@ -36,6 +37,9 @@ const AppRoutes = () => {
                 <Route path="/products/:slug" element={<SingleProduct />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/search" element={<Search/>} />
+                <Route path="/terms-and-policy" element={<TermsPolicy />} />
+                <Route path="/terms" element={<Navigate to="/terms-and-policy#terms" replace />} />
+                <Route path="/privacy" element={<Navigate to="/terms-and-policy#privacy" replace />} />
 
                 {/* ===== AUTH ROUTES - login/register pages ===== */}
                 <Route path="/login" element={<Login />} />

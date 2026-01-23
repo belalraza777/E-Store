@@ -5,6 +5,7 @@ import asyncWrapper from "../utils/asyncWrapper.js";
 import verifyAuth from "../middlewares/verifyAuth.js";
 import verifyAdmin from "../middlewares/verifyAdmin.js";
 import { createOrderValidation, updateOrderStatusValidation } from "../middlewares/joiValidation.js";
+import { orderCreateLimiter, orderCancelLimiter } from "../middlewares/rateLimit.js";
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ const router = express.Router();
 router.post(
     "/",
     verifyAuth,
+    orderCreateLimiter,
     createOrderValidation,
     asyncWrapper(userOrderController.createOrder)
 );
@@ -36,6 +38,7 @@ router.get(
 router.put(
     "/:id/cancel",
     verifyAuth,
+    orderCancelLimiter,
     asyncWrapper(userOrderController.cancelOrder)
 );
 

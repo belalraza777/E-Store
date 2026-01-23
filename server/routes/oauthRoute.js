@@ -2,18 +2,21 @@ import express from "express";
 import passport from "../config/passport.js";
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
+import { oauthLimiter } from "../middlewares/rateLimit.js";
 
 const router = express.Router();
 
 // Start Google OAuth
 router.get(
     "/google",
+    oauthLimiter,
     passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 // Callback
 router.get(
     "/google/callback",
+    oauthLimiter,
     passport.authenticate("google", { session: false }),
     async (req, res) => {
         const user = await User.findOne({ email: req?.user?.email });

@@ -44,6 +44,7 @@ export default function Footer() {
             <li><Link to="/products">Products</Link></li>
             <li><Link to="/orders">Orders</Link></li>
             <li><Link to="/contact">Contact</Link></li>
+            <li><Link to="/terms-and-policy">Terms & Privacy</Link></li>
             <li><Link to="/faq">FAQ</Link></li>
           </ul>
         </div>
@@ -85,9 +86,9 @@ export default function Footer() {
         <div className="site-footer__bottom-inner">
           <p>&copy; {currentYear} E-Store. All rights reserved.</p>
           <div className="site-footer__legal">
-            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms-and-policy#terms">Terms of Service</Link>
             <span className="site-footer__divider">•</span>
-            <Link to="/terms">Terms of Service</Link>
+            <Link to="/terms-and-policy#privacy">Privacy Policy</Link>
             <span className="site-footer__divider">•</span>
             <Link to="/shipping">Shipping Info</Link>
           </div>
