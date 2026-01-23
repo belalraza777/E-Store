@@ -9,12 +9,12 @@ export default function SearchBar() {
 
   // Debounce navigation
   useEffect(() => {
-    if (!query.trim()) return; // do nothing if input is empty
+    if (!query.trim()) return;
     const timer = setTimeout(() => {
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-    }, 600); // 600ms debounce
+    }, 600);
 
-    return () => clearTimeout(timer); // clear previous timer
+    return () => clearTimeout(timer);
   }, [query, navigate]);
 
   // Handle Enter key for immediate search

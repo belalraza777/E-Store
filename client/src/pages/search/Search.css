@@ -16,32 +16,6 @@
   line-height: var(--line-height-tight);
 }
 
-.search-page__loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  gap: var(--space-4);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-base);
-}
-
-.search-page__spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--color-border);
-  border-top-color: var(--color-accent);
-  border-radius: var(--radius-pill);
-  animation: search-page-spin 0.7s linear infinite;
-}
-
-@keyframes search-page-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @media (max-width: 768px) {
   .search-page {
     padding: var(--spacing-md);
@@ -49,10 +23,5 @@
 
   .search-page__heading {
     margin-bottom: var(--spacing-lg);
-  }
-
-  .search-page__loading {
-    min-height: 320px;
-    font-size: var(--font-size-sm);
   }
 }
