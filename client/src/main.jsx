@@ -7,9 +7,9 @@ import App from './App.jsx'
 
 // Render app inside root element with React StrictMode and Router
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ 
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>,
+  
 )
