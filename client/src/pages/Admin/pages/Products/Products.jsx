@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import './Products.css'; // Importing component-scoped styles
-import useProductStore from '../../store/productStore.js';
+import useProductStore from '../../../../store/productStore.js';
 // Styles loaded via main.css
 
 export default function AdminProducts() {

@@ -1,3 +1,10 @@
+/* Logout row: center and space the button, match card style */
+.profile-page__logout-row {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-8);
+}
 /* ProfilePage - component-scoped BEM */
 
 .profile-page {

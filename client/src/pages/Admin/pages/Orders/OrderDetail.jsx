@@ -19,8 +19,8 @@ import {
   FiArrowLeft
 } from 'react-icons/fi';
 import './OrderDetail.css';
-import useOrderStore from '../../store/orderStore.js';
-import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
+import useOrderStore from '../../../../store/orderStore.js';
+import Skeleton from '../../../../components/ui/Skeleton/Skeleton.jsx';
 // Styles loaded via main.css
 
 export default function AdminOrderDetail() {

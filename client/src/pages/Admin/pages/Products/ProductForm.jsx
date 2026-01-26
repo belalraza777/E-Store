@@ -3,7 +3,7 @@ import './ProductForm.css';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import useProductStore from '../../store/productStore.js';
+import useProductStore from '../../../../store/productStore.js';
 // Styles loaded via main.css
 
 export default function ProductForm() {

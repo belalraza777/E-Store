@@ -16,7 +16,7 @@ export const setupMiddlewares = (app) => {
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
     }));
-    app.use(morgan("dev"));
+    app.use(morgan("combined"));
     app.use(globalLimiter);
     app.use(passport.initialize());
 };

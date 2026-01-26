@@ -79,8 +79,10 @@ const ProfilePage = () => {
                 )}
 
             </div>
-            {/* Logout button at the bottom */}
-            <Logout />
+            {/* Logout button at the bottom, centered and spaced */}
+            <div className="profile-page__logout-row">
+                <Logout />
+            </div>
 
         </div>
     );

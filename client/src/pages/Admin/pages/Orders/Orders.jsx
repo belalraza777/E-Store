@@ -14,9 +14,9 @@ import {
   FiAlertCircle,
   FiBarChart2
 } from 'react-icons/fi';
-import useOrderStore from '../../store/orderStore.js';
+import useOrderStore from '../../../../store/orderStore.js';
 import './Orders.css';
-import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx';
+import Skeleton from '../../../../components/ui/Skeleton/Skeleton.jsx';
 
 export default function AdminOrders() {
   // Get orders data and fetch function from store
