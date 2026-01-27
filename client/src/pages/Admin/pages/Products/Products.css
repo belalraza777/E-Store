@@ -1,3 +1,4 @@
+
 /* Products.css - Admin products page styles (BEM + CSS variables) */
 
 .admin-products-page {
@@ -130,6 +131,29 @@
 
 .admin-products-page__table-row:last-child {
   border-bottom: none;
+}
+
+/* Filter Bar */
+.admin-products-page__filter-bar {
+  display: flex;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-products-page__search-input {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 98%;
+  font-size: var(--font-size-base);
+  outline: none;
+  transition: border-color 0.2s;
+  text-align: center;
+}
+.admin-products-page__search-input:focus {
+  border-color: var(--color-primary, #007bff);
 }
 
 /* Product Main Info */

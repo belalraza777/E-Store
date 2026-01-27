@@ -1,9 +1,12 @@
 // Products.jsx - Admin product management page with CRUD operations
 import React, { useEffect, useState } from 'react';
+import CategoryButtons from '../../../../components/product/CategoryButtons.jsx';
+import { filterByCategory, filterBySearch } from '../../../../helper/productHelpers.js';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import './Products.css'; // Importing component-scoped styles
 import useProductStore from '../../../../store/productStore.js';
+
 // Styles loaded via main.css
 
 export default function AdminProducts() {
@@ -11,6 +14,10 @@ export default function AdminProducts() {
   const { products, loading, fetchProducts, deleteProduct, updateStock } = useProductStore();
   // Track which product is being updated
   const [updatingId, setUpdatingId] = useState(null);
+  // Category filter state
+  const [currentCategory, setCurrentCategory] = useState('all');
+  // Search state
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Load products on mount
   useEffect(() => {
@@ -74,6 +81,22 @@ export default function AdminProducts() {
         </div>
       </div>
 
+      {/* Search and Category filter */}
+      <div className="admin-products-page__filter-bar">
+        <CategoryButtons
+          currentCategory={currentCategory}
+          onChange={setCurrentCategory}
+        />
+        <input
+          type="text"
+          className="admin-products-page__search-input"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+      </div>
+
       {/* Loading state or products table */}
       {loading && products.length === 0 ? (
         <div className="admin-products-page__loading">Loading products...</div>
@@ -89,11 +112,11 @@ export default function AdminProducts() {
             <span>Actions</span>
           </div>
           {/* Empty state */}
-          {products.length === 0 && (
+          {filterBySearch(filterByCategory(products, currentCategory), searchTerm).length === 0 && (
             <div className="admin-products-page__empty">No products found.</div>
           )}
           {/* Product rows */}
-          {products.map((p) => (
+          {filterBySearch(filterByCategory(products, currentCategory), searchTerm).map((p) => (
             <div key={p._id} className="admin-products-page__table-row">
               {/* Product name with image */}
               <div className="admin-products-page__prod-main">
@@ -104,7 +127,7 @@ export default function AdminProducts() {
                 )}
                 <div>
                   <div className="admin-products-page__name">{p.title}</div>
-                  <div className="admin-products-page__sku">{p.slug || p._id?.slice(0,8)}</div>
+                  <div className="admin-products-page__sku">{p.slug || p._id?.slice(0, 8)}</div>
                 </div>
               </div>
               {/* Price column */}
@@ -120,14 +143,14 @@ export default function AdminProducts() {
               {/* Action buttons */}
               <div className="admin-products-page__row-actions">
                 <Link className="admin-products-page__row-btn admin-products-page__row-btn--secondary" to={`/admin/products/${p.slug}/edit`}>Edit</Link>
-                <button 
+                <button
                   className="admin-products-page__row-btn admin-products-page__row-btn--secondary"
                   onClick={() => handleStockUpdate(p._id, p.title, p.stock)}
                   disabled={updatingId === p._id || loading}
                 >
                   {updatingId === p._id ? 'Updating...' : 'Stock'}
                 </button>
-                <button 
+                <button
                   className="admin-products-page__row-btn admin-products-page__row-btn--danger"
                   onClick={() => handleDelete(p._id, p.title)}
                   disabled={loading}

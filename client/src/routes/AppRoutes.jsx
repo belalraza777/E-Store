@@ -13,7 +13,7 @@ const Orders = lazy(() => import('../pages/Order/Orders.jsx'));
 const OrderDetail = lazy(() => import('../pages/Order/OrderDetail.jsx'));
 const Home = lazy(() => import('../pages/Home/Home.jsx'));
 const AdminDashboard = lazy(() => import('../pages/Admin/pages/Dashboard/Dashboard.jsx'));
-const AdminProducts = lazy(() => import('../pages/Admin/pages/Products/Products.jsx'));
+const AdminProducts = lazy(() => import('../pages/Admin/pages/Products/ProductAdmin.jsx'));
 const ProductForm = lazy(() => import('../pages/Admin/pages/Products/ProductForm.jsx'));
 const AdminOrders = lazy(() => import('../pages/Admin/pages/Orders/Orders.jsx'));
 const AdminOrderDetail = lazy(() => import('../pages/Admin/pages/Orders/OrderDetail.jsx'));
