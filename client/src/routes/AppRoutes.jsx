@@ -5,7 +5,7 @@ import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
 import OAuthSuccess from '../pages/Auth/Oauth_success';
 import ProtectedRoute from './ProtectedRoute';
-import Product from '../pages/Product/Product';
+import Product from '../pages/Product/Product.jsx';
 import SingleProduct from '../pages/Product/SingleProduct';
 import Cart from '../pages/Cart/Cart';
 const Checkout = lazy(() => import('../pages/Checkout/Checkout.jsx'));

@@ -2,6 +2,7 @@
   max-width: var(--container-2xl);
   margin: 0 auto;
   padding: var(--spacing-lg) var(--spacing-md);
+  overflow-y: auto;
 }
 
 .product-page__title {
