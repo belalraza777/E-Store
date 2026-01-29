@@ -1,5 +1,7 @@
 // OrderDetail.jsx - Detailed view of a single order with status tracking
 import React, { useEffect, useState } from 'react';
+import { getInvoiceData } from '../../helper/invoiceHelper';
+import { generateCustomerInvoice } from '../../utils/bill';
 import CancelOrderModal from './CancelOrderModal';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import useOrderStore from '../../store/orderStore';
@@ -90,6 +92,12 @@ export default function OrderDetail() {
         </Link>
         <h1>Order #{order._id.slice(-8).toUpperCase()}</h1>
         <p className="order-detail__date">Placed on {formatDate(order.createdAt)}</p>
+        <button
+          className="order-detail__button order-detail__button--invoice"
+          onClick={() => generateCustomerInvoice(getInvoiceData(order))}
+        >
+          Download Invoice
+        </button>
       </div>
 
       {/* Order Status Tracker - visual progress indicator */}

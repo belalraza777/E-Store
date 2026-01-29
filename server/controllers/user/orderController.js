@@ -85,14 +85,17 @@ const getOrderById = async (req, res, next) => {
     const userId = req.user.id;
 
     const order = await Order.findById(id)
-        .populate("items.product", "title slug price discount images");
+        .populate("items.product", "title slug price discount images")
+        .populate("user", "name email");
 
     if (!order) {
         return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // Verify order belongs to user
-    if (order.user.toString() !== userId) {
+
+    // Verify order belongs to user (handle populated or unpopulated user)
+    const orderUserId = order.user && order.user._id ? order.user._id.toString() : order.user.toString();
+    if (orderUserId !== userId) {
         return res.status(403).json({ success: false, message: "Not authorized to view this order" });
     }
 

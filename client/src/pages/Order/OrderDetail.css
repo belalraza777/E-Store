@@ -29,6 +29,26 @@
   }
 }
 
+/* Invoice Download Button */
+.order-detail__button--invoice {
+  margin-top: var(--space-3);
+  margin-left: 0;
+  width: fit-content;
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.order-detail__button--invoice:hover {
+  background: var(--color-primary-dark);
+}
+
 .order-detail__header {
   margin-bottom: var(--space-6);
   padding-bottom: var(--space-4);
@@ -265,8 +285,8 @@
   .order-detail__steps {
     grid-template-columns: repeat(3, 1fr);
   }
+
   .order-detail__grid {
     grid-template-columns: 1fr 1fr;
   }
 }
-
