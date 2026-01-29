@@ -3,6 +3,7 @@ import Review from "../../models/reviewModel.js";
 import { processProductSlug } from "../../helper/slugHelper.js";
 import { isValidCategory, normalizeCategory } from "../../constants/categories.js";
 import { cloudinary } from "../../config/cloudnary.js";
+import { deleteCachePattern } from "../../utils/cache.js";
 
 // Create new product (Admin only)
 const createProduct = async (req, res, next) => {
@@ -37,6 +38,10 @@ const createProduct = async (req, res, next) => {
         isActive: true
     });
 
+    // Invalidate product-related cache
+    await deleteCachePattern("getAllProducts:*");
+    await deleteCachePattern("searchProducts:*");
+    // Optionally, invalidate other product cache keys if needed
     return res.status(201).json({ success: true, message: "Product created", data: product });
 };
 
@@ -77,6 +82,11 @@ const updateProduct = async (req, res, next) => {
     await product.save();
     await product.populate('category', 'name slug');
 
+    // Invalidate product-related cache
+    await deleteCachePattern("getAllProducts:*");
+    await deleteCachePattern("searchProducts:*");
+    await deleteCachePattern(`getProductBySlug:${product.slug}`);
+    // Optionally, invalidate other product cache keys if needed
     return res.status(200).json({ success: true, message: "Product updated", data: product });
 };
 
@@ -102,6 +112,11 @@ const deleteProduct = async (req, res, next) => {
     // Delete product from database
     await Product.findByIdAndDelete(req.params.id);
 
+    // Invalidate product-related cache
+    await deleteCachePattern("getAllProducts:*");
+    await deleteCachePattern("searchProducts:*");
+    await deleteCachePattern(`getProductBySlug:${product.slug}`);
+    // Optionally, invalidate other product cache keys if needed
     return res.status(200).json({ success: true, message: "Product deleted", data: { id: product._id } });
 };
 

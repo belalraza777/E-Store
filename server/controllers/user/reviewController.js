@@ -1,6 +1,7 @@
 import Review from "../../models/reviewModel.js";
 import Product from "../../models/productModel.js";
 import Order from "../../models/orderModel.js";
+import { getCache, setCache, deleteCachePattern } from "../../utils/cache.js";
 
 // POST /api/v1/reviews/:productId
 // Add review for a product
@@ -47,6 +48,9 @@ const addReview = async (req, res, next) => {
 
     await review.populate("user", "name");
 
+    // Invalidate product reviews cache
+    await deleteCachePattern(`productReviews:${productId}`);
+
     return res.status(201).json({ success: true, message: "Review added successfully", data: review });
 };
 
@@ -54,6 +58,13 @@ const addReview = async (req, res, next) => {
 // Get all reviews for a product
 const getProductReviews = async (req, res, next) => {
     const { productId } = req.params;
+
+    // Try cache first
+    const cacheKey = `productReviews:${productId}`;
+    const cached = await getCache(cacheKey);
+    if (cached) {
+        return res.status(200).json(cached);
+    }
 
     const product = await Product.findById(productId);
     if (!product) {
@@ -71,13 +82,15 @@ const getProductReviews = async (req, res, next) => {
             ? (verifiedReviews.reduce((sum, review) => sum + review.rating, 0) / verifiedReviews.length).toFixed(1)
             : 0;
 
-    return res.status(200).json({
+    const response = {
         success: true,
         data: reviews,
         averageRating: avgRating,
         totalReviews: reviews.length,
         verifiedReviews: verifiedReviews.length,
-    });
+    };
+    await setCache(cacheKey, response, 300); // 5 min TTL
+    return res.status(200).json(response);
 };
 
 // DELETE /api/v1/reviews/:reviewId
@@ -100,6 +113,8 @@ const deleteReview = async (req, res, next) => {
     const productId = review.product;
     await Review.findByIdAndDelete(reviewId);
 
+    // Invalidate product reviews cache
+    await deleteCachePattern(`productReviews:${productId}`);
     return res.status(200).json({ success: true, message: "Review deleted successfully" });
 };
 
