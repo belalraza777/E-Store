@@ -31,10 +31,12 @@ export default function Checkout() {
     paymentMethod: 'COD',
   });
 
+  // Redirect if cart is empty
   useEffect(() => {
     fetchCart().finally(() => setInitialLoad(false));
   }, []);
 
+  // Redirect if cart is empty after initial load
   useEffect(() => {
     if (!initialLoad && !orderPlaced && !cartLoading && (!cart || cart.items?.length === 0)) {
       toast.error('Your cart is empty');
@@ -44,7 +46,8 @@ export default function Checkout() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const [createdOrderId, setCreatedOrderId] = useState(null);
+  // State to hold created order ID for Online Payment
+  const [createdOrderId, setCreatedOrderId] = useState(null); 
 
   // Handle form submission Main fn controlling order placement
   const handleSubmit = async (e) => {
@@ -89,12 +92,12 @@ export default function Checkout() {
       // Order created for Online Payment
       else if (form.paymentMethod === 'Online') {
         if (result.data && result.data._id) {
-          setCreatedOrderId(result.data._id); // Trigger OnlinePayment component
+          // Trigger OnlinePayment component
+          setCreatedOrderId(result.data._id); 
         } else {
           toast.error(result.message || 'Failed to create order for payment');
         }
       }
-
     } catch (err) {
       console.error(err);
       setSubmitting(false);

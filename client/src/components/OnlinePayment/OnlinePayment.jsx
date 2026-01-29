@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createRazorpayOrder, verifyRazorpayPayment } from "../../api/paymentApi.js";
 
+// Load Razorpay script 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
     if (window.Razorpay) return resolve(true);
