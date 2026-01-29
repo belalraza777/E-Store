@@ -58,7 +58,7 @@ export default function OrderDetail() {
 
   // Define order status steps for tracker
   const statusSteps = ['placed', 'shipped', 'delivered'];
-  
+
   // Get current step index based on order status
   const getCurrentStepIndex = (status) => {
     if (status === 'cancelled') return -1;
@@ -97,17 +97,16 @@ export default function OrderDetail() {
         <div className="order-detail__tracker">
           <div className="order-detail__steps">
             {statusSteps.map((status, index) => (
-              <div 
+              <div
                 key={status}
-                className={`order-detail__step ${
-                  index < currentStepIndex ? 'order-detail__step--completed' : 
-                  index === currentStepIndex ? 'order-detail__step--active' : ''
-                }`}
+                className={`order-detail__step ${index < currentStepIndex ? 'order-detail__step--completed' :
+                    index === currentStepIndex ? 'order-detail__step--active' : ''
+                  }`}
               >
                 <div className="order-detail__step-icon" aria-hidden="true">
-                  {index < currentStepIndex ? '✓' : 
-                   status === 'placed' ? '📋' :
-                   status === 'shipped' ? '🚚' : '📦'}
+                  {index < currentStepIndex ? '✓' :
+                    status === 'placed' ? '📋' :
+                      status === 'shipped' ? '🚚' : '📦'}
                 </div>
                 <div>
                   <div className="order-detail__step-label">{status.charAt(0).toUpperCase() + status.slice(1)}</div>
@@ -165,9 +164,9 @@ export default function OrderDetail() {
             <div key={item._id} className="order-detail__item">
               {/* Product image */}
               <div className="order-detail__item-image">
-                <img 
-                  src={Array.isArray(item.product.images) && item.product.images[0] ? item.product.images[0].url : '/placeholder.png'} 
-                  alt={item.product?.title || 'Product'} 
+                <img
+                  src={Array.isArray(item.product.images) && item.product.images[0] ? item.product.images[0].url : '/placeholder.png'}
+                  alt={item.product?.title || 'Product'}
                 />
               </div>
               {/* Product details */}
@@ -190,7 +189,7 @@ export default function OrderDetail() {
             </div>
           ))}
         </div>
-        
+
         {/* Order Summary Footer */}
         <div className="order-detail__items-footer">
           <div className="order-detail__total">
@@ -208,7 +207,7 @@ export default function OrderDetail() {
                 Order {order.orderStatus}
               </span>
             ) : (
-              <button 
+              <button
                 className="order-detail__button order-detail__button--danger"
                 onClick={() => setShowCancelModal(true)}
               >

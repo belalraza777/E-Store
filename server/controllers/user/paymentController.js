@@ -1,6 +1,8 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import Order from "../../models/orderModel.js";
+import { sendEmail } from "../../config/email.js";
+
 
 // Razorpay instance
 const razorpay = new Razorpay({
@@ -141,6 +143,15 @@ export const verifyPayment = async (req, res, next) => {
     order.razorpay.signature = razorpay_signature;
 
     await order.save();
+
+    // Send order confirmation email
+    if (order?.user?.email) {
+        await sendEmail({
+            to: order.user.email,
+            subject: "Payment Confirmation - E-Store",
+            text: `Your payment for order ${order._id} has been successfully processed. Thank you for shopping with us!`,
+        });
+    }
 
     res.status(200).json({
         success: true,
