@@ -85,6 +85,7 @@ export default function CheckoutForm({ form, handleChange, handleSubmit, submitt
         </div>
       </div>
 
+
       {/* Payment Method Section */}
       <h3 className="checkout-page__section-title">💳 Payment Method</h3>
       <div className="checkout-page__section-content">
@@ -107,11 +108,15 @@ export default function CheckoutForm({ form, handleChange, handleSubmit, submitt
               value="Online"
               checked={form.paymentMethod === 'Online'}
               onChange={handleChange}
-    
             />
             <span className="checkout-page__payment-name">Pay Online</span>
           </label>
         </div>
+        {form.paymentMethod === 'Online' && (
+          <div className="checkout-page__terms" style={{ fontSize: '0.92em', color: '#b91c1c', marginTop: 8 }}>
+            * If you pay online, your order is <b>not cancellable</b> as for now.
+          </div>
+        )}
       </div>
 
       {/* Place Order Button */}
