@@ -8,10 +8,10 @@ import ProtectedRoute from './ProtectedRoute';
 import Product from '../pages/Product/Product.jsx';
 import SingleProduct from '../pages/Product/SingleProduct';
 import Cart from '../pages/Cart/Cart';
+import Home from '../pages/Home/Home';
 const Checkout = lazy(() => import('../pages/Checkout/Checkout.jsx'));
 const Orders = lazy(() => import('../pages/Order/Orders.jsx'));
 const OrderDetail = lazy(() => import('../pages/Order/OrderDetail.jsx'));
-const Home = lazy(() => import('../pages/Home/Home.jsx'));
 const AdminDashboard = lazy(() => import('../pages/Admin/pages/Dashboard/Dashboard.jsx'));
 const AdminProducts = lazy(() => import('../pages/Admin/pages/Products/ProductAdmin.jsx'));
 const ProductForm = lazy(() => import('../pages/Admin/pages/Products/ProductForm.jsx'));
@@ -23,6 +23,7 @@ import ProfilePage from '../pages/Profile/ProfilePage.jsx';
 import Search from '../pages/search/Search.jsx';
 import TermsPolicy from '../pages/Legal/TermsPolicy.jsx';
 import NotFound from '../pages/NotFound/NotFound.jsx';
+import Unauthorized from '../pages/Other/UnAuthorized.jsx';
 import Skeleton from '../components/ui/Skeleton/Skeleton.jsx';
 
 const AppRoutes = () => {
@@ -40,7 +41,7 @@ const AppRoutes = () => {
                     <Route path="/products" element={<Product />} />
                     <Route path="/products/:slug" element={<SingleProduct />} />
                     <Route path="/cart" element={<Cart />} />
-                    <Route path="/search" element={<Search/>} />
+                    <Route path="/search" element={<Search />} />
                     <Route path="/terms-and-policy" element={<TermsPolicy />} />
                     <Route path="/terms" element={<Navigate to="/terms-and-policy#terms" replace />} />
                     <Route path="/privacy" element={<Navigate to="/terms-and-policy#privacy" replace />} />
@@ -63,7 +64,7 @@ const AppRoutes = () => {
                         path="/profile"
                         element={
                             <ProtectedRoute allowedRoles={["user", "admin"]}>
-                                <ProfilePage/>
+                                <ProfilePage />
                             </ProtectedRoute>
                         }
                     />
@@ -136,7 +137,7 @@ const AppRoutes = () => {
 
 
                     {/* Unauthorized Route */}
-                    <Route path="/unauthorized" element={<div>Unauthorized</div>} />
+                    <Route path="/unauthorized" element={<Unauthorized />} />
 
                     {/* 404 */}
                     <Route path="*" element={<NotFound />} />
