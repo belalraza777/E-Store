@@ -32,6 +32,7 @@ const orderSchema = new mongoose.Schema(
             enum: ["Online", "COD"],
             required: true,
             trim: true,
+            default: "COD",
         },
 
         paymentStatus: {
@@ -41,31 +42,47 @@ const orderSchema = new mongoose.Schema(
             trim: true,
         },
 
+        razorpay: {
+            orderId: {
+                type: String,
+                trim: true,
+            },
+            paymentId: {
+                type: String,
+                trim: true,
+            },
+            signature: {
+                type: String,
+                trim: true,
+            },
+        },
+
         orderStatus: {
             type: String,
             enum: ["placed", "shipped", "delivered", "cancelled"],
             default: "placed",
             trim: true,
-            
         },
 
-        
-subtotal: Number,
-        
+        subtotal: Number,
+
         totalAmount: Number,
 
         isCancelled: {
             type: Boolean,
             default: false,
         },
+
         cancelReason: {
             type: String,
             trim: true,
         },
+
         isDelivered: {
             type: Boolean,
             default: false,
         },
+
     },
     { timestamps: true }
 );

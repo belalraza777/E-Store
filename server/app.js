@@ -11,6 +11,7 @@ import cartRoutes from "./routes/cartRoute.js";
 import orderRoutes from "./routes/orderRoute.js";
 import reviewRoutes from "./routes/reviewRoute.js";
 import profileRoutes from "./routes/profileRoute.js";
+import paymentRoutes from "./routes/paymentRoute.js";
 
 // Setup middlewares for the app [ALl incoming requests pass through here]
 setupMiddlewares(app);
@@ -28,17 +29,9 @@ app.use("/api/v1/cart", cartRoutes); // Cart routes
 app.use("/api/v1/orders", orderRoutes); // Order routes
 app.use("/api/v1/reviews", reviewRoutes); // Review routes
 app.use("/api/v1/profile", profileRoutes); // Profile routes
+app.use("/api/v1/payments", paymentRoutes); // Payment routes
 
 
-app.get("/demo", (req, res) => {
-  res.send(`
-    <h1>
-    OAuth Demo Successful! 
-    You have successfully authenticated using OAuth.
-    Role: ${req.user ? req.user.role : 'Guest'}
-    </h1>
-`);
-});
 
 // Error handling middleware
 app.use(errorHandler);
