@@ -5,10 +5,12 @@ import React, { useState } from 'react';
 import { FiEdit, FiMapPin, FiCheck, FiX } from 'react-icons/fi';
 import { toast } from 'sonner';
 import useProfileStore from "../../store/profileStore.js";
+import { useAuth } from '../../context/authContext.jsx';
 // Props:
 //   address: user address object (address, city, postalCode, country)
 
 const AddressManager = ({ address }) => {
+  const { refreshUser } = useAuth();
   // Access updateProfile action from store
   const { updateProfile } = useProfileStore();
   // State for edit mode toggle
@@ -44,6 +46,7 @@ const AddressManager = ({ address }) => {
     } else {
       toast.success("Address updated successfully!");
       setEditMode(false);
+      refreshUser();
     }
     setLoading(false);
   };
@@ -56,10 +59,10 @@ const AddressManager = ({ address }) => {
           <div className="address-manager__grid">
             <div className="address-manager__group">
               <label className="address-manager__label">Address</label>
-              <input 
-                type="text" 
-                name="address" 
-                value={form.address} 
+              <input
+                type="text"
+                name="address"
+                value={form.address}
                 onChange={handleChange}
                 placeholder="Enter your street address"
                 className="address-manager__input"
@@ -68,10 +71,10 @@ const AddressManager = ({ address }) => {
             </div>
             <div className="address-manager__group">
               <label className="address-manager__label">City</label>
-              <input 
-                type="text" 
-                name="city" 
-                value={form.city} 
+              <input
+                type="text"
+                name="city"
+                value={form.city}
                 onChange={handleChange}
                 placeholder="Enter city"
                 className="address-manager__input"
@@ -80,10 +83,10 @@ const AddressManager = ({ address }) => {
             </div>
             <div className="address-manager__group">
               <label className="address-manager__label">Postal Code</label>
-              <input 
-                type="text" 
-                name="postalCode" 
-                value={form.postalCode} 
+              <input
+                type="text"
+                name="postalCode"
+                value={form.postalCode}
                 onChange={handleChange}
                 placeholder="Enter postal code"
                 className="address-manager__input"
@@ -92,10 +95,10 @@ const AddressManager = ({ address }) => {
             </div>
             <div className="address-manager__group">
               <label className="address-manager__label">Country</label>
-              <input 
-                type="text" 
-                name="country" 
-                value={form.country} 
+              <input
+                type="text"
+                name="country"
+                value={form.country}
                 onChange={handleChange}
                 placeholder="Enter country"
                 className="address-manager__input"
@@ -104,8 +107,8 @@ const AddressManager = ({ address }) => {
             </div>
           </div>
           <div className="address-manager__actions">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="address-manager__button address-manager__button--primary"
               disabled={loading}
             >
@@ -120,8 +123,8 @@ const AddressManager = ({ address }) => {
                 </>
               )}
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="address-manager__button address-manager__button--secondary"
               onClick={() => setEditMode(false)}
               disabled={loading}
@@ -144,7 +147,7 @@ const AddressManager = ({ address }) => {
                 </p>
                 <p className="address-manager__meta">{address.country}</p>
               </div>
-              <button 
+              <button
                 className="address-manager__button address-manager__button--outline"
                 onClick={() => setEditMode(true)}
               >
@@ -155,7 +158,7 @@ const AddressManager = ({ address }) => {
             <div className="address-manager__empty">
               <FiMapPin className="address-manager__empty-icon" aria-hidden="true" />
               <p>No address saved yet</p>
-              <button 
+              <button
                 className="address-manager__button address-manager__button--primary"
                 onClick={() => setEditMode(true)}
               >
