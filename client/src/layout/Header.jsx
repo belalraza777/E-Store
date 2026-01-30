@@ -45,16 +45,10 @@ export default function Header() {
         {/* Logo */}
         <Link to="/" className="site-header__brand">
           <img src={logo} alt="E-Store" className="site-header__logo" />
-          <span className="site-header__brand-text">E-Store</span>
+          {/* <span className="site-header__brand-text">E-Store</span> */}
         </Link>
 
         {/* Search Bar */}
-        {/* <div className="site-header__search">
-          <input type="text" placeholder="Search products..." className="site-header__search-input" />
-          <button className="site-header__search-btn" aria-label="Search">
-            <FiSearch />
-          </button>
-        </div> */}
         <SearchBar />
 
         {/* Desktop Navigation */}

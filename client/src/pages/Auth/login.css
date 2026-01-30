@@ -30,8 +30,8 @@
 }
 
 .auth-page__logo {
-  width: 70px;
-  height: 70px;
+  width: 120px;
+  height: 75px;
   border-radius: var(--radius-md);
   background: rgba(var(--color-primary-rgb), 0.1);
   display: grid;
