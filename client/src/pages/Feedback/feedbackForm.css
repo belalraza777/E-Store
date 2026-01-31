@@ -1,0 +1,159 @@
+/* Feedback Form Styles - inspired by index.css theme */
+
+/* Card style with soft shadow and border */
+/* ...existing code... */
+
+/* Title with accent underline */
+/* ...existing code... */
+
+/* Form layout with more spacing */
+/* ...existing code... */
+
+/* Label with theme accent */
+/* ...existing code... */
+
+/* Inputs with soft background, shadow, and focus */
+/* ...existing code... */
+
+/* Focus state with accent border and glow */
+.feedback-form-input:focus,
+.feedback-form-select:focus,
+.feedback-form-textarea:focus {
+  border: 1.5px solid var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
+}
+
+
+.feedback-form-submit:hover, .feedback-form-submit:focus {
+  background: linear-gradient(90deg, var(--color-primary-strong) 70%, var(--color-accent) 100%);
+  box-shadow: 0 4px 16px 0 rgba(var(--color-primary-rgb), 0.16);
+  transform: translateY(-2px) scale(1.01);
+}
+/* ===============================
+   Feedback Form Styles
+   =============================== */
+
+.feedback-form-container {
+  max-width: 100%;
+  width: 100%;
+  margin: 2.5rem auto;
+  padding: var(--spacing-responsive-lg);
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, var(--color-panel) 80%, var(--color-bg-secondary) 100%);
+  box-shadow: 0 4px 32px 0 rgba(var(--color-primary-rgb), 0.10), 0 1.5px 6px 0 rgba(0,0,0,0.03);
+  box-sizing: border-box;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+@media (min-width: 480px) {
+  .feedback-form-container {
+    max-width: 420px;
+    padding: var(--spacing-mobile-xl);
+  }
+}
+@media (min-width: 640px) {
+  .feedback-form-container {
+    max-width: 480px;
+    padding: var(--spacing-responsive-xl);
+  }
+}
+
+.feedback-form-title {
+  text-align: center;
+  margin-bottom: var(--spacing-responsive-lg);
+  color: var(--color-primary-strong);
+  font-weight: 800;
+  font-size: var(--font-responsive-xl);
+  letter-spacing: 0.01em;
+  position: relative;
+}
+.feedback-form-title::after {
+  content: '';
+  display: block;
+  margin: 0.5rem auto 0 auto;
+  width: 48px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-primary) 60%, var(--color-accent-soft) 100%);
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-responsive-md);
+}
+
+.feedback-form-label {
+  font-weight: 600;
+  color: var(--color-primary-strong);
+  margin-bottom: 6px;
+  font-size: var(--font-responsive-base);
+  letter-spacing: 0.01em;
+}
+
+.feedback-form-input,
+.feedback-form-select,
+.feedback-form-textarea {
+  width: 100%;
+  padding: var(--spacing-mobile-md) var(--spacing-mobile-lg);
+  border-radius: 8px;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+  font-size: var(--font-responsive-base);
+  box-sizing: border-box;
+  box-shadow: 0 1.5px 6px 0 rgba(var(--color-primary-rgb), 0.04);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.feedback-form-input:focus,
+.feedback-form-select:focus,
+.feedback-form-textarea:focus {
+  border: 1.5px solid var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
+}
+
+.feedback-form-textarea {
+  resize: vertical;
+  min-height: 96px;
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+.feedback-form-submit {
+  width: 100%;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-mobile-lg);
+  background: linear-gradient(90deg, var(--color-primary) 70%, var(--color-accent-soft) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: var(--font-responsive-base);
+  cursor: pointer;
+  margin-top: var(--spacing-mobile-md);
+  box-shadow: 0 2px 8px 0 rgba(var(--color-primary-rgb), 0.08);
+  letter-spacing: 0.01em;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+.feedback-form-submit:hover, .feedback-form-submit:focus {
+  background: linear-gradient(90deg, var(--color-primary-strong) 70%, var(--color-accent) 100%);
+  box-shadow: 0 4px 16px 0 rgba(var(--color-primary-rgb), 0.16);
+  transform: translateY(-2px) scale(1.01);
+}
+
+@media (min-width: 480px) {
+  .feedback-form-container {
+    max-width: 420px;
+    padding: var(--spacing-mobile-xl);
+  }
+}
+
+@media (min-width: 640px) {
+  .feedback-form-container {
+    max-width: 480px;
+    padding: var(--spacing-responsive-xl);
+  }
+}
