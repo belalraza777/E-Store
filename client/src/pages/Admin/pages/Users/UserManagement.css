@@ -1,0 +1,136 @@
+/* Users management admin page styles (follows admin-* naming pattern) */
+
+.admin-users-page {
+    padding: var(--spacing-lg);
+    color: var(--text);
+}
+
+.admin-users-page__header h1 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+}
+
+.admin-users-page__header p {
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.admin-users-page__filters {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 0.75rem;
+}
+
+.admin-users-page__search {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    background: var(--panel);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-users-page__search::placeholder {
+    color: var(--text-light);
+}
+
+.admin-users-page__select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    background: var(--panel);
+    color: var(--text);
+}
+
+.admin-users-page__table-card {
+    margin-top: 1rem;
+}
+
+.admin-users-page__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+.admin-users-page__table th,
+.admin-users-page__table td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text);
+}
+
+.admin-users-page__table thead th {
+    background: var(--panel);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+}
+
+.admin-users-page__row--blocked td {
+    opacity: 0.7;
+}
+
+.admin-users-page__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+}
+
+.admin-users-page__btn--block {
+    background: var(--danger);
+    color: white;
+}
+
+.admin-users-page__btn--block:hover {
+    opacity: 0.9;
+}
+
+.admin-users-page__btn--block:focus-visible {
+    outline: 2px solid var(--danger);
+    outline-offset: 2px;
+}
+
+.admin-users-page__btn--unblock {
+    background: var(--success);
+    color: white;
+}
+
+.admin-users-page__btn--unblock:hover {
+    opacity: 0.9;
+}
+
+.admin-users-page__btn--unblock:focus-visible {
+    outline: 2px solid var(--success);
+    outline-offset: 2px;
+}
+.admin-users-page__error {
+    color: var(--danger);
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .admin-users-page__filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-users-page__search {
+        width: 100%;
+    }
+}

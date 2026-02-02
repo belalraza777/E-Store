@@ -17,6 +17,7 @@ const AdminProducts = lazy(() => import('../pages/Admin/pages/Products/ProductAd
 const ProductForm = lazy(() => import('../pages/Admin/pages/Products/ProductForm.jsx'));
 const AdminOrders = lazy(() => import('../pages/Admin/pages/Orders/Orders.jsx'));
 const AdminOrderDetail = lazy(() => import('../pages/Admin/pages/Orders/OrderDetail.jsx'));
+const AdminUsers = lazy(() => import('../pages/Admin/pages/Users/UserManagement.jsx'));
 const Feedback = lazy(() => import('../pages/Feedback/FeedBack.jsx'));
 import { useAuth } from '../context/authContext.jsx';
 import ScrollToTop from './ScrollToTop';
@@ -107,6 +108,14 @@ const AppRoutes = () => {
                         element={
                             <ProtectedRoute allowedRoles={["admin"]}>
                                 <AdminProducts />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/users"
+                        element={
+                            <ProtectedRoute allowedRoles={["admin"]}>
+                                <AdminUsers />
                             </ProtectedRoute>
                         }
                     />

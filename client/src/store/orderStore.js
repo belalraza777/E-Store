@@ -59,7 +59,8 @@ const useOrderStore = create((set, get) => ({
         return result;
     },
 
-    // Admin: Fetch all orders
+
+    // ADMIN: Fetch all orders
     fetchAllOrders: async () => {
         set({ loading: true, error: null });
         const result = await getAllOrders();
@@ -71,7 +72,7 @@ const useOrderStore = create((set, get) => ({
         return result;
     },
 
-    // Admin: Filter orders
+    // ADMIN: Filter orders
     filterOrders: async (params) => {
         set({ loading: true, error: null });
         const result = await filterOrders(params);
@@ -83,7 +84,7 @@ const useOrderStore = create((set, get) => ({
         return result;
     },
 
-    // Admin: Update order status
+    // ADMIN: Update order status
     updateOrderStatus: async (orderId, statusData) => {
         set({ loading: true, error: null });
         const result = await updateOrderStatus(orderId, statusData);

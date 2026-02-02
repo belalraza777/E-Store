@@ -28,6 +28,7 @@ export default function AdminHeader() {
     { label: "Dashboard", icon: FiBarChart2, href: "/admin/dashboard" },
     { label: "Products", icon: FiShoppingBag, href: "/admin/products" },
     { label: "Orders", icon: FiPackage, href: "/admin/orders" },
+    { label: "Users", icon: FiUsers, href: "/admin/users" },
   ];
 
   return (

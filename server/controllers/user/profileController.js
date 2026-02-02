@@ -77,38 +77,9 @@ const updateAvatar = async (req, res, next) => {
     return res.status(200).json({ success: true, message: "Avatar updated successfully", data: updatedUser });
 };
 
-// Admin: block or unblock a user
-const setBlockStatus = async (req, res, next) => {
-    const { userId } = req.params;
-    const { isBlocked } = req.body;
-
-    if (typeof isBlocked !== "boolean") {
-        return res.status(400).json({ success: false, message: "isBlocked must be a boolean" });
-    }
-
-    if (userId === req.user.id) {
-        return res.status(400).json({ success: false, message: "You cannot change your own block status" });
-    }
-
-    const user = await User.findById(userId).select("isBlocked");
-    if (!user) {
-        return res.status(404).json({ success: false, message: "User not found" });
-    }
-
-    user.isBlocked = isBlocked;
-    await user.save();
-
-    const action = isBlocked ? "blocked" : "unblocked";
-    return res.status(200).json({
-        success: true,
-        message: `User ${action} successfully`,
-        data: { id: user._id, isBlocked: user.isBlocked },
-    });
-};
 
 export default {
     getProfile,
     updateProfile,
     updateAvatar,
-    setBlockStatus,
 };
