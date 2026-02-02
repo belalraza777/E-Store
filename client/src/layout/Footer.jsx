@@ -40,12 +40,11 @@ export default function Footer() {
         <div className="site-footer__section">
           <h3 className="site-footer__title">Quick Links</h3>
           <ul className="site-footer__links">
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/products">Products</Link></li>
-            <li><Link to="/orders">Orders</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
+            <li><Link to="/feedback">Feedback</Link></li>
             <li><Link to="/terms-and-policy">Terms & Privacy</Link></li>
+            <li><Link to="/contact">Contact</Link></li>
             <li><Link to="/faq">FAQ</Link></li>
+
           </ul>
         </div>
 
