@@ -15,7 +15,7 @@ const getRecommendations = async (req, res) => {
         return res.status(500).json({ success: false, message: "Could not fetch recommendations" });
     }
 
-    return res.status(200).json({ success: true, data: recommendations });
+    return res.status(200).json({ success: true, data: recommendations, message: "Recommendations fetched successfully" });
 
 }
 
