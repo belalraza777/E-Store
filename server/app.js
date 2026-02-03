@@ -12,6 +12,7 @@ import orderRoutes from "./routes/orderRoute.js";
 import reviewRoutes from "./routes/reviewRoute.js";
 import profileRoutes from "./routes/profileRoute.js";
 import paymentRoutes from "./routes/paymentRoute.js";
+import recommendationRoutes from "./routes/recommendationRoute.js";
 
 // Setup middlewares for the app [ALl incoming requests pass through here]
 setupMiddlewares(app);
@@ -30,6 +31,7 @@ app.use("/api/v1/orders", orderRoutes); // Order routes
 app.use("/api/v1/reviews", reviewRoutes); // Review routes
 app.use("/api/v1/profile", profileRoutes); // Profile routes
 app.use("/api/v1/payments", paymentRoutes); // Payment routes
+app.use("/api/v1/recommendations", recommendationRoutes); // Recommendation routes
 
 
 
