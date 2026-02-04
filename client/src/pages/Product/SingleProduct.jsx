@@ -5,17 +5,18 @@ import useProductStore from '../../store/productStore.js'
 import useReviewStore from '../../store/reviewStore.js'
 import AddCartBtn from '../../components/FunctionalBtn/AddCartbtn.jsx'
 import ReviewsSection from '../../components/reviews/ReviewsSection.jsx'
+import Recommendation from '../../components/Recommendation/Recommendation.jsx'
 import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx'
 import './SingleProduct.css'
 
 export default function SingleProduct() {
   // Get product slug from URL params
   const { slug } = useParams();
-  
+
   // Get product and review data from stores
   const { currentProduct: product, loading: productLoading, fetchProductBySlug } = useProductStore();
   const { reviews, averageRating, totalReviews, loading: reviewsLoading, fetchProductReviews } = useReviewStore();
-  
+
   // Local state for quantity selection
   const [quantity, setQuantity] = useState(1);
   // Track which image is selected in gallery
@@ -60,7 +61,7 @@ export default function SingleProduct() {
 
   // Calculate discount percentage if applicable
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
-  const discountPercent = hasDiscount 
+  const discountPercent = hasDiscount
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
     : 0;
   // Check stock availability
@@ -88,7 +89,7 @@ export default function SingleProduct() {
               <div className="single-product__placeholder">No Image Available</div>
             )}
           </div>
-          
+
           {/* Thumbnail gallery - only show if multiple images */}
           {product.images && product.images.length > 1 && (
             <div className="single-product__thumbnails">
@@ -150,21 +151,21 @@ export default function SingleProduct() {
           <div className="single-product__actions">
             {/* Quantity controls */}
             <div className="single-product__qty">
-              <button 
+              <button
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
                 className="single-product__qty-btn"
               >
                 −
               </button>
-              <input 
-                type="number" 
-                value={quantity} 
+              <input
+                type="number"
+                value={quantity}
                 onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                 min="1"
                 max={product.stock}
                 className="single-product__qty-input"
               />
-              <button 
+              <button
                 onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
                 className="single-product__qty-btn"
               >
@@ -177,8 +178,11 @@ export default function SingleProduct() {
         </div>
       </div>
 
+      {/* Recommendations Section */}
+      <Recommendation category={product.category} />
+
       {/* Reviews Section - displays and adds reviews */}
-      <ReviewsSection 
+      <ReviewsSection
         productId={product._id}
         reviews={reviews}
         averageRating={averageRating}

@@ -101,3 +101,41 @@
 .product-list > * {
     min-width: 0; /* Prevents grid items from overflowing */
 }
+
+/* Horizontal scroll layout for carousels / recommendations */
+.product-list--horizontal {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-sm) 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    align-items: stretch;
+}
+
+.product-list--horizontal::-webkit-scrollbar {
+    height: 10px;
+}
+
+.product-list--horizontal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.product-list--horizontal::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.12);
+    border-radius: 999px;
+}
+
+.product-list--horizontal > * {
+    flex: 0 0 260px; /* fixed card width in carousel */
+    scroll-snap-align: start;
+    max-width: 260px;
+}
+
+@media (max-width: 640px) {
+    .product-list--horizontal > * {
+        flex: 0 0 200px;
+        max-width: 200px;
+    }
+}

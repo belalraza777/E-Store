@@ -1,0 +1,52 @@
+
+.recommendation-container {
+	padding: var(--spacing-md) 0;
+}
+
+.recommendation-title {
+	font-size: var(--font-size-xl);
+	margin: 0 0 var(--spacing-sm) 0;
+	color: var(--text);
+	padding: 0 var(--spacing-sm);
+}
+
+/* ensure horizontal product scroller inside recommendation looks clean */
+.recommendation-container .product-list--horizontal {
+	padding-left: var(--spacing-sm);
+	padding-right: var(--spacing-sm);
+}
+
+/* subtle fade at edges to indicate scroll on wide screens */
+.recommendation-container::before,
+.recommendation-container::after {
+	content: '';
+	position: absolute;
+	pointer-events: none;
+	height: 100%;
+	width: 48px;
+	top: 0;
+	z-index: 4;
+}
+
+.recommendation-container {
+	position: relative;
+}
+
+.recommendation-container::before {
+	left: 0;
+	background: linear-gradient(90deg, var(--bg) 0%, rgba(255,255,255,0) 100%);
+	opacity: 0.9;
+}
+
+.recommendation-container::after {
+	right: 0;
+	background: linear-gradient(270deg, var(--bg) 0%, rgba(255,255,255,0) 100%);
+	opacity: 0.9;
+}
+
+@media (max-width: 880px) {
+	.recommendation-container::before,
+	.recommendation-container::after {
+		display: none;
+	}
+}

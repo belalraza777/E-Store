@@ -1,17 +1,40 @@
 import Product from "../models/productModel.js";
 import Order from "../models/orderModel.js";
-import { getCache, setCache } from "../../utils/cache.js";
+import { getCache, setCache } from "../utils/cache.js";
 
 export const getRecommendedProducts = async ({ userId, category }) => {
+    const cacheKey = userId
+        ? `recommendedProducts:user:${userId}:${category}`
+        : `recommendedProducts:guest:${category}`;
 
-    const cacheKey = `recommendedProducts:${userId}:${category}`;
+    // Check cache
     const cached = await getCache(cacheKey);
+    if (cached) return cached;
 
-    if (cached) {
-        return cached;
+    /**
+     * ============================
+     * GUEST USER RECOMMENDATIONS
+     * ============================
+     */
+    if (!userId) {
+        const products = await Product.find({
+            category,
+            isActive: true,
+        })
+            .limit(20)
+            .lean();
+
+        await setCache(cacheKey, products, 480);
+        return products;
     }
 
-    // 1️⃣Fetch recent orders (only product IDs)
+    /**
+     * ============================
+     * LOGGED-IN USER RECOMMENDATIONS
+     * ============================
+     */
+
+    // Fetch recent orders
     const orders = await Order.find(
         { user: userId },
         { "items.product": 1 }
@@ -19,20 +42,21 @@ export const getRecommendedProducts = async ({ userId, category }) => {
         .sort({ createdAt: -1 })
         .limit(20)
         .lean();
-    // if orders are not found, fallback
+
+    // If no orders → fallback to category-based
     if (!orders.length) {
         const fallbackProducts = await Product.find({
             category,
             isActive: true,
         })
-            .limit(10)
+            .limit(20)
             .lean();
-        // Cache fallback results
+
         await setCache(cacheKey, fallbackProducts, 480);
         return fallbackProducts;
     }
 
-    //  Extract unique product IDs  [flatMap is used for nested arrays , it flattens them]
+    // Extract unique ordered product IDs
     const orderedProductIds = [
         ...new Set(
             orders.flatMap(order =>
@@ -40,7 +64,6 @@ export const getRecommendedProducts = async ({ userId, category }) => {
             )
         )
     ];
-
 
     // Get categories from ordered products
     const orderedCategories = await Product.distinct("category", {
@@ -56,8 +79,6 @@ export const getRecommendedProducts = async ({ userId, category }) => {
         .limit(20)
         .lean();
 
-    // Cache results
     await setCache(cacheKey, recommendedProducts, 480);
-
     return recommendedProducts;
 };

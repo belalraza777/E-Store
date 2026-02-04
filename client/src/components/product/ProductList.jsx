@@ -4,7 +4,7 @@ import ProductCard from './ProductCard.jsx'
 import Skeleton from '../ui/Skeleton/Skeleton.jsx'
 import './ProductList.css';
 
-export default function ProductList({ products, loading = false }) {
+export default function ProductList({ products, loading = false, horizontal = false }) {
 
   // Show loading spinner while fetching products
   if (loading) {
@@ -48,7 +48,7 @@ export default function ProductList({ products, loading = false }) {
 
   // Render grid of product cards
   return (
-    <div className="product-list">
+    <div className={`product-list ${horizontal ? 'product-list--horizontal' : ''}`}>
       {products.map((product) => (
         <ProductCard key={product._id} product={product} />
       ))}
