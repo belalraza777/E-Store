@@ -1,0 +1,100 @@
+What is a Wishlist feature?
+
+A Wishlist lets users:
+
+⭐ Save products they like
+
+🕒 Buy later
+
+🔁 Track price drops / stock updates
+
+❤️ Personalize their shopping experience
+
+Core behavior (from user side)
+
+Click ❤️ Save / Wishlist
+
+Product gets stored in their account
+
+View all saved products in My Wishlist
+
+Remove anytime
+
+How it works (backend logic – high level)
+1️⃣ Database Design
+
+You have two clean options:
+
+Option A (Best & simple)
+
+Wishlist collection
+
+userId
+
+products[] (productId)
+
+createdAt
+
+➡️ One wishlist per user
+
+Option B
+
+Add wishlist: [productId] inside User schema
+
+➡️ Simpler, but grows with user activity
+
+✅ For production: Option A is cleaner
+
+2️⃣ API Flow
+
+Typical endpoints:
+
+POST /wishlist/add
+
+DELETE /wishlist/remove/:productId
+
+GET /wishlist
+
+Logic:
+
+Check if user is logged in
+
+Check if product already saved
+
+Toggle add/remove
+
+Return updated wishlist
+
+3️⃣ Frontend Flow (React idea)
+
+Heart icon ❤️ on product card
+
+If saved → filled heart
+
+If not → outline heart
+
+Click → call API
+
+Update UI instantly (optimistic update)
+
+4️⃣ Extra smart features (🔥 impressive)
+
+You can add:
+
+🔔 Notify when price drops
+
+⏳ Move to cart
+
+❌ Auto-remove out-of-stock items
+
+📊 Wishlist count badge
+
+🧠 Use wishlist for recommendations
+
+5️⃣ Performance tips
+
+Cache wishlist in Redis
+
+Store only productId, fetch details via populate
+
+Index on userId
