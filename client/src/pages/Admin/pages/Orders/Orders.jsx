@@ -1,22 +1,12 @@
 // Orders.jsx - Admin order management page with filtering and search
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { 
-  FiPackage, 
-  FiTruck, 
-  FiCheckCircle, 
-  FiXCircle, 
-  FiSearch, 
-  FiRefreshCw,
-  FiCreditCard,
-  FiClock,
-  FiAlertCircle,
-  FiBarChart2
-} from 'react-icons/fi';
+import { FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiSearch, FiRefreshCw, FiCreditCard, FiClock, FiAlertCircle, FiBarChart2 } from 'react-icons/fi';
 import useOrderStore from '../../../../store/orderStore.js';
 import './Orders.css';
 import Skeleton from '../../../../components/ui/Skeleton/Skeleton.jsx';
+import { computeStats, getUniqueCities, filterOrders } from '../../../../helper/orderHelpers.js';
 
 export default function AdminOrders() {
   // Get orders data and fetch function from store
@@ -25,6 +15,8 @@ export default function AdminOrders() {
   const [filterStatus, setFilterStatus] = useState('');
   // Search term for customer/order search
   const [searchTerm, setSearchTerm] = useState('');
+  // City filter for city-wise search
+  const [cityFilter, setCityFilter] = useState('');
 
   // Load orders on mount
   useEffect(() => {
@@ -32,7 +24,6 @@ export default function AdminOrders() {
   }, []);
 
   // Fetch all orders from API
-
   const loadOrders = async () => {
     const result = await fetchAllOrders();
     if (!result.success) {
@@ -40,23 +31,19 @@ export default function AdminOrders() {
     }
   };
 
-  // Filter orders by status and search term
-  const filteredOrders = orders.filter(order => {
-    const matchesStatus = !filterStatus || order.orderStatus === filterStatus;
-    const matchesSearch = !searchTerm || 
-      order.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order._id?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesStatus && matchesSearch;
-  });
+  // Compute stats, cities and filtered orders using helper functions
+  // Memoized computations
+  const stats = useMemo(() => computeStats(orders), [orders]);
+  const cities = useMemo(() => getUniqueCities(orders), [orders]);
+  // Filter orders based on current filters and search term
+  const filteredOrders = useMemo(() => {
+    return filterOrders(orders, {
+      filterStatus,
+      searchTerm,
+      cityFilter
+    });
+  }, [orders, filterStatus, searchTerm, cityFilter]);
 
-  // Calculate order status counts
-  const stats = {
-    total: orders.length,
-    placed: orders.filter(o => o.orderStatus === 'placed').length,
-    shipped: orders.filter(o => o.orderStatus === 'shipped').length,
-    delivered: orders.filter(o => o.orderStatus === 'delivered').length,
-  };
 
   return (
     <div className="admin-orders-page">
@@ -103,6 +90,12 @@ export default function AdminOrders() {
         </div>
         {/* Status filter and refresh */}
         <div className="admin-orders-page__filter-controls">
+          <select value={cityFilter} onChange={(e) => setCityFilter(e.target.value)} className="admin-orders-page__filter-select admin-orders-page__city-select">
+            <option value="">All Cities</option>
+            {cities.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
           <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="admin-orders-page__filter-select">
             <option value="">All Orders ({orders.length})</option>
             <option value="placed">Placed ({stats.placed})</option>
@@ -130,7 +123,7 @@ export default function AdminOrders() {
         <div className="admin-orders-page__empty">
           <FiPackage size={48} />
           <p>No orders found</p>
-          {(filterStatus || searchTerm) && <p className="admin-orders-page__empty-hint">Try adjusting your filters</p>}
+          {(filterStatus || searchTerm || cityFilter) && <p className="admin-orders-page__empty-hint">Try adjusting your filters</p>}
         </div>
       ) : (
         // Orders cards grid

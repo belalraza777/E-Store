@@ -87,7 +87,7 @@
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 2.5rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--bubblegum-pink);
   background: var(--color-panel);
   color: var(--color-text);
   font-size: var(--font-size-base);
@@ -117,7 +117,7 @@
   flex: 1;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--bubblegum-pink);
   background: var(--color-panel);
   color: var(--color-text);
   font-size: var(--font-size-base);

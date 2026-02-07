@@ -3,11 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-
 import useOrderStore from '../../../../store/orderStore.js';
 import { getInvoiceData } from '../../../../helper/invoiceHelper';
 import { generateCustomerInvoice } from '../../../../utils/bill';
-
 import Skeleton from '../../../../components/ui/Skeleton/Skeleton.jsx';
 import OrderStatusOverview from './OrderStatusOverview';
 import OrderTotals from './OrderTotals';
@@ -27,16 +25,12 @@ export default function AdminOrderDetail() {
   // Get order id from URL
   const { id } = useParams();
   const navigate = useNavigate();
-
   // Order store access
   const { orders, updateOrderStatus, loading, fetchAllOrders } = useOrderStore();
-
   // Local order state
   const [order, setOrder] = useState(null);
-
   // Status update form state
   const [form, setForm] = useState({ orderStatus: '', paymentStatus: '' });
-
   // Prevent duplicate submissions
   const [submitting, setSubmitting] = useState(false);
 
@@ -46,7 +40,7 @@ export default function AdminOrderDetail() {
       fetchAllOrders();
       return;
     }
-
+    // Find the order by ID from the store
     const foundOrder = orders.find(o => o._id === id);
     if (foundOrder) {
       setOrder(foundOrder);
@@ -68,8 +62,8 @@ export default function AdminOrderDetail() {
     e.preventDefault();
     if (submitting) return;
 
-    if (!form.orderStatus) {
-      toast.error('Order status is required');
+    if (!form.orderStatus && !form.paymentStatus) {
+      toast.error('Order status and payment status are required');
       return;
     }
 
@@ -98,12 +92,10 @@ export default function AdminOrderDetail() {
     );
   }
 
-  // Price calculations
-  const subtotal =
-    order.items?.reduce((sum, i) => sum + i.price * i.quantity, 0) || 0;
-
-  const discount =
-    order.items?.reduce((sum, i) => sum + i.discount * i.quantity, 0) || 0;
+  // Price calculations 
+  const subtotal = order?.subtotal; 
+  const discount = subtotal - order?.totalAmount;
+  const total = order?.totalAmount;
 
   return (
     <div className="admin-order-detail-page">
@@ -194,7 +186,7 @@ export default function AdminOrderDetail() {
         <OrderTotals
           subtotal={subtotal}
           discount={discount}
-          total={order.totalAmount}
+          total={total}
         />
 
         {/* Status Update */}
