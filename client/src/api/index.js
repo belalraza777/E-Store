@@ -6,4 +6,5 @@ export * from './orderApi';
 export * from './reviewApi';
 export * from './profileApi';
 export * from './recommendationApi';
+export * from './wishlistApi';
 

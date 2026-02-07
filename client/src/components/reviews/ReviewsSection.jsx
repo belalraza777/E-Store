@@ -4,12 +4,14 @@ import useReviewStore from '../../store/reviewStore.js'
 import { toast } from 'sonner'
 import Skeleton from '../ui/Skeleton/Skeleton.jsx'
 import './ReviewsSection.css';
+import StarRating from './StarRating.jsx';
+
 
 export default function ReviewsSection({ productId, reviews, averageRating, totalReviews, reviewsLoading, fetchProductReviews }) {
   // Get addReview function from store
   const { addReview } = useReviewStore();
   // Form state for new review
-  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [reviewForm, setReviewForm] = useState({ rating: 1, comment: '' });
   // Track submission loading state
   const [submitting, setSubmitting] = useState(false);
 
@@ -35,6 +37,12 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
     setSubmitting(false);
   };
 
+  const handleRatingChange = (newRating) => {
+    setReviewForm(prev => ({ ...prev, rating: newRating }));
+  };
+
+  
+
   return (
     <div className="reviews-section">
       {/* Reviews header with average rating */}
@@ -43,9 +51,7 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
         <div className="reviews-summary">
           <span className="avg-rating">{averageRating.toFixed(1)}</span>
           {/* Display star rating visually */}
-          <div className="stars-small">
-            {'★'.repeat(Math.round(averageRating))}<span className="empty">{'☆'.repeat(5 - Math.round(averageRating))}</span>
-          </div>
+          <StarRating value={averageRating} size={18} readOnly={true} />
           <span className="total-reviews">({totalReviews} reviews)</span>
         </div>
       </div>
@@ -53,22 +59,11 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
       {/* Add Review Form */}
       <div className="add-review-section">
         <h3>Share Your Experience</h3>
-        
+
         {/* Star rating selector */}
         <div className="form-group">
           <label>Rate this product</label>
-          <div className="star-rating">
-            {[1, 2, 3, 4, 5].map(star => (
-              <button
-                key={star}
-                className={`star-btn ${reviewForm.rating >= star ? 'active' : ''}`}
-                onClick={() => setReviewForm(prev => ({ ...prev, rating: star }))}
-                title={`${star} star${star > 1 ? 's' : ''}`}
-              >
-                ★
-              </button>
-            ))}
-          </div>
+          <StarRating value={reviewForm.rating} size={30} readOnly={false} onChange={handleRatingChange} />
         </div>
 
         {/* Comment textarea */}
@@ -84,7 +79,7 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
         </div>
 
         {/* Submit button */}
-        <button 
+        <button
           onClick={handleSubmitReview}
           disabled={submitting}
           className="submit-review-btn"
@@ -96,7 +91,7 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
       {/* Reviews List Section */}
       <div className="reviews-list-section">
         <h3>Reviews ({totalReviews})</h3>
-        
+
         {/* Loading state */}
         {reviewsLoading ? (
           <div className="loading">
@@ -125,7 +120,7 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
                     <strong>{review.user?.name || 'Anonymous'}</strong>
                     {/* User's star rating */}
                     <span className="review-rating">
-                      {'★'.repeat(review.rating)}<span className="empty">{'☆'.repeat(5 - review.rating)}</span>
+                      <StarRating value={review.rating} size={16} readOnly={true} />
                     </span>
                   </div>
                   {/* Review date */}

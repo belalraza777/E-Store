@@ -4,10 +4,12 @@ import { useParams } from 'react-router-dom'
 import useProductStore from '../../store/productStore.js'
 import useReviewStore from '../../store/reviewStore.js'
 import AddCartBtn from '../../components/FunctionalBtn/AddCartbtn.jsx'
+import AddWishlistBtn from '../../components/FunctionalBtn/AddWishlistbtn.jsx'
 import ReviewsSection from '../../components/reviews/ReviewsSection.jsx'
 import Recommendation from '../../components/Recommendation/Recommendation.jsx'
 import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx'
 import './SingleProduct.css'
+
 
 export default function SingleProduct() {
   // Get product slug from URL params
@@ -172,8 +174,11 @@ export default function SingleProduct() {
                 +
               </button>
             </div>
-            {/* Add to cart button component */}
-            <AddCartBtn productId={product._id} quantity={quantity} />
+            {/* Add to cart and wishlist buttons */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <AddCartBtn productId={product._id} quantity={quantity} />
+              <AddWishlistBtn productId={product._id} />
+            </div>
           </div>
         </div>
       </div>

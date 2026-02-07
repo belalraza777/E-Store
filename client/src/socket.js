@@ -3,13 +3,13 @@ let socket = null;
 
 export const connectSocket = (token) => {
     // TODO: Implement socket connection
-    console.log('Socket connection with token:', token);
+    // intentionally left blank until socket implementation is needed
 };
 
 export const disconnectSocket = () => {
     // TODO: Implement socket disconnection
     if (socket) {
-        console.log('Socket disconnected');
+        // socket disconnect logic
         socket = null;
     }
 };

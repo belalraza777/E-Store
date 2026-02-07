@@ -1,0 +1,26 @@
+.wishlist-heart {
+    background: white;
+    border: 3px solid var(--bubblegum-pink);
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.heart {
+    font-size: 20px;
+    color: #c2c2c2;
+    transition: 0.3s ease;
+}
+
+.heart.filled {
+    color: #ff3f6c;
+    /* Flipkart/Myntra-like red */
+}
+
+.wishlist-heart:hover .heart {
+    transform: scale(1.2);
+}

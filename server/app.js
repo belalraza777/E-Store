@@ -33,7 +33,7 @@ app.use("/api/v1/reviews", reviewRoutes); // Review routes
 app.use("/api/v1/profile", profileRoutes); // Profile routes
 app.use("/api/v1/payments", paymentRoutes); // Payment routes
 app.use("/api/v1/recommendations", recommendationRoutes); // Recommendation routes
-app.use("/api/v1/wishlist", wishlistRoutes); // Wishlist routes
+app.use("/api/v1/wishlists", wishlistRoutes); // Wishlist routes
 
 
 // Error handling middleware

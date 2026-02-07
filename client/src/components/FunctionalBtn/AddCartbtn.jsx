@@ -20,6 +20,11 @@ export default function AddCartBtn({ productId, quantity }) {
             return;
         }
         if (isLoading) return;
+        
+        if (!productId || quantity < 1) {
+            toast.error("Invalid product");
+            return;
+        }
         setIsLoading(true);
         try {
             const result = await addItem(productId, quantity);

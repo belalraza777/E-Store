@@ -285,9 +285,8 @@
 
 .single-product__stars-empty {
   color: var(--color-border-strong);
-  opacity: 0.4;
+  opacity: 0.8;
 }
-
 .single-product__rating-value {
   font-weight: var(--font-weight-bold);
   color: var(--color-text);

@@ -19,12 +19,13 @@ const AdminOrders = lazy(() => import('../pages/Admin/pages/Orders/Orders.jsx'))
 const AdminOrderDetail = lazy(() => import('../pages/Admin/pages/Orders/OrderDetail.jsx'));
 const AdminUsers = lazy(() => import('../pages/Admin/pages/Users/UserManagement.jsx'));
 const Feedback = lazy(() => import('../pages/Feedback/FeedBack.jsx'));
+const Wishlist = lazy(() => import('../pages/Wishlist/Wishlist.jsx'));
 import { useAuth } from '../context/authContext.jsx';
 import ScrollToTop from './ScrollToTop';
 import ProfilePage from '../pages/Profile/ProfilePage.jsx';
 import Search from '../pages/search/Search.jsx';
 import TermsPolicy from '../pages/Legal/TermsPolicy.jsx';
-import NotFound from '../pages/NotFound/NotFound.jsx';
+import NotFound from '../pages/Other/NotFound.jsx';
 import Unauthorized from '../pages/Other/UnAuthorized.jsx';
 import Skeleton from '../components/ui/Skeleton/Skeleton.jsx';
 
@@ -63,6 +64,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
+                    
                     <Route
                         path="/profile"
                         element={
@@ -71,6 +73,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
+
                     <Route
                         path="/orders"
                         element={
@@ -79,6 +82,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
+
                     <Route
                         path="/orders/:id"
                         element={
@@ -87,6 +91,13 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
+
+                    <Route path="/wishlist" element={
+                        <ProtectedRoute allowedRoles={["user"]}>
+                            <Wishlist />
+                        </ProtectedRoute>
+                    } />
+
                     <Route path="/feedback" element={
                         <ProtectedRoute allowedRoles={["user"]}>
                             <Feedback />

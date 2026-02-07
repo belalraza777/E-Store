@@ -56,6 +56,7 @@ export default function Header() {
           <Link to="/" className="site-header__nav-link">Home</Link>
           <Link to="/products" className="site-header__nav-link">Products</Link>
           <Link to="/orders" className="site-header__nav-link">Orders</Link>
+          <Link to="/wishlist" className="site-header__nav-link">Wishlist</Link>
           <Link to="/contact" className="site-header__nav-link">Contact</Link>
         </nav>
 
@@ -94,6 +95,7 @@ export default function Header() {
           <Link to="/" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
           <Link to="/products" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Products</Link>
           <Link to="/orders" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
+          <Link to="/wishlist" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Wishlist</Link>
           <Link to="/contact" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
           {!user && (
             <Link to="/login" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>

@@ -1,4 +1,3 @@
-
 .reviews-section {
     background: var(--panel);
     border-radius: var(--radius-xl);
@@ -131,12 +130,12 @@
 
 .comment-input:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    border-color: var(--raspberry);
+    box-shadow: 0 0 0 3px rgba(239, 33, 88, 0.1);
 }
 
 .submit-review-btn {
-    background: #007bff;
+    background:var(--raspberry);
     color: white;
     border: none;
     padding: 14px 32px;
@@ -145,13 +144,13 @@
     cursor: pointer;
     transition: all 0.3s;
     font-size: 15px;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(242, 53, 53, 0.3);
 }
 
 .submit-review-btn:hover:not(:disabled) {
-    background: #0056b3;
+    background:var(--raspberry);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 6px 16px rgba(198, 81, 128, 0.4);
 }
 
 .submit-review-btn:disabled {
@@ -192,8 +191,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .no-reviews {
