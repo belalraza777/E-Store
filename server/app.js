@@ -14,6 +14,7 @@ import profileRoutes from "./routes/profileRoute.js";
 import paymentRoutes from "./routes/paymentRoute.js";
 import recommendationRoutes from "./routes/recommendationRoute.js";
 import wishlistRoutes from "./routes/wishlistRoute.js";
+import agentRoutes from "./routes/agentRoute.js";
 
 // Setup middlewares for the app [ALl incoming requests pass through here]
 setupMiddlewares(app);
@@ -34,6 +35,7 @@ app.use("/api/v1/profile", profileRoutes); // Profile routes
 app.use("/api/v1/payments", paymentRoutes); // Payment routes
 app.use("/api/v1/recommendations", recommendationRoutes); // Recommendation routes
 app.use("/api/v1/wishlists", wishlistRoutes); // Wishlist routes
+app.use("/api/v1/agents", agentRoutes); // AI Agent chatbot routes
 
 
 // Error handling middleware

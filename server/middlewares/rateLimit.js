@@ -134,3 +134,17 @@ export const oauthLimiter = rateLimit({
     message: "Too many OAuth attempts. Please try again later.",
   },
 });
+
+// AI Agent limiter: for logged-in users
+export const agentLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 15, // 15 messages per minute per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many messages. Please slow down and try again shortly.",
+  },
+});
+
+
