@@ -46,7 +46,7 @@ export default function ProductCard({ product }) {
                     </div>
                 </div>
             </Link>
-            
+
             {/* Product details section */}
             <div className="product-info">
                 {/* Category label */}
@@ -75,6 +75,7 @@ export default function ProductCard({ product }) {
                 </div>
 
                 {/* Quantity selector and add to cart button */}
+                {inStock && (
                 <div className="product-actions">
                     <div className="quantity-selector">
                         {/* Decrease quantity button */}
@@ -105,6 +106,7 @@ export default function ProductCard({ product }) {
                     {/* Add to cart button component */}
                     <AddCartBtn productId={product._id} quantity={quantity} />
                 </div>
+                )}
             </div>
         </div>
     )

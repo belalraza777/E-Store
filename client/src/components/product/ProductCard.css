@@ -144,8 +144,9 @@
 }
 
 .stock-badge.out-of-stock {
-    background: rgba(var(--color-text-muted), 0.9);
-    color: var(--color-text);
+    background: red;
+    color: white;
+    border: 1px solid var(--color-danger);
 }
 
 /* =====================================================

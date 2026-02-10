@@ -5,6 +5,7 @@ import { isValidCategory, normalizeCategory } from "../../constants/categories.j
 import { cloudinary } from "../../config/cloudnary.js";
 import { deleteCachePattern } from "../../utils/cache.js";
 
+
 // Create new product (Admin only)
 const createProduct = async (req, res, next) => {
     const { title, description, price, discountPrice, stock, category } = req.body;
@@ -140,6 +141,10 @@ const updateStock = async (req, res, next) => {
     if (!product) {
         return res.status(404).json({ success: false, message: "Product not found" });
     }
+    // Invalidate product-related cache
+    await deleteCachePattern("getAllProducts:*");
+    await deleteCachePattern("searchProducts:*");
+    await deleteCachePattern(`getProductBySlug:${product.slug}`);
 
     return res.status(200).json({ success: true, message: "Stock updated", data: product });
 };

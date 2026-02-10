@@ -150,6 +150,7 @@ export default function SingleProduct() {
           </div>
 
           {/* Quantity Selector & Add to Cart Button */}
+          {inStock && (
           <div className="single-product__actions">
             {/* Quantity controls */}
             <div className="single-product__qty">
@@ -180,6 +181,7 @@ export default function SingleProduct() {
               <AddWishlistBtn productId={product._id} />
             </div>
           </div>
+          )}
         </div>
       </div>
 
