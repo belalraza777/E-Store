@@ -21,10 +21,10 @@ const orderSchema = new mongoose.Schema(
         ],
 
         shippingAddress: {
-            address: String,
-            city: String,
-            postalCode: String,
-            country: String,
+            address: { type: String, trim: true, lowercase: true },
+            city: { type: String, trim: true, lowercase: true },
+            postalCode: { type: String, trim: true, lowercase: true },
+            country: { type: String, trim: true, lowercase: true },
         },
 
         paymentMethod: {
@@ -64,9 +64,15 @@ const orderSchema = new mongoose.Schema(
             trim: true,
         },
 
-        subtotal: Number,
+        subtotal: {
+            type: Number,
+            required: true,
+        },
 
-        totalAmount: Number,
+        totalAmount: {
+            type: Number,
+            required: true,
+        },
 
         isCancelled: {
             type: Boolean,

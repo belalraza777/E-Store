@@ -46,13 +46,13 @@ const userSchema = new mongoose.Schema(
             default: "user",
         },
 
-        avatar: String,
+        avatar: { type: String },
 
         address: {
-            address: String,
-            city: String,
-            postalCode: String,
-            country: String,
+            address: { type: String, trim: true, lowercase: true },
+            city: { type: String, trim: true, lowercase: true },
+            postalCode: { type: String, trim: true, lowercase: true },
+            country: { type: String, trim: true, lowercase: true },
         },
 
         isBlocked: {
