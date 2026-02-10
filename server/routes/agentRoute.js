@@ -8,7 +8,7 @@ import { agentLimiter } from "../middlewares/rateLimit.js";
 // POST /api/v1/agent/chat - Send a message to the AI shopping assistant
 router.post("/chat", verifyAuth, agentLimiter, asyncWrapper(agentController.chat));
 
-// DELETE /api/v1/agent/session - Clear the current user's chat session / memory
-router.delete("/session", verifyAuth, asyncWrapper(agentController.endSession));
+// DELETE /api/v1/agent/clear-session - Clear the current user's chat session / memory
+router.delete("/clear-session", verifyAuth, asyncWrapper(agentController.endSession));
 
 export default router;

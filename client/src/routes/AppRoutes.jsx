@@ -28,6 +28,8 @@ import TermsPolicy from '../pages/Legal/TermsPolicy.jsx';
 import NotFound from '../pages/Other/NotFound.jsx';
 import Unauthorized from '../pages/Other/UnAuthorized.jsx';
 import Skeleton from '../components/ui/Skeleton/Skeleton.jsx';
+import Agent from '../pages/Ai_Agent/agent.jsx';
+
 
 const AppRoutes = () => {
     // Get current user to determine routing
@@ -101,6 +103,12 @@ const AppRoutes = () => {
                     <Route path="/feedback" element={
                         <ProtectedRoute allowedRoles={["user"]}>
                             <Feedback />
+                        </ProtectedRoute>
+                    } />
+
+                    <Route path="/agents" element={
+                        <ProtectedRoute allowedRoles={["user"]}>
+                            <Agent />
                         </ProtectedRoute>
                     } />
 

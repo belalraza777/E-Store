@@ -25,7 +25,12 @@ const chat = async (req, res, next) => {
     }
 
     const reply = await handleUserMessage(userId, message.trim());
-
+    if (!reply) {
+        return res.status(500).json({
+            success: false,
+            message: "Sorry, I couldn't process that. Please try again.",
+        });
+    }
     return res.status(200).json({
         success: true,
         data: { reply },

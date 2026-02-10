@@ -2,7 +2,8 @@
 import { use, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import { FiMenu, FiX, FiShoppingCart, FiUser, FiLogOut, FiSearch } from "react-icons/fi";
+import { FiMenu, FiX, FiShoppingCart, FiUser } from "react-icons/fi";
+import { BsRobot } from "react-icons/bs";
 import './Header.css'
 import useCartStore from '../store/cartStore.js';
 import logo from '../assets/estorelogo.png';
@@ -13,7 +14,7 @@ export default function Header() {
   // State for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Get user and logout function from auth context
-  const { user, handleLogout } = useAuth();
+  const { user, refreshUser } = useAuth();
   // Get cart data from store
   const { cart, fetchCart } = useCartStore();
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function Header() {
   // Fetch cart on component mount
   useEffect(() => {
     fetchCart();
+    refreshUser();
   }, []);
 
   // Update cart badge when cart changes
@@ -32,12 +34,6 @@ export default function Header() {
     };
   }, [cart]);
 
-  // Handle logout and redirect to login
-  const handleLogoutClick = async () => {
-    await handleLogout();
-    setMobileMenuOpen(false);
-    navigate("/login");
-  };
 
   return (
     <header className="site-header">
@@ -45,7 +41,6 @@ export default function Header() {
         {/* Logo */}
         <Link to="/" className="site-header__brand">
           <img src={logo} alt="E-Store" className="site-header__logo" />
-          {/* <span className="site-header__brand-text">E-Store</span> */}
         </Link>
 
         {/* Search Bar */}
@@ -57,7 +52,7 @@ export default function Header() {
           <Link to="/products" className="site-header__nav-link">Products</Link>
           <Link to="/orders" className="site-header__nav-link">Orders</Link>
           <Link to="/wishlist" className="site-header__nav-link">Wishlist</Link>
-          <Link to="/contact" className="site-header__nav-link">Contact</Link>
+          <Link to="/agents" className="site-header__nav-link"><BsRobot size={22}/>&nbsp;AI</Link>
         </nav>
 
         {/* Right Actions - Cart, Profile, Mobile Menu */}
@@ -96,7 +91,7 @@ export default function Header() {
           <Link to="/products" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Products</Link>
           <Link to="/orders" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
           <Link to="/wishlist" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Wishlist</Link>
-          <Link to="/contact" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+          <Link to="/agents" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}><BsRobot />Ai Agent</Link>
           {!user && (
             <Link to="/login" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
           )}

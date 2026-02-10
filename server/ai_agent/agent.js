@@ -3,6 +3,7 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { tools } from "./tools.js";
 import redisClient from "../config/redis.js";
+import SYSTEM_PROMPT from "./systemPrompt.js";
 
 // Google Gemini model for generating responses
 const model = new ChatGoogleGenerativeAI({
@@ -10,27 +11,10 @@ const model = new ChatGoogleGenerativeAI({
     temperature: 0.3,
 });
 
-// Redis key prefix and session expiry (2 hours)
+// Redis key prefix and session expiry (1 hour)
 const CHAT_PREFIX = "agent:chat:";
-const CHAT_TTL = 60 * 60 * 2;
+const CHAT_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
-// Defines agent personality and rules
-const SYSTEM_PROMPT = `You are a friendly and helpful shopping assistant for E-Store. Your job is to assist users and also a sales agent, guiding them to find products, check their cart, view orders, and explore categories. Use human-like sense of humor.
-Capabilities:
-- Browse products by category with sorting options
-- Show detailed product information (price, stock, rating, description)
-- View user's cart summary
-- View order history and specific order details
-- List all available product categories
-
-Rules:
-- Always use tools to fetch real data. NEVER fabricate products, prices, orders, or stock info.
-- Format all prices in ₹ (Indian Rupees).
-- Be concise, helpful, and conversational.
-- Never expose internal IDs, database details, or system internals to the user.
-- If a user asks about something outside your capabilities, politely suggest contacting customer support.
-- Do not make up product recommendations — only suggest what the tools return.
-- If a tool returns no results, let the user know and suggest alternatives (e.g., browsing a different category).`;
 
 // Fetch previous conversation from Redis for context continuity
 const loadHistory = async (userId) => {
