@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { getAgentResponse, clearAgentSession } from '../../api/agentApi';
 import { toast } from 'sonner';
 import ReactMarkdown from "react-markdown";
-import { BsCart3, BsRobot, BsTrash3, BsSend } from "react-icons/bs";
+import { BsRobot, BsTrash3, BsSend } from "react-icons/bs";
 import { FiUser } from "react-icons/fi";
 import "./Agent.css";
 
 const SUGGESTIONS = [
-    "Show me trending products",
+    "Raise a Complaint",
     "What's in my cart?",
     "Show my recent orders",
     "Browse categories",
@@ -22,11 +22,10 @@ export default function Agent() {
     const [chatHistory, setChatHistory] = useState([]);
     const [inputMessage, setInputMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const messagesEndRef = useRef(null);
     const messagesContainerRef = useRef(null);
+    const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
-
-    // auto-scroll inside messages container
+    // Scroll to bottom on new message or loading state change
     useEffect(() => {
         const container = messagesContainerRef.current;
         if (container) {
@@ -34,17 +33,15 @@ export default function Agent() {
         }
     }, [chatHistory, isLoading]);
 
-    // clear session on unmount
     useEffect(() => {
         return () => { clearAgentSession(); };
     }, []);
-
+    // handle sending message to agent and receiving response
     const sendMessage = async (text) => {
         const msg = text ?? inputMessage;
         if (!msg.trim()) return;
 
-        const userMsg = { role: "user", content: msg.trim(), time: new Date() };
-        setChatHistory((prev) => [...prev, userMsg]);
+        setChatHistory((prev) => [...prev, { role: "user", content: msg.trim(), time: new Date() }]);
         setInputMessage("");
         setIsLoading(true);
 
@@ -61,14 +58,14 @@ export default function Agent() {
         setIsLoading(false);
         inputRef.current?.focus();
     };
-
+    // Handle Enter key for sending message (Shift+Enter for newline)
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
         }
     };
-
+    // Clear chat history and session
     const handleClearChat = () => {
         setChatHistory([]);
         clearAgentSession();
@@ -77,23 +74,6 @@ export default function Agent() {
 
     return (
         <div className="agent">
-            {/* ── Header ─────────────────────────────── */}
-            <div className="agent__header">
-                <div className="agent__avatar"><BsCart3 size={20} /></div>
-                <div className="agent__header-info">
-                    <div className="agent__title">E-Store AI Assistant</div>
-                   
-                </div>
-                <div className="agent__header-actions">
-                    {chatHistory.length > 0 && (
-                        <button className="agent__clear-btn" onClick={handleClearChat}>
-                            <BsTrash3 size={13} />
-                            Clear chat
-                        </button>
-                    )}
-                </div>
-            </div>
-
             {/* ── Messages ───────────────────────────── */}
             <div className="agent__messages" ref={messagesContainerRef}>
                 {chatHistory.length === 0 && !isLoading ? (
@@ -101,7 +81,7 @@ export default function Agent() {
                         <div className="agent__welcome-icon"><BsRobot size={36} /></div>
                         <h2 className="agent__welcome-title">Hi there! How can I help?</h2>
                         <p className="agent__welcome-subtitle">
-                            I can help you find products, check your cart, track orders, and more. Try one of these:
+                            I can help you find products, check your cart, track orders, raise a complaint, and more. Try one of these:
                         </p>
                         <div className="agent__suggestions">
                             {SUGGESTIONS.map((s) => (
@@ -153,6 +133,11 @@ export default function Agent() {
 
             {/* ── Input bar ──────────────────────────── */}
             <div className="agent__input-bar">
+                {chatHistory.length > 0 && (
+                    <button className="agent__clear-btn" onClick={handleClearChat} aria-label="Clear chat">
+                        <BsTrash3 size={15} />
+                    </button>
+                )}
                 <div className="agent__input-wrapper">
                     <textarea
                         ref={inputRef}

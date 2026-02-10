@@ -1,30 +1,29 @@
 import "dotenv/config";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatGroq } from "@langchain/groq";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { tools } from "./tools.js";
 import redisClient from "../config/redis.js";
 import SYSTEM_PROMPT from "./systemPrompt.js";
 
-// Google Gemini model for generating responses
-const model = new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash",
-    temperature: 0.3,
+// Groq LLM for agent
+const model = new ChatGroq({
+  model: "llama-3.1-8b-instant",
+  temperature: 0.3,
 });
 
-// Redis key prefix and session expiry (1 hour)
+// Redis session config (1 hour TTL)
 const CHAT_PREFIX = "agent:chat:";
-const CHAT_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
+const CHAT_TTL = 60 * 60;
 
-
-// Fetch previous conversation from Redis for context continuity
+// Load chat history from Redis
 const loadHistory = async (userId) => {
     const data = await redisClient.get(`${CHAT_PREFIX}${userId}`);
     return data ? JSON.parse(data) : [];
 };
 
-// Persist conversation to Redis, trimmed to last 50 messages to avoid token overflow
+// Save chat history, trimmed to last 20 messages to reduce token overhead
 const saveHistory = async (userId, messages) => {
-    const trimmed = messages.slice(-50);
+    const trimmed = messages.slice(-20); // Keep last 20 messages for context
     await redisClient.setex(`${CHAT_PREFIX}${userId}`, CHAT_TTL, JSON.stringify(trimmed));
 };
 
@@ -35,19 +34,18 @@ const agent = createReactAgent({
     stateModifier: SYSTEM_PROMPT,
 });
 
-// Process user message: load history → invoke agent → save updated history → return reply
+// Process user message: load history → invoke agent → save history → return reply
 export const handleUserMessage = async (userId, message) => {
     try {
         const history = await loadHistory(userId);
         history.push({ role: "user", content: message });
 
-        // Invoke agent with full conversation + userId in config for tool access
         const result = await agent.invoke(
             { messages: history },
             { configurable: { userId } }
         );
 
-        // Filter out tool-call messages, keep only user & assistant for clean history
+        // Keep only user & assistant messages for clean history
         const cleanMessages = result.messages
             .filter((m) => ["human", "ai"].includes(m._getType?.()))
             .map((m) => ({
@@ -60,11 +58,11 @@ export const handleUserMessage = async (userId, message) => {
         return result.messages.at(-1)?.content || "Sorry, I couldn't process that. Please try again.";
     } catch (error) {
         console.error(`Agent error [${userId}]:`, error.message);
-        return "Something went wrong. Please try again later.";
+        throw error;
     }
 };
 
-// Delete user's chat history from Redis when session ends
+// Clear user's chat session from Redis
 export const clearUserSession = async (userId) => {
     await redisClient.del(`${CHAT_PREFIX}${userId}`);
 };

@@ -249,6 +249,49 @@ const getCartSummary = tool(
   }
 );
 
+//10. Complaint submission tool
+export const submitComplaint = tool(
+  async ({ orderId, userEmail, complain }) => {
+    try {
+      const formId = "1FAIpQLSchBBHoNwie2yegwiikuhbYfL0ZeTI6fVEKm3FNoowECNwtlg";
+
+      // Map of fields in the form
+      const fieldMap = {
+        orderId: "entry.1209223186",
+        userEmail: "entry.808379686",
+        complain: "entry.1848997409",
+      };
+
+      const url = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
+      const formData = new URLSearchParams();
+
+      formData.append(fieldMap.orderId, orderId);
+      formData.append(fieldMap.userEmail, userEmail);
+      formData.append(fieldMap.complain, complain);
+
+      await fetch(url, {
+        method: "POST",
+        body: formData,
+        mode: "no-cors", // required for browser environments
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      });
+
+      return "Complaint submitted successfully!";
+    } catch (err) {
+      return `Error submitting complaint: ${err.message}`;
+    }
+  },
+  {
+    name: "submitComplaint",
+    description: "Submit a complaint to the Google Form using order ID, user email, and complaint text.",
+    schema: z.object({
+      orderId: z.string().describe("The order number or ID for the complaint."),
+      userEmail: z.string().describe("The user email submitting the complaint."),
+      complain: z.string().describe("The complaint message or issue description."),
+    }),
+  }
+);
+
 // Shared tools array — same instance for all users
 export const tools = [
   getProductDetails,
@@ -257,4 +300,5 @@ export const tools = [
   getOrderHistory,
   getOrderDetails,
   getCartSummary,
+  submitComplaint,
 ];

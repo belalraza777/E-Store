@@ -1,40 +1,24 @@
 import { handleUserMessage, clearUserSession } from "../../ai_agent/agent.js";
 
-/**
- * POST /api/v1/agent/chat
- * Send a message to the AI shopping assistant
- * Body: { message: string }
- */
 const chat = async (req, res, next) => {
     const { message } = req.body;
     const userId = req.user?.id;
 
     if (!message || typeof message !== "string" || !message.trim()) {
-        return res.status(400).json({
-            success: false,
-            message: "Message is required and must be a non-empty string.",
-        });
+        return res.status(400).json({ success: false, message: "Message is required." });
     }
 
-    // Cap message length to prevent abuse
     if (message.length > 1000) {
-        return res.status(400).json({
-            success: false,
-            message: "Message too long. Please keep it under 1000 characters.",
-        });
+        return res.status(400).json({ success: false, message: "Message too long (max 1000 chars)." });
     }
 
-    const reply = await handleUserMessage(userId, message.trim());
-    if (!reply) {
-        return res.status(500).json({
-            success: false,
-            message: "Sorry, I couldn't process that. Please try again.",
-        });
+    try {
+        const reply = await handleUserMessage(userId, message.trim());
+        return res.status(200).json({ success: true, data: { reply } });
+    } catch (err) {
+        console.error(`Agent error [${userId}]:`, err.message);
+        return res.status(500).json({ success: false, message: "AI assistant error. Please try again." });
     }
-    return res.status(200).json({
-        success: true,
-        data: { reply },
-    });
 };
 
 /**
