@@ -186,12 +186,45 @@
   background: color-mix(in oklab, var(--color-panel), var(--color-accent-soft) 14%);
 }
 
+@media (min-width: 640px) {
+  .home-page__features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (min-width: 900px) {
   .home-page__hero {
     padding: var(--space-16) var(--space-4);
   }
   .home-page__features {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .home-page {
+    gap: var(--space-8);
+  }
+
+  .home-page__hero {
+    padding: var(--space-6) var(--space-3);
+  }
+
+  .home-page__hero-inner {
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-xl);
+  }
+
+  .home-page__section-inner {
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-xl);
+  }
+
+  .home-page__cta,
+  .home-page__secondary-cta {
+    width: 100%;
+    justify-content: center;
+    min-height: var(--touch-target-min, 44px);
   }
 }
 

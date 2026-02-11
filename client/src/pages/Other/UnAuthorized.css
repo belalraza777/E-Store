@@ -16,7 +16,7 @@
 }
 
 .unauthorized-title {
-	font-size: 2.5rem;
+	font-size: clamp(1.5rem, 5vw, 2.5rem);
 	font-weight: var(--font-weight-extrabold);
 	color: var(--color-danger);
 	margin-bottom: var(--space-4);
@@ -26,7 +26,7 @@
 .unauthorized-message {
 	color: var(--color-text-muted);
 	margin-bottom: var(--space-8);
-	font-size: 1.15rem;
+	font-size: clamp(0.95rem, 2vw, 1.15rem);
 	font-family: var(--font-family);
 }
 
@@ -63,7 +63,7 @@
 }
 
 .onlyadmin-title {
-	font-size: 2.5rem;
+	font-size: clamp(1.5rem, 5vw, 2.5rem);
 	font-weight: var(--font-weight-extrabold);
 	color: var(--color-primary-strong);
 	margin-bottom: var(--space-4);
@@ -73,7 +73,7 @@
 .onlyadmin-message {
 	color: var(--color-text-muted);
 	margin-bottom: var(--space-8);
-	font-size: 1.15rem;
+	font-size: clamp(0.95rem, 2vw, 1.15rem);
 	font-family: var(--font-family);
 }
 
@@ -91,4 +91,33 @@
 }
 .onlyadmin-home-btn:hover {
 	background: var(--color-primary-strong);
+}
+
+/* ---- Unauthorized/OnlyAdmin Responsive ---- */
+@media (max-width: 768px) {
+	.unauthorized-content,
+	.onlyadmin-content {
+		padding: var(--space-8) var(--space-6);
+		margin: var(--space-4);
+		border-radius: var(--radius-xl);
+	}
+}
+
+@media (max-width: 480px) {
+	.unauthorized-content,
+	.onlyadmin-content {
+		padding: var(--space-6) var(--space-4);
+		margin: var(--space-3);
+		border-radius: var(--radius-lg);
+	}
+
+	.unauthorized-home-btn,
+	.onlyadmin-home-btn {
+		width: 100%;
+		text-align: center;
+		min-height: var(--touch-target-min, 44px);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
 }

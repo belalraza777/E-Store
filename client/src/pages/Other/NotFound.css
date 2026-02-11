@@ -16,7 +16,7 @@
 }
 
 .notfound-title {
-  font-size: 6rem;
+  font-size: clamp(3rem, 12vw, 6rem);
   font-weight: var(--font-weight-extrabold);
   color: var(--color-primary-strong);
   margin-bottom: var(--space-2);
@@ -24,7 +24,7 @@
 }
 
 .notfound-subtitle {
-  font-size: 2rem;
+  font-size: clamp(1.25rem, 4vw, 2rem);
   color: var(--color-text-secondary);
   margin-bottom: var(--space-4);
   font-family: var(--font-family);
@@ -33,7 +33,7 @@
 .notfound-message {
   color: var(--color-text-muted);
   margin-bottom: var(--space-8);
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
   font-family: var(--font-family);
 }
 
@@ -51,4 +51,30 @@
 }
 .notfound-home-btn:hover {
   background: var(--color-primary-strong);
+}
+
+/* ---- NotFound Responsive ---- */
+@media (max-width: 768px) {
+  .notfound-content {
+    padding: var(--space-8) var(--space-6);
+    margin: var(--space-4);
+    border-radius: var(--radius-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .notfound-content {
+    padding: var(--space-6) var(--space-4);
+    margin: var(--space-3);
+    border-radius: var(--radius-lg);
+  }
+
+  .notfound-home-btn {
+    width: 100%;
+    text-align: center;
+    min-height: var(--touch-target-min, 44px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

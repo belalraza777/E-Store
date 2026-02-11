@@ -464,6 +464,10 @@
     right: var(--spacing-md);
   }
 
+  .cart-page__item {
+    position: relative;
+  }
+
   .cart-page__item-pricing {
     flex-direction: column;
     align-items: flex-start;

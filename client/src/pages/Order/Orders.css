@@ -287,3 +287,121 @@
   border-color: var(--color-primary-strong);
 }
 
+/* ---- Orders Responsive ---- */
+@media (max-width: 768px) {
+  .orders-page {
+    padding: var(--space-6) var(--space-3);
+  }
+
+  .orders-page__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .orders-page__filters {
+    gap: var(--space-2);
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: var(--space-2);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .orders-page__filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .orders-page__filter-btn {
+    flex-shrink: 0;
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .orders-page__card-header {
+    padding: var(--space-3) var(--space-4);
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .orders-page__items {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .orders-page__item {
+    grid-template-columns: 40px 1fr auto;
+    gap: var(--space-2);
+  }
+
+  .orders-page__item-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .orders-page__item-title {
+    font-size: var(--font-size-sm);
+  }
+
+  .orders-page__card-footer {
+    padding: var(--space-3) var(--space-4);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .orders-page__view {
+    width: 100%;
+    text-align: center;
+    min-height: var(--touch-target-min, 44px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders-page {
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .orders-page__title {
+    font-size: var(--font-size-lg);
+  }
+
+  .orders-page__card {
+    border-radius: var(--radius-lg);
+  }
+
+  .orders-page__id {
+    font-size: var(--font-size-sm);
+    word-break: break-all;
+  }
+
+  .orders-page__badges {
+    gap: var(--space-1);
+  }
+
+  .orders-page__badge {
+    font-size: var(--font-size-xs);
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .orders-page__item {
+    grid-template-columns: 36px 1fr;
+    gap: var(--space-2);
+  }
+
+  .orders-page__item-image {
+    width: 36px;
+    height: 36px;
+  }
+
+  .orders-page__item-price {
+    grid-column: 1 / -1;
+    text-align: left;
+    font-size: var(--font-size-sm);
+  }
+
+  .orders-page__empty {
+    padding: var(--space-8) var(--space-3);
+  }
+}
+

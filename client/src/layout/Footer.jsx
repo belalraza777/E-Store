@@ -2,6 +2,8 @@
 import { Link } from "react-router-dom";
 import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiMail, FiPhone, FiMapPin } from "react-icons/fi";
 import './Footer.css'
+import logo from '../assets/estorelogo.png';
+
 
 export default function Footer() {
   // Get current year for copyright
@@ -13,8 +15,7 @@ export default function Footer() {
         {/* About Section - Logo and description */}
         <div className="site-footer__section">
           <div className="site-footer__brand">
-            <img src="https://png.pngtree.com/element_pic/00/16/09/2057e0eecf792fb.jpg" alt="E-Store" className="site-footer__logo" />
-            <span className="site-footer__brand-text">E-Store</span>
+            <img src={logo} alt="E-Store" className="site-footer__logo" />
           </div>
           <p className="site-footer__description">
             Your one-stop shop for quality products and exceptional service. Discover amazing deals and fast delivery.

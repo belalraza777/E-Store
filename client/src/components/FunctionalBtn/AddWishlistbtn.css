@@ -8,6 +8,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: var(--touch-target-min, 44px);
+    min-height: var(--touch-target-min, 44px);
 }
 
 .heart {
@@ -38,6 +40,8 @@
     justify-content: center;
     color: #555;
     transition: all 0.3s ease;
+    min-width: var(--touch-target-min, 44px);
+    min-height: var(--touch-target-min, 44px);
 }
 
 .share-btn:hover {
@@ -45,8 +49,25 @@
     transform: scale(1.1);
 }
 
+.share-btn:active {
+    transform: scale(0.95);
+}
+
 .share-btn:disabled {
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+/* ---- FunctionalBtn Mobile ---- */
+@media (max-width: 480px) {
+    .wishlist-heart,
+    .share-btn {
+        border-width: 2px;
+    }
+
+    .share-btn:hover,
+    .wishlist-heart:hover .heart {
+        transform: none;
+    }
 }
  

@@ -87,3 +87,33 @@
   transform: none;
 }
 
+/* ---- CancelOrderModal Responsive ---- */
+@media (max-width: 640px) {
+  .cancel-order-modal {
+    padding: var(--space-3);
+    align-items: flex-end;
+  }
+
+  .cancel-order-modal__panel {
+    padding: var(--space-5);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-width: 100%;
+  }
+
+  .cancel-order-modal__actions {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .cancel-order-modal__button {
+    width: 100%;
+    text-align: center;
+    min-height: var(--touch-target-min, 44px);
+    justify-content: center;
+  }
+
+  .cancel-order-modal__textarea {
+    min-height: 100px;
+  }
+}
+
