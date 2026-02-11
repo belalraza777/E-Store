@@ -5,10 +5,12 @@ import useProductStore from '../../store/productStore.js'
 import useReviewStore from '../../store/reviewStore.js'
 import AddCartBtn from '../../components/FunctionalBtn/AddCartbtn.jsx'
 import AddWishlistBtn from '../../components/FunctionalBtn/AddWishlistbtn.jsx'
+import Sharebtn from '../../components/FunctionalBtn/Sharebtn.jsx'
 import ReviewsSection from '../../components/reviews/ReviewsSection.jsx'
 import Recommendation from '../../components/Recommendation/Recommendation.jsx'
 import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx'
 import './SingleProduct.css'
+import { toast } from 'sonner'
 
 
 export default function SingleProduct() {
@@ -151,36 +153,37 @@ export default function SingleProduct() {
 
           {/* Quantity Selector & Add to Cart Button */}
           {inStock && (
-          <div className="single-product__actions">
-            {/* Quantity controls */}
-            <div className="single-product__qty">
-              <button
-                onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                className="single-product__qty-btn"
-              >
-                −
-              </button>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                min="1"
-                max={product.stock}
-                className="single-product__qty-input"
-              />
-              <button
-                onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
-                className="single-product__qty-btn"
-              >
-                +
-              </button>
+            <div className="single-product__actions">
+              {/* Quantity controls */}
+              <div className="single-product__qty">
+                <button
+                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                  className="single-product__qty-btn"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                  min="1"
+                  max={product.stock}
+                  className="single-product__qty-input"
+                />
+                <button
+                  onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
+                  className="single-product__qty-btn"
+                >
+                  +
+                </button>
+              </div>
+              {/* Add to cart and wishlist buttons */}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <AddCartBtn productId={product._id} quantity={quantity} />
+                <AddWishlistBtn productId={product._id} />
+                <Sharebtn slug={product.slug} />
+              </div>
             </div>
-            {/* Add to cart and wishlist buttons */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <AddCartBtn productId={product._id} quantity={quantity} />
-              <AddWishlistBtn productId={product._id} />
-            </div>
-          </div>
           )}
         </div>
       </div>
