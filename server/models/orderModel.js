@@ -13,10 +13,23 @@ const orderSchema = new mongoose.Schema(
                 product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Product",
+                    required: true,
                 },
-                quantity: Number,
-                price: Number,
-                discount: Number,
+                quantity: {
+                    type: Number,
+                    required: true,
+                    min: [1, "Quantity must be at least 1"],
+                },
+                price: {
+                    type: Number,
+                    required: true,
+                    min: [0, "Price cannot be negative"],
+                },
+                discount: {
+                    type: Number,
+                    default: 0,
+                    min: [0, "Discount cannot be negative"],
+                },
             },
         ],
 

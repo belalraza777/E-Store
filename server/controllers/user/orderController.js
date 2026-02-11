@@ -2,69 +2,103 @@ import Order from "../../models/orderModel.js";
 import Product from "../../models/productModel.js";
 import User from "../../models/userModel.js";
 import { sendEmail } from "../../config/email.js";
+import mongoose from "mongoose";
 
 // Create order
 // POST /api/v1/orders
 // Body: { items: [{ productID, quantity }], shippingAddress{ address, city, postalCode, country }, paymentMethod }
-const createOrder = async (req, res, next) => {
-    // Extract order details from request body
-    const { items, shippingAddress, paymentMethod } = req.body;
-    const userId = req.user.id;
+// Transactional approach used to ensure atomicity [means all-or-nothing execution] of stock deduction and order creation, with proper error handling and email notifications.
+const createOrder = async (req, res, ) => {
+    //Start transaction session
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    //ProductIDs extraction from items
-    const productIds = items.map((item) => item.product);
-    // Validate products exist
-    const products = await Product.find({ _id: { $in: productIds } }).lean();
+    try {
+        // Extract order details from request body
+        const { items, shippingAddress, paymentMethod } = req.body;
+        const userId = req.user.id;
 
-    if (products.length !== productIds.length) {
-        return res.status(404).json({ success: false, message: "Product not found" });
+        //ProductIDs extraction from items
+        const productIds = items.map((item) => item.product);
+
+        // Validate products exist
+        const products = await Product.find({ _id: { $in: productIds } }).session(session).lean();
+
+        if (products.length !== productIds.length) {
+            await session.abortTransaction(); // Abort if product missing
+            session.endSession();
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        // Create order items and calculate totals with atomic stock deduction
+        let orderItems = [];
+        let subtotal = 0;
+        let totalAmount = 0;
+        // Loop through items to build order and check stock
+        for (const item of items) {
+            const product = await Product.findOneAndUpdate(
+                {
+                    _id: item.product,
+                    stock: { $gte: item.quantity }
+                },
+                {
+                    $inc: { stock: -item.quantity }
+                },
+                { new: true, session }
+            ); // Atomically check and deduct stock
+
+            if (!product) {
+                await session.abortTransaction(); // Abort if insufficient stock
+                session.endSession();
+                return res.status(400).json({ success: false, message: `Insufficient stock for product ID: ${item.product}` });
+            }
+
+            orderItems.push({  // Build order item
+                product: product._id,
+                quantity: item.quantity,
+                price: product.price,
+                discount: product.discountPrice ?? product.price,
+            });
+            // Calculate totals
+            subtotal += product.price * item.quantity;
+            totalAmount += (product.discountPrice ?? product.price) * item.quantity;
+        }
+
+        // Create and return order
+        const order = await Order.create([{
+            user: userId,
+            items: orderItems,
+            shippingAddress,
+            paymentMethod: paymentMethod.trim(),
+            subtotal: subtotal,
+            totalAmount: totalAmount,
+        }], { session });
+
+        await session.commitTransaction(); // Commit if everything successful
+        session.endSession(); // End session after commit
+
+        await order[0].populate("items.product", "title price discount slug");
+
+        // Send order confirmation email (non-critical, after transaction)
+        const user = await User.findById(userId);
+        if (user && user.email) {
+            sendEmail(
+                user.email,
+                "Order Confirmation - E-Store",
+                `Hi ${user.name},\n\nYour order has been placed successfully!\nOrder ID: ${order[0]._id}\nTotal: ₹${order[0].totalAmount}\n\nThank you for shopping with us!\n\n- E-Store Team`
+            ).catch((err) => console.error("Order confirmation email failed:", err));
+        }
+
+        return res.status(201).json({ success: true, message: "Order placed", data: order[0] });
+
+    } catch (error) {
+        // Abort transaction and clean up session on any unexpected error
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+        }
+        session.endSession();
+        throw error; // Let asyncWrapper handle passing to next()
     }
-
-    // Build order items with pricing details
-    const orderItems = items.map((item) => {
-        // Find corresponding product details
-        const prod = products.find((p) => p._id.toString() === item.product);
-        // Construct order item
-        return {
-            product: item.product,
-            quantity: item.quantity,
-            price: prod.price,
-            discount: prod.discountPrice || 0,
-        };
-    });
-
-    // Calculate total
-    const discountTotal = orderItems.reduce((sum, item) => sum + item.discount * item.quantity, 0);
-    const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-    // Create and return order
-    const order = await Order.create({
-        user: userId,
-        items: orderItems,
-        shippingAddress,
-        paymentMethod: paymentMethod.trim(),
-        subtotal: subtotal,
-        totalAmount: discountTotal,
-    });
-
-    await order.populate("items.product", "title price discount slug");
-
-    //Reduce stock quantity for each product
-    for (const item of orderItems) {
-        await Product.findByIdAndUpdate(item.product, { $inc: { stockQuantity: -item.quantity } });
-    }
-
-    // Send order confirmation email
-    const user = await User.findById(userId);
-    if (user && user.email) {
-        await sendEmail(
-            user.email,
-            "Order Confirmation - E-Store",
-            `Hi ${user.name},\n\nYour order has been placed successfully!\nOrder ID: ${order._id}\nTotal: ₹${order.totalAmount}\n\nThank you for shopping with us!\n\n- E-Store Team`
-        );
-    }
-
-    return res.status(201).json({ success: true, message: "Order placed", data: order });
 };
 
 
@@ -143,7 +177,7 @@ const cancelOrder = async (req, res, next) => {
 
     //Restock the products
     for (const item of order.items) {
-        await Product.findByIdAndUpdate(item.product._id, { $inc: { stockQuantity: item.quantity } });
+        await Product.findByIdAndUpdate(item.product._id, { $inc: { stock: item.quantity } });
     }
 
     // Send order cancellation email

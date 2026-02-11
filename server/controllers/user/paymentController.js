@@ -1,6 +1,7 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import Order from "../../models/orderModel.js";
+import Product from "../../models/productModel.js";
 import { sendEmail } from "../../config/email.js";
 
 
@@ -105,7 +106,7 @@ export const verifyPayment = async (req, res, next) => {
         });
     }
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate("user", "email");
 
     if (!order) {
         return res.status(404).json({
@@ -131,6 +132,29 @@ export const verifyPayment = async (req, res, next) => {
         .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
+        // Payment failed → mark order as failed/cancelled and restore stock
+        order.paymentStatus = "failed";
+        order.orderStatus = "cancelled";
+        order.isCancelled = true;
+        order.cancelReason = "Payment verification failed";
+        await order.save();
+
+        // Send order cancellation email
+        if (order?.user?.email) {
+            await sendEmail({
+                to: order.user.email,
+                subject: "Order Cancelled - E-Store",
+                text: `Your order (ID: ${order._id}) has been cancelled due to payment verification failure. If you have questions, contact support.\n\n- E-Store Team`,
+            });
+        }
+
+        // Restore stock for all items
+        for (const item of order.items) {
+            await Product.findByIdAndUpdate(item.product, {
+                $inc: { stock: item.quantity },
+            });
+        }
+
         return res.status(400).json({
             success: false,
             message: "Invalid payment signature",
