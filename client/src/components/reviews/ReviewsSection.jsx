@@ -1,44 +1,60 @@
-// ReviewsSection.jsx - Product reviews display and submission component
+// ReviewsSection.jsx - Product reviews container and orchestration component
 import React, { useState } from 'react'
 import useReviewStore from '../../store/reviewStore.js'
 import { toast } from 'sonner'
-import Skeleton from '../ui/Skeleton/Skeleton.jsx'
 import './ReviewsSection.css';
 import StarRating from './StarRating.jsx';
+import { useAuth } from '../../context/authContext.jsx';
+import ReviewForm from './ReviewForm.jsx';
+import ReviewsList from './ReviewsList.jsx';
 
 
 export default function ReviewsSection({ productId, reviews, averageRating, totalReviews, reviewsLoading, fetchProductReviews }) {
-  // Get addReview function from store
-  const { addReview } = useReviewStore();
-  // Form state for new review
-  const [reviewForm, setReviewForm] = useState({ rating: 1, comment: '' });
-  // Track submission loading state
-  const [submitting, setSubmitting] = useState(false);
+  // Keep store interactions in parent so child components stay presentational.
+  const { addReview, deleteReview } = useReviewStore();
+  const { user } = useAuth();
 
-  // Handle review form submission
-  const handleSubmitReview = async () => {
-    // Validate comment is not empty
+  const [submitting, setSubmitting] = useState(false);
+  const [deletingReviewId, setDeletingReviewId] = useState(null);
+
+  const handleSubmitReview = async (reviewForm) => {
     if (!reviewForm.comment.trim()) {
       toast.error('Please write a comment');
-      return;
+      return false;
     }
+
     setSubmitting(true);
-    // Call API to add review
     const result = await addReview(productId, reviewForm);
+
     if (result.success) {
       toast.success('Review added successfully');
-      // Reset form after success
-      setReviewForm({ rating: 5, comment: '' });
-      // Refresh reviews list
       await fetchProductReviews(productId);
+      setSubmitting(false);
+      return true;
     } else {
       toast.error(result.message || 'Failed to add review');
+      setSubmitting(false);
+      return false;
     }
-    setSubmitting(false);
   };
 
-  const handleRatingChange = (newRating) => {
-    setReviewForm(prev => ({ ...prev, rating: newRating }));
+  const handleDeleteReview = async (reviewId) => {
+    if (deletingReviewId) return;
+
+    const confirmed = window.confirm('Delete this review?');
+    if (!confirmed) return;
+
+    setDeletingReviewId(reviewId);
+    const result = await deleteReview(reviewId);
+
+    if (result.success) {
+      toast.success('Review deleted successfully');
+      await fetchProductReviews(productId);
+    } else {
+      toast.error(result.message || 'Failed to delete review');
+    }
+
+    setDeletingReviewId(null);
   };
 
   
@@ -56,89 +72,16 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
         </div>
       </div>
 
-      {/* Add Review Form */}
-      <div className="add-review-section">
-        <h3>Share Your Experience</h3>
+      <ReviewForm submitting={submitting} onSubmit={handleSubmitReview} />
 
-        {/* Star rating selector */}
-        <div className="form-group">
-          <label>Rate this product</label>
-          <StarRating value={reviewForm.rating} size={30} readOnly={false} onChange={handleRatingChange} />
-        </div>
-
-        {/* Comment textarea */}
-        <div className="form-group">
-          <label>Your Review</label>
-          <textarea
-            value={reviewForm.comment}
-            onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
-            placeholder="Tell us what you think about this product..."
-            className="comment-input"
-            rows="4"
-          />
-        </div>
-
-        {/* Submit button */}
-        <button
-          onClick={handleSubmitReview}
-          disabled={submitting}
-          className="submit-review-btn"
-        >
-          {submitting ? 'Posting...' : 'Post Review'}
-        </button>
-      </div>
-
-      {/* Reviews List Section */}
-      <div className="reviews-list-section">
-        <h3>Reviews ({totalReviews})</h3>
-
-        {/* Loading state */}
-        {reviewsLoading ? (
-          <div className="loading">
-            <Skeleton variant="text" width="180px" aria-label="Loading reviews" />
-            <div className="reviews-list-section__skeletons" aria-hidden="true">
-              {Array.from({ length: 3 }).map((_, idx) => (
-                <div key={idx} className="reviews-list-section__skeleton-item">
-                  <Skeleton variant="text" width="40%" />
-                  <Skeleton variant="text" width="85%" />
-                  <Skeleton variant="text" width="65%" />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : reviews.length === 0 ? (
-          // Empty state when no reviews
-          <div className="no-reviews">No reviews yet. Be the first to share your thoughts!</div>
-        ) : (
-          // Display all reviews
-          <div className="reviews-list">
-            {reviews.map(review => (
-              <div key={review._id} className="review-item">
-                {/* Review header with user info */}
-                <div className="review-header">
-                  <div className="reviewer-info">
-                    <strong>{review.user?.name || 'Anonymous'}</strong>
-                    {/* User's star rating */}
-                    <span className="review-rating">
-                      <StarRating value={review.rating} size={16} readOnly={true} />
-                    </span>
-                  </div>
-                  {/* Review date */}
-                  <span className="review-date">
-                    {new Date(review.createdAt).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
-                  </span>
-                </div>
-                {/* Review comment text */}
-                <p className="review-comment">{review.comment}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <ReviewsList
+        reviews={reviews}
+        totalReviews={totalReviews}
+        reviewsLoading={reviewsLoading}
+        currentUserId={user?._id}
+        deletingReviewId={deletingReviewId}
+        onDeleteReview={handleDeleteReview}
+      />
     </div>
   )
 }

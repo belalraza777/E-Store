@@ -14,11 +14,15 @@ const useReviewStore = create((set, get) => ({
         set({ loading: true, error: null });
         const result = await getProductReviews(productId);
         if (result.success) {
+            const normalizedAverageRating = Number(result.averageRating);
+            const normalizedTotalReviews = Number(result.totalReviews);
+            const normalizedVerifiedReviews = Number(result.verifiedReviews);
+
             set({ 
                 reviews: result.data, 
-                averageRating: result.averageRating,
-                totalReviews: result.totalReviews,
-                verifiedReviews: result.verifiedReviews,
+                averageRating: Number.isFinite(normalizedAverageRating) ? normalizedAverageRating : 0,
+                totalReviews: Number.isFinite(normalizedTotalReviews) ? normalizedTotalReviews : 0,
+                verifiedReviews: Number.isFinite(normalizedVerifiedReviews) ? normalizedVerifiedReviews : 0,
                 loading: false 
             });
         } else {

@@ -25,7 +25,7 @@ const addReview = async (req, res, next) => {
     const order = await Order.findOne({
         user: userId,
         "items.product": productId,
-        isDelivered: true,
+        $or: [{ isDelivered: true }, { orderStatus: "delivered" }],
     });
     
     // Mark review as verified if user has purchased the product
