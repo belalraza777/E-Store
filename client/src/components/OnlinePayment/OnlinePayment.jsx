@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createRazorpayOrder, verifyRazorpayPayment } from "../../api/paymentApi.js";
+import { createRazorpayOrder, markRazorpayPaymentFailed, verifyRazorpayPayment } from "../../api/paymentApi.js";
 
 // Load Razorpay script 
 const loadRazorpayScript = () => {
@@ -69,7 +69,8 @@ const OnlinePayment = ({ orderId, user, onSuccess, onFailure, submitting, amount
             }
           },
           modal: {
-            ondismiss: () => {
+            ondismiss: async () => {
+              await markRazorpayPaymentFailed(orderId, "Payment cancelled by user");
               onFailure && onFailure("Payment cancelled by user");
             },
           },
@@ -77,6 +78,11 @@ const OnlinePayment = ({ orderId, user, onSuccess, onFailure, submitting, amount
 
         // 4️⃣ Open Razorpay checkout
         const rzp = new window.Razorpay(options);
+        // Capture explicit gateway failure and trigger backend cancellation flow.
+        rzp.on("payment.failed", async () => {
+          await markRazorpayPaymentFailed(orderId, "Payment failed");
+          onFailure && onFailure("Payment failed");
+        });
         rzp.open();
       } catch (err) {
         console.error(err);

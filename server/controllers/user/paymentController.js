@@ -115,6 +115,21 @@ export const verifyPayment = async (req, res, next) => {
         });
     }
 
+    if (order.paymentStatus === "paid") {
+        return res.status(200).json({
+            success: true,
+            message: "Payment already verified",
+        });
+    }
+
+    // Prevent duplicate failure handling from restoring stock multiple times.
+    if (order.paymentStatus === "failed" && order.isCancelled) {
+        return res.status(400).json({
+            success: false,
+            message: "Order already cancelled due to payment failure",
+        });
+    }
+
     // Validate Razorpay orderId mapping
     if (order.razorpay?.orderId !== razorpay_order_id) {
         return res.status(400).json({
@@ -139,20 +154,20 @@ export const verifyPayment = async (req, res, next) => {
         order.cancelReason = "Payment verification failed";
         await order.save();
 
-        // Send order cancellation email
-        if (order?.user?.email) {
-            await sendEmail({
-                to: order.user.email,
-                subject: "Order Cancelled - E-Store",
-                text: `Your order (ID: ${order._id}) has been cancelled due to payment verification failure. If you have questions, contact support.\n\n- E-Store Team`,
-            });
-        }
-
         // Restore stock for all items
         for (const item of order.items) {
             await Product.findByIdAndUpdate(item.product, {
                 $inc: { stock: item.quantity },
             });
+        }
+
+        // Email is non-critical and should not block cancellation flow.
+        if (order?.user?.email) {
+            sendEmail(
+                order.user.email,
+                "Order Cancelled - E-Store",
+                `Your order (ID: ${order._id}) has been cancelled due to payment verification failure. If you have questions, contact support.\n\n- E-Store Team`
+            ).catch((err) => console.error("Order cancellation email failed:", err));
         }
 
         return res.status(400).json({
@@ -170,15 +185,82 @@ export const verifyPayment = async (req, res, next) => {
 
     // Send order confirmation email
     if (order?.user?.email) {
-        await sendEmail({
-            to: order.user.email,
-            subject: "Payment Confirmation - E-Store",
-            text: `Your payment for order ${order._id} has been successfully processed. Thank you for shopping with us!`,
-        });
+        sendEmail(
+            order.user.email,
+            "Payment Confirmation - E-Store",
+            `Your payment for order ${order._id} has been successfully processed. Thank you for shopping with us!`
+        ).catch((err) => console.error("Payment confirmation email failed:", err));
     }
 
     res.status(200).json({
         success: true,
         message: "Payment verified successfully",
+    });
+};
+
+export const markPaymentFailed = async (req, res, next) => {
+    const { orderId, reason } = req.body;
+
+    if (!orderId) {
+        return res.status(400).json({
+            success: false,
+            message: "Order ID is required",
+        });
+    }
+
+    const order = await Order.findById(orderId).populate("user", "email");
+
+    if (!order) {
+        return res.status(404).json({
+            success: false,
+            message: "Order not found",
+        });
+    }
+
+    if (order.paymentMethod !== "Online") {
+        return res.status(400).json({
+            success: false,
+            message: "Payment method is not Online",
+        });
+    }
+
+    if (order.paymentStatus === "paid") {
+        return res.status(400).json({
+            success: false,
+            message: "Order already paid",
+        });
+    }
+
+    // Prevent duplicate failure callbacks from restoring stock multiple times.
+    if (order.paymentStatus === "failed" && order.isCancelled) {
+        return res.status(200).json({
+            success: true,
+            message: "Order already cancelled",
+        });
+    }
+
+    order.paymentStatus = "failed";
+    order.orderStatus = "cancelled";
+    order.isCancelled = true;
+    order.cancelReason = reason || "Payment cancelled by user";
+    await order.save();
+
+    for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.product, {
+            $inc: { stock: item.quantity },
+        });
+    }
+
+    if (order?.user?.email) {
+        sendEmail(
+            order.user.email,
+            "Order Cancelled - E-Store",
+            `Your order (ID: ${order._id}) has been cancelled. Reason: ${order.cancelReason}. If you have questions, contact support.\n\n- E-Store Team`
+        ).catch((err) => console.error("Order cancellation email failed:", err));
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "Order cancelled successfully",
     });
 };

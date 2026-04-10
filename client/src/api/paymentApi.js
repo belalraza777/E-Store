@@ -25,3 +25,16 @@ export const verifyRazorpayPayment = async (paymentDetails) => {
     };
   }
 };
+
+export const markRazorpayPaymentFailed = async (orderId, reason) => {
+  try {
+    // Backend cancels order, restores stock, and sends cancellation email.
+    const response = await axiosInstance.post("/payments/failed", { orderId, reason });
+    return { success: true, data: response.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to mark payment failure"
+    };
+  }
+};
