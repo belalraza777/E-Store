@@ -1,5 +1,6 @@
 import Order from "../../models/orderModel.js";
 import Product from "../../models/productModel.js";
+import Cart from "../../models/cartModel.js";
 import User from "../../models/userModel.js";
 import { sendEmail } from "../../config/email.js";
 // import mongoose from "mongoose";
@@ -88,6 +89,12 @@ const createOrder = async (req, res, ) => {
                 `Hi ${user.name},\n\nYour order has been placed successfully!\nOrder ID: ${order[0]._id}\nTotal: ₹${order[0].totalAmount}\n\nThank you for shopping with us!\n\n- E-Store Team`
             ).catch((err) => console.error("Order confirmation email failed:", err));
         }
+
+        // Clear user's cart after order is placed.
+        await Cart.findOneAndUpdate(
+            { user: userId },
+            { $set: { items: [], totalPrice: 0, totalDiscountPrice: 0 } }
+        );
 
         return res.status(201).json({ success: true, message: "Order placed", data: order[0] });
 

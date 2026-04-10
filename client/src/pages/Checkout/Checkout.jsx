@@ -47,7 +47,7 @@ export default function Checkout() {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   // State to hold created order ID for Online Payment
-  const [createdOrderId, setCreatedOrderId] = useState(null); 
+  const [createdOrderId, setCreatedOrderId] = useState(null);
 
   // Handle form submission Main fn controlling order placement
   const handleSubmit = async (e) => {
@@ -93,7 +93,7 @@ export default function Checkout() {
       else if (form.paymentMethod === 'Online') {
         if (result.data && result.data._id) {
           // Trigger OnlinePayment component
-          setCreatedOrderId(result.data._id); 
+          setCreatedOrderId(result.data._id);
         } else {
           toast.error(result.message || 'Failed to create order for payment');
         }
@@ -145,8 +145,10 @@ export default function Checkout() {
               toast.success('Payment successful! Order placed.');
               navigate('/orders');
             }}
-            onFailure={(msg) => {
-              toast.error(msg || 'Payment failed or cancelled');
+            onFailure={() => {
+              // Keep one consistent failure message for better UX.
+              toast.error('Payment failed. Your order was cancelled.');
+              navigate('/orders');
             }}
           />
         )}
