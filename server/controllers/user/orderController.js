@@ -2,16 +2,16 @@ import Order from "../../models/orderModel.js";
 import Product from "../../models/productModel.js";
 import User from "../../models/userModel.js";
 import { sendEmail } from "../../config/email.js";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
 // Create order
 // POST /api/v1/orders
 // Body: { items: [{ productID, quantity }], shippingAddress{ address, city, postalCode, country }, paymentMethod }
 // Transactional approach used to ensure atomicity [means all-or-nothing execution] of stock deduction and order creation, with proper error handling and email notifications.
 const createOrder = async (req, res, ) => {
-    //Start transaction session
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // Transaction is temporarily disabled; using normal order flow for now.
+    // const session = await mongoose.startSession();
+    // session.startTransaction();
 
     try {
         // Extract order details from request body
@@ -22,11 +22,11 @@ const createOrder = async (req, res, ) => {
         const productIds = items.map((item) => item.product);
 
         // Validate products exist
-        const products = await Product.find({ _id: { $in: productIds } }).session(session).lean();
+        const products = await Product.find({ _id: { $in: productIds } }).lean();
 
         if (products.length !== productIds.length) {
-            await session.abortTransaction(); // Abort if product missing
-            session.endSession();
+            // await session.abortTransaction();
+            // session.endSession();
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
@@ -44,12 +44,12 @@ const createOrder = async (req, res, ) => {
                 {
                     $inc: { stock: -item.quantity }
                 },
-                { new: true, session }
+                { new: true }
             ); // Atomically check and deduct stock
 
             if (!product) {
-                await session.abortTransaction(); // Abort if insufficient stock
-                session.endSession();
+                // await session.abortTransaction();
+                // session.endSession();
                 return res.status(400).json({ success: false, message: `Insufficient stock for product ID: ${item.product}` });
             }
 
@@ -72,10 +72,10 @@ const createOrder = async (req, res, ) => {
             paymentMethod: paymentMethod.trim(),
             subtotal: subtotal,
             totalAmount: totalAmount,
-        }], { session });
+        }]);
 
-        await session.commitTransaction(); // Commit if everything successful
-        session.endSession(); // End session after commit
+        // await session.commitTransaction();
+        // session.endSession();
 
         await order[0].populate("items.product", "title price discount slug");
 
@@ -93,10 +93,10 @@ const createOrder = async (req, res, ) => {
 
     } catch (error) {
         // Abort transaction and clean up session on any unexpected error
-        if (session.inTransaction()) {
-            await session.abortTransaction();
-        }
-        session.endSession();
+        // if (session.inTransaction()) {
+        //     await session.abortTransaction();
+        // }
+        // session.endSession();
         throw error; // Let asyncWrapper handle passing to next()
     }
 };
