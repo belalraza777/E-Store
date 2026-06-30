@@ -1,73 +1,15 @@
-import Cart from "../../models/cartModel.js";
-import Product from "../../models/productModel.js";
+import * as cartService from "../../services/cartService.js";
 
 /**
  * Add item to cart or update quantity if item already exists
  * POST /api/v1/cart
  * Body: { productId, quantity }
  */
-const addToCart = async (req, res, next) => {
-    const { productId, quantity = 1 } = req.params;
+const addToCart = async (req, res) => {
+    const { productId, quantity = 1 } = req.params; // Note: original used req.params
     const userId = req.user.id;
 
-    // Validate quantity is positive and is a valid number
-    const qty = parseInt(quantity, 10);
-    if (isNaN(qty) || qty <= 0) {
-        return res.status(400).json({ success: false, message: "Quantity must be a positive number" });
-    }
-
-    // Validate product exists in database
-    const product = await Product.findById(productId);
-    if (!product) {
-        return res.status(404).json({ success: false, message: "Product not found" });
-    }
-
-    // Check if cart exists for user
-    let cart = await Cart.findOne({ user: userId });
-
-    if (!cart) {
-        // Create new cart for user if doesn't exist
-        cart = new Cart({
-            user: userId,
-            items: [
-                {
-                    product: productId,
-                    quantity: qty,
-                    price: product.price,
-                    discountPrice: product.discountPrice || 0,
-                }
-            ]
-        });
-    } else {
-        // Cart exists - check if item already exists in it
-        const existingItem = cart.items.find(item => item.product.toString() === productId);
-
-        if (existingItem) {
-            // Item exists - increment quantity and update price if it changed
-            existingItem.quantity += qty;
-            existingItem.price = product.price;
-            existingItem.discountPrice = product.discountPrice || 0;
-        } else {
-            // Item doesn't exist - add new item to cart
-            cart.items.push({
-                product: productId,
-                quantity: qty,
-                price: product.price,
-                discountPrice: product.discountPrice || 0,
-            });
-        }
-    }
-
-    // Calculate total price by summing all items (original price * quantity)
-    cart.totalPrice = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    // Calculate total payable (using discountPrice if available, else original price)
-    cart.totalDiscountPrice = cart.items.reduce((total, item) => {
-        const finalPrice = item.discountPrice > 0 ? item.discountPrice : item.price;
-        return total + (finalPrice * item.quantity);
-    }, 0);
-    // Save cart to database and populate product details for response
-    await cart.save();
-    await cart.populate('items.product', 'title price discountPrice images slug');
+    const cart = await cartService.addToCartLogic(userId, productId, quantity);
 
     return res.status(201).json({ success: true, data: cart, message: "Item added to cart" });
 };
@@ -76,15 +18,10 @@ const addToCart = async (req, res, next) => {
  * Retrieve the current user's cart with all items and product details
  * GET /api/v1/cart
  */
-const getCart = async (req, res, next) => {
+const getCart = async (req, res) => {
     const userId = req.user.id;
 
-    // Fetch user's cart and populate product details (title, price, images, slug)
-    const cart = await Cart.findOne({ user: userId }).populate('items.product', 'title price discountPrice images slug');
-
-    if (!cart) {
-        return res.status(404).json({ success: false, message: "Cart not found" });
-    }
+    const cart = await cartService.getCartLogic(userId);
 
     return res.status(200).json({ success: true, data: cart });
 };
@@ -94,48 +31,11 @@ const getCart = async (req, res, next) => {
  * PUT /api/v1/cart/:itemId/:quantity
  * Params: { itemId, quantity }
  */
-const updateCartItem = async (req, res, next) => {
+const updateCartItem = async (req, res) => {
     const { itemId, quantity } = req.params;  // Get itemId and quantity from URL params
     const userId = req.user.id;
 
-    // Validate quantity is positive and is a valid number
-    const qty = parseInt(quantity);
-    if (isNaN(qty) || qty <= 0) {
-        return res.status(400).json({ success: false, message: "Quantity must be a positive number" });
-    }
-
-    // Fetch user's cart
-    const cart = await Cart.findOne({ user: userId });
-
-    if (!cart) {
-        return res.status(404).json({ success: false, message: "Cart not found" });
-    }
-
-    // Find specific cart item by ID using Mongoose's .id() method
-    // itemId should be the _id of the item in the cart.items array, not the product ID
-    const cartItem = cart.items.id(itemId);
-
-    if (!cartItem) {
-        return res.status(404).json({ 
-            success: false, 
-            message: "Item not found in cart",
-        });
-    }
-
-    // Update the item quantity
-    cartItem.quantity = qty;
-
-    // Recalculate total price after quantity change
-    cart.totalPrice = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    // Recalculate total payable
-    cart.totalDiscountPrice = cart.items.reduce((total, item) => {
-        const finalPrice = item.discountPrice > 0 ? item.discountPrice : item.price;
-        return total + (finalPrice * item.quantity);
-    }, 0);
-
-    // Save updated cart and populate product details
-    await cart.save();
-    await cart.populate('items.product', 'title price discountPrice images slug');
+    const cart = await cartService.updateCartItemLogic(userId, itemId, quantity);
 
     return res.status(200).json({ success: true, data: cart, message: "Cart item updated" });
 };
@@ -144,40 +44,13 @@ const updateCartItem = async (req, res, next) => {
  * Remove an item from the cart
  * DELETE /api/v1/cart/:itemId
  */
-const removeFromCart = async (req, res, next) => {
+const removeFromCart = async (req, res) => {
     const { itemId } = req.params;
     const userId = req.user.id;
 
-    // Fetch user's cart
-    const cart = await Cart.findOne({ user: userId });
+    const { cart, itemId: removedId } = await cartService.removeFromCartLogic(userId, itemId);
 
-    if (!cart) {
-        return res.status(404).json({ success: false, message: "Cart not found" });
-    }
-
-    // Find item by ID
-    const cartItem = cart.items.id(itemId);
-
-    if (!cartItem) {
-        return res.status(404).json({ success: false, message: "Item not found in cart" });
-    }
-
-    // Delete the item from cart array using Mongoose's deleteOne() method
-    cart.items.id(itemId).deleteOne();
-
-    // Recalculate total price after item removal
-    cart.totalPrice = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    // Recalculate total payable
-    cart.totalDiscountPrice = cart.items.reduce((total, item) => {
-        const finalPrice = item.discountPrice > 0 ? item.discountPrice : item.price;
-        return total + (finalPrice * item.quantity);
-    }, 0);
-
-    // Save updated cart and populate product details for response
-    await cart.save();
-    await cart.populate('items.product', 'title price discountPrice images slug');
-
-    return res.status(200).json({ success: true, message: `Item removed from cart ${itemId}` });
+    return res.status(200).json({ success: true, message: `Item removed from cart ${removedId}` });
 };
 
 // Export all cart controller functions

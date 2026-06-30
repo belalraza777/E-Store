@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import profileController from "../controllers/user/profileController.js";
-import userController from "../controllers/admin/userController.js";
+import userController from "../controllers/admin/adminUserController.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 import verifyAuth from "../middlewares/verifyAuth.js";
 import { updateProfileValidation } from "../middlewares/joiValidation.js";

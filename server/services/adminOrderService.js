@@ -1,24 +1,23 @@
-import Order from "../../models/orderModel.js";
-import Product from "../../models/productModel.js";
+import Order from "../models/orderModel.js";
+import Product from "../models/productModel.js";
 
-// ADMIN: Get all orders 
-const getAllOrders = async (req, res, next) => {
+// ADMIN: Get all orders
+export const getAllOrdersLogic = async () => {
     const orders = await Order.find()
         .populate("items.product", "title slug price discount")
         .populate("user", "name email")
         .sort({ createdAt: -1 });
 
-    return res.status(200).json({ success: true, data: orders });
+    return orders;
 };
 
 // ADMIN: Update order status/payment status
-const updateOrderStatus = async (req, res, next) => {
-    const { id } = req.params;
-    const { orderStatus, paymentStatus } = req.body;
-
-    const order = await Order.findById(id);
+export const updateOrderStatusLogic = async (orderId, orderStatus, paymentStatus) => {
+    const order = await Order.findById(orderId);
     if (!order) {
-        return res.status(404).json({ success: false, message: "Order not found" });
+        const error = new Error("Order not found");
+        error.statusCode = 404;
+        throw error;
     }
 
     order.orderStatus = orderStatus;
@@ -40,14 +39,11 @@ const updateOrderStatus = async (req, res, next) => {
     await order.populate("items.product", "title slug price discount");
     await order.populate("user", "name email");
 
-    return res.status(200).json({ success: true, message: "Order updated", data: order });
+    return order;
 };
 
 // ADMIN: Filter orders by status and/or postalCode
-// GET /api/v1/admin/orders/filter?status=pending&postalCode=74000
-const filterOrders = async (req, res, next) => {
-    const { status, postalCode } = req.query;
-
+export const filterOrdersLogic = async (status, postalCode) => {
     const filter = {};
     if (status && status.trim()) {
         filter.orderStatus = status.trim();
@@ -61,11 +57,5 @@ const filterOrders = async (req, res, next) => {
         .populate("user", "name email")
         .sort({ createdAt: -1 });
 
-    return res.status(200).json({ success: true, data: orders, count: orders.length });
-};
-
-export default {
-    getAllOrders,
-    updateOrderStatus,
-    filterOrders,
+    return { data: orders, count: orders.length };
 };

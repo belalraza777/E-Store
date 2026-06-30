@@ -1,6 +1,5 @@
-// Global error handling middleware
 const errorHandler = (err, req, res, next) => {
-    const status = err.status || 500;
+    const status = err.statusCode || err.status || 500;  // <-- updated
     const message = err.message || "Internal Server Error";
     const isProd = process.env.NODE_ENV === 'production';
 

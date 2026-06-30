@@ -1,6 +1,6 @@
 import express from "express";
 import userOrderController from "../controllers/user/orderController.js";
-import adminOrderController from "../controllers/admin/orderController.js";
+import adminOrderController from "../controllers/admin/adminOrderController.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 import verifyAuth from "../middlewares/verifyAuth.js";
 import verifyAdmin from "../middlewares/verifyAdmin.js";
