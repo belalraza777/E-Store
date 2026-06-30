@@ -2,11 +2,12 @@ import rateLimit from "express-rate-limit";
 import RedisStore from "rate-limit-redis";
 import redisClient from "../config/redis.js";
 
-// Shared Redis store
-const redisStore = new RedisStore({
-  sendCommand: (...args) => redisClient.call(...args),
-});
-
+// Factory: creates a fresh RedisStore with a unique (short) key prefix for each limiter
+const makeStore = (prefix) =>
+  new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+    prefix: `rl:${prefix}:`,
+  });
 
 // Global limiter: applies to all routes
 export const globalLimiter = rateLimit({
@@ -18,7 +19,7 @@ export const globalLimiter = rateLimit({
     success: false,
     message: "Too many requests from this IP, please try again later.",
   },
-  store: redisStore,
+  store: makeStore("g"),
 });
 
 // Auth limiter: stricter limits for login/signup/reset
@@ -31,7 +32,7 @@ export const authLimiter = rateLimit({
     success: false,
     message: "Too many Authentication attempts. Please wait 15 minutes.",
   },
-  store: redisStore,
+  store: makeStore("au"),
 });
 
 // Search limiter: prevent search API abuse
@@ -44,7 +45,7 @@ export const searchLimiter = rateLimit({
     success: false,
     message: "Too many search requests. Please try again in a minute.",
   },
-  store: redisStore,
+  store: makeStore("se"),
 });
 
 // Review create limiter: prevent review spam
@@ -57,7 +58,7 @@ export const reviewCreateLimiter = rateLimit({
     success: false,
     message: "Too many reviews submitted. Please try again later.",
   },
-  store: redisStore,
+  store: makeStore("rc"),
 });
 
 // Review delete limiter
@@ -70,7 +71,7 @@ export const reviewDeleteLimiter = rateLimit({
     success: false,
     message: "Too many review delete attempts. Please try again later.",
   },
-  store: redisStore,
+  store: makeStore("rd"),
 });
 
 // Order create limiter: prevent order spam / abuse
@@ -84,7 +85,7 @@ export const orderCreateLimiter = rateLimit({
     success: false,
     message: "Too many orders. Please try again in a few minutes.",
   },
-  store: redisStore,
+  store: makeStore("oc"),
 });
 
 // Order cancel limiter
@@ -97,7 +98,7 @@ export const orderCancelLimiter = rateLimit({
     success: false,
     message: "Too many cancel attempts. Please try again later.",
   },
-  store: redisStore,
+  store: makeStore("ox"),
 });
 
 // Cart write limiter: add/update/remove cart items (shared counter)
@@ -110,7 +111,7 @@ export const cartWriteLimiter = rateLimit({
     success: false,
     message: "Too many cart updates. Please slow down and try again later.",
   },
-  store: redisStore,
+  store: makeStore("cw"),
 });
 
 // Profile update limiter: avatar, profile patch (admins skip)
@@ -124,7 +125,7 @@ export const profileUpdateLimiter = rateLimit({
     success: false,
     message: "Too many profile updates. Please try again later.",
   },
-  store: redisStore,
+  store: makeStore("pu"),
 });
 
 // Admin product limiter: create/update/delete products (admins skip, no limit)
@@ -138,7 +139,7 @@ export const adminProductLimiter = rateLimit({
     success: false,
     message: "Too many product changes. Please try again later.",
   },
-  store: redisStore,
+  store: makeStore("ap"),
 });
 
 // OAuth limiter: Google sign-in start + callback
@@ -151,7 +152,7 @@ export const oauthLimiter = rateLimit({
     success: false,
     message: "Too many OAuth attempts. Please try again later.",
   },
-    store: redisStore,
+  store: makeStore("oa"),
 });
 
 // AI Agent limiter: for logged-in users
@@ -164,7 +165,5 @@ export const agentLimiter = rateLimit({
     success: false,
     message: "Too many messages. Please slow down and try again shortly.",
   },
-  store: redisStore,
+  store: makeStore("ag"),
 });
-
-
