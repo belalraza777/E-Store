@@ -278,3 +278,185 @@ export const markPaymentFailedLogic = async (orderId, reason) => {
         message: "Order cancelled successfully",
     };
 };
+
+/**
+ * VERIFY WEBHOOK SIGNATURE
+ * Razorpay signs the *raw* request body with the webhook secret
+ * (configured separately in the Razorpay Dashboard, distinct from key_secret).
+ * Returns boolean.
+ */
+export const verifyWebhookSignature = (rawBody, signature) => {
+    if (!rawBody || !signature) {
+        return false;
+    }
+
+    const expectedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET)
+        .update(rawBody)
+        .digest("hex");
+
+    // Timing-safe compare; mismatched lengths throw, so treat that as "not equal".
+    try {
+        return crypto.timingSafeEqual(
+            Buffer.from(expectedSignature, "utf8"),
+            Buffer.from(signature, "utf8")
+        );
+    } catch {
+        return false;
+    }
+};
+
+/**
+ * HANDLE WEBHOOK EVENT
+ * Single entry point the controller calls after signature verification.
+ * Returns { success: boolean, statusCode, message }
+ */
+export const handleWebhookEventLogic = async (event, payload) => {
+    switch (event) {
+        case "payment.captured":
+            return handlePaymentCapturedWebhookLogic(payload);
+
+        case "payment.failed":
+            return handlePaymentFailedWebhookLogic(payload);
+
+        default:
+            // Unhandled event types are acknowledged (200) so Razorpay doesn't retry them.
+            return {
+                success: true,
+                statusCode: 200,
+                message: `Event "${event}" ignored`,
+            };
+    }
+};
+
+/**
+ * WEBHOOK: payment.captured
+ * Mirrors verifyPaymentLogic's "success" path, but keyed off razorpay orderId
+ * instead of client-supplied signature, since the webhook itself is the trust source.
+ */
+export const handlePaymentCapturedWebhookLogic = async (payload) => {
+    const paymentEntity = payload?.payment?.entity;
+    const razorpayOrderId = paymentEntity?.order_id;
+    const razorpayPaymentId = paymentEntity?.id;
+
+    if (!razorpayOrderId) {
+        return {
+            success: false,
+            statusCode: 400,
+            message: "Missing order_id in webhook payload",
+        };
+    }
+
+    const order = await Order.findOne({
+        "razorpay.orderId": razorpayOrderId,
+    }).populate("user", "email");
+
+    if (!order) {
+        // Acknowledge with 200 so Razorpay stops retrying an event we can't map locally.
+        return {
+            success: true,
+            statusCode: 200,
+            message: "Order not found for webhook order_id",
+        };
+    }
+
+    // Idempotency: already handled by this event or by the client-side /verify call.
+    if (order.paymentStatus === "paid") {
+        return {
+            success: true,
+            statusCode: 200,
+            message: "Order already marked as paid",
+        };
+    }
+
+    order.paymentStatus = "paid";
+    order.razorpay.paymentId = razorpayPaymentId;
+    await order.save();
+
+    if (order?.user?.email) {
+        sendEmail(
+            order.user.email,
+            "Payment Confirmation - E-Store",
+            `Your payment for order ${order._id} has been successfully processed. Thank you for shopping with us!`
+        ).catch((err) => console.error("Payment confirmation email failed:", err));
+    }
+
+    return {
+        success: true,
+        statusCode: 200,
+        message: "Order marked as paid via webhook",
+    };
+};
+
+/**
+ * WEBHOOK: payment.failed
+ * Mirrors markPaymentFailedLogic's cancellation + stock-restore behavior.
+ */
+export const handlePaymentFailedWebhookLogic = async (payload) => {
+    const paymentEntity = payload?.payment?.entity;
+    const razorpayOrderId = paymentEntity?.order_id;
+
+    if (!razorpayOrderId) {
+        return {
+            success: false,
+            statusCode: 400,
+            message: "Missing order_id in webhook payload",
+        };
+    }
+
+    const order = await Order.findOne({
+        "razorpay.orderId": razorpayOrderId,
+    }).populate("user", "email");
+
+    if (!order) {
+        return {
+            success: true,
+            statusCode: 200,
+            message: "Order not found for webhook order_id",
+        };
+    }
+
+    // A stale failed event should never undo a payment that already succeeded.
+    if (order.paymentStatus === "paid") {
+        return {
+            success: true,
+            statusCode: 200,
+            message: "Order already paid, ignoring failed webhook",
+        };
+    }
+
+    // Prevent duplicate webhook retries from restoring stock multiple times.
+    if (order.paymentStatus === "failed" && order.isCancelled) {
+        return {
+            success: true,
+            statusCode: 200,
+            message: "Order already cancelled",
+        };
+    }
+
+    order.paymentStatus = "failed";
+    order.orderStatus = "cancelled";
+    order.isCancelled = true;
+    order.cancelReason = "Payment failed (webhook)";
+    await order.save();
+
+    for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.product, {
+            $inc: { stock: item.quantity },
+        });
+    }
+
+    if (order?.user?.email) {
+        sendEmail(
+            order.user.email,
+            "Order Cancelled - E-Store",
+            `Your order (ID: ${order._id}) has been cancelled due to payment failure. If you have questions, contact support.\n\n- E-Store Team`
+        ).catch((err) => console.error("Order cancellation email failed:", err));
+    }
+
+    return {
+        success: true,
+        statusCode: 200,
+        message: "Order marked as failed via webhook",
+    };
+};

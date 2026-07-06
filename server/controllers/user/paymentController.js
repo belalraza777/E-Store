@@ -73,3 +73,32 @@ export const markPaymentFailed = async (req, res) => {
         message: result.message,
     });
 };
+
+/**
+ * RAZORPAY WEBHOOK
+ * Called directly by Razorpay's servers — no user auth, no verifyAuth middleware.
+ * Trust is established via HMAC signature over the *raw* request body instead.
+ * req.rawBody must be populated upstream (see app.js — express.json({ verify }) ).
+ */
+export const webhookHandler = async (req, res) => {
+    const signature = req.headers["x-razorpay-signature"];
+    const rawBody = req.rawBody;
+
+    const isValid = paymentService.verifyWebhookSignature(rawBody, signature);
+
+    if (!isValid) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid webhook signature",
+        });
+    }
+
+    const { event, payload } = req.body;
+
+    const result = await paymentService.handleWebhookEventLogic(event, payload);
+
+    return res.status(result.statusCode).json({
+        success: result.success,
+        message: result.message,
+    });
+};
