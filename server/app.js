@@ -19,6 +19,9 @@ import agentRoutes from "./routes/agentRoute.js";
 // Setup middlewares for the app [ALl incoming requests pass through here]
 setupMiddlewares(app);
 
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Welcome to the E-Store API" });
+});
 // Health check route
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
