@@ -234,6 +234,113 @@ npm run dev
 
 Visit [http://localhost:5173](http://localhost:5173)
 
+## 🐳 Running with Docker
+
+### Prerequisites
+
+- Docker Desktop (Windows/macOS) or Docker Engine (Linux)
+
+### 1. Build the Docker image
+
+From the `server` directory:
+
+```bash
+docker build -t estore-server .
+```
+
+### 2. Create a `.env` file
+
+Create a `.env` file inside the `server` directory and configure all required environment variables.
+
+Example:
+
+```env
+PORT=5000
+
+MONGODB_URL=your_mongodb_connection_string
+
+REDIS_HOST=your_redis_host
+REDIS_PORT=6379
+REDIS_USERNAME=
+REDIS_PASSWORD=
+
+JWT_SECRET=your_jwt_secret
+
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/v1/auth/google/callback
+
+CLOUD_NAME=your_cloud_name
+CLOUD_API_KEY=your_cloud_api_key
+CLOUD_API_SECRET=your_cloud_api_secret
+CLOUDINARY_FOLDER=estore_media
+
+GMAIL_USER=your_email@gmail.com
+GMAIL_APP_PASSWORD=your_gmail_app_password
+
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+
+GROQ_API_KEY=your_groq_api_key
+
+FRONTEND_URL=http://localhost:5173
+```
+
+> **Note:** The `.env` file is **not** included in the Docker image. It must exist on the machine where the container is started.
+
+### 3. Run the container
+
+```bash
+docker run --env-file .env -p 5000:5000 estore-server
+```
+
+### Run from another directory
+
+If you are not inside the `server` directory, specify the full path to the `.env` file.
+
+Windows:
+
+```powershell
+docker run --env-file "C:\path\to\server\.env" -p 5000:5000 estore-server
+```
+
+Linux/macOS:
+
+```bash
+docker run --env-file /path/to/server/.env -p 5000:5000 estore-server
+```
+
+### Stop the container
+
+Press `Ctrl + C` if running in the foreground, or stop it using:
+
+```bash
+docker stop <container-id>
+```
+
+### Run in detached mode
+
+```bash
+docker run -d \
+  --name estore-server \
+  --restart unless-stopped \
+  --env-file .env \
+  -p 5000:5000 \
+  estore-server
+```
+
+### View logs
+
+```bash
+docker logs -f estore-server
+```
+
+### Remove the container
+
+```bash
+docker rm -f estore-server
+```
+
 ---
 
 ## 📡 API Endpoints
