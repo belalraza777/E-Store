@@ -1,63 +1,94 @@
-// AppRoutes.jsx - Defines all application routes and their access rules
-import { Routes, Route, Navigate } from 'react-router-dom';
-import React, { Suspense, lazy } from 'react';
-import Login from '../pages/Auth/Login';
-import Register from '../pages/Auth/Register';
-import OAuthSuccess from '../pages/Auth/Oauth_success';
-import ProtectedRoute from './ProtectedRoute';
-import Product from '../pages/Product/Product.jsx';
-import SingleProduct from '../pages/Product/SingleProduct';
-import Cart from '../pages/Cart/Cart';
-import Home from '../pages/Home/Home';
-const Checkout = lazy(() => import('../pages/Checkout/Checkout.jsx'));
-const Orders = lazy(() => import('../pages/Order/Orders.jsx'));
-const OrderDetail = lazy(() => import('../pages/Order/OrderDetail.jsx'));
-const AdminDashboard = lazy(() => import('../pages/Admin/pages/Dashboard/Dashboard.jsx'));
-const AdminProducts = lazy(() => import('../pages/Admin/pages/Products/ProductAdmin.jsx'));
-const ProductForm = lazy(() => import('../pages/Admin/pages/Products/ProductForm.jsx'));
-const AdminOrders = lazy(() => import('../pages/Admin/pages/Orders/Orders.jsx'));
-const AdminOrderDetail = lazy(() => import('../pages/Admin/pages/Orders/OrderDetail.jsx'));
-const AdminUsers = lazy(() => import('../pages/Admin/pages/Users/UserManagement.jsx'));
-const Feedback = lazy(() => import('../pages/Feedback/FeedBack.jsx'));
-const Wishlist = lazy(() => import('../pages/Wishlist/Wishlist.jsx'));
-import { useAuth } from '../context/authContext.jsx';
-import ScrollToTop from './ScrollToTop';
-import ProfilePage from '../pages/Profile/ProfilePage.jsx';
-import Search from '../pages/search/Search.jsx';
-import TermsPolicy from '../pages/Legal/TermsPolicy.jsx';
-import NotFound from '../pages/Other/NotFound.jsx';
-import Unauthorized from '../pages/Other/UnAuthorized.jsx';
-import Skeleton from '../components/ui/Skeleton/Skeleton.jsx';
-import Agent from '../pages/Ai_Agent/agent.jsx';
+// AppRoutes.jsx - Optimized with lazy loading
+import { Routes, Route, Navigate } from "react-router-dom";
+import React, { Suspense, lazy } from "react";
+import ProtectedRoute from "./ProtectedRoute";
+import { useAuth } from "../context/authContext.jsx";
+import ScrollToTop from "./ScrollToTop";
+import Skeleton from "../components/ui/Skeleton/Skeleton.jsx";
 
+// ==================== Public Pages ====================
+const Home = lazy(() => import("../pages/Home/Home.jsx"));
+const Product = lazy(() => import("../pages/Product/Product.jsx"));
+const SingleProduct = lazy(() => import("../pages/Product/SingleProduct.jsx"));
+const Cart = lazy(() => import("../pages/Cart/Cart.jsx"));
+const Search = lazy(() => import("../pages/search/Search.jsx"));
+const TermsPolicy = lazy(() => import("../pages/Legal/TermsPolicy.jsx"));
+const Login = lazy(() => import("../pages/Auth/Login.jsx"));
+const Register = lazy(() => import("../pages/Auth/Register.jsx"));
+const OAuthSuccess = lazy(() => import("../pages/Auth/Oauth_success.jsx"));
+const NotFound = lazy(() => import("../pages/Other/NotFound.jsx"));
+const Unauthorized = lazy(() => import("../pages/Other/UnAuthorized.jsx"));
+
+// ==================== User Pages ====================
+const Checkout = lazy(() => import("../pages/Checkout/Checkout.jsx"));
+const Orders = lazy(() => import("../pages/Order/Orders.jsx"));
+const OrderDetail = lazy(() => import("../pages/Order/OrderDetail.jsx"));
+const Wishlist = lazy(() => import("../pages/Wishlist/Wishlist.jsx"));
+const Feedback = lazy(() => import("../pages/Feedback/FeedBack.jsx"));
+const ProfilePage = lazy(() => import("../pages/Profile/ProfilePage.jsx"));
+const Agent = lazy(() => import("../pages/Ai_Agent/agent.jsx"));
+
+// ==================== Admin Pages ====================
+const AdminDashboard = lazy(() =>
+    import("../pages/Admin/pages/Dashboard/Dashboard.jsx")
+);
+const AdminProducts = lazy(() =>
+    import("../pages/Admin/pages/Products/ProductAdmin.jsx")
+);
+const ProductForm = lazy(() =>
+    import("../pages/Admin/pages/Products/ProductForm.jsx")
+);
+const AdminOrders = lazy(() =>
+    import("../pages/Admin/pages/Orders/Orders.jsx")
+);
+const AdminOrderDetail = lazy(() =>
+    import("../pages/Admin/pages/Orders/OrderDetail.jsx")
+);
+const AdminUsers = lazy(() =>
+    import("../pages/Admin/pages/Users/UserManagement.jsx")
+);
 
 const AppRoutes = () => {
-    // Get current user to determine routing
     const { user } = useAuth();
+
     return (
         <>
             <ScrollToTop />
+
             <Suspense fallback={<Skeleton />}>
                 <Routes>
-                    {/* ===== PUBLIC ROUTES - accessible by anyone ===== */}
+                    {/* ==================== PUBLIC ROUTES ==================== */}
                     <Route
-                        path="/" element={user?.role === 'admin' ? <Navigate to="/admin/dashboard" /> : <Home />}
+                        path="/"
+                        element={
+                            user?.role === "admin" ? (
+                                <Navigate to="/admin/dashboard" replace />
+                            ) : (
+                                <Home />
+                            )
+                        }
                     />
+
                     <Route path="/products" element={<Product />} />
                     <Route path="/products/:slug" element={<SingleProduct />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/search" element={<Search />} />
                     <Route path="/terms-and-policy" element={<TermsPolicy />} />
-                    <Route path="/terms" element={<Navigate to="/terms-and-policy#terms" replace />} />
-                    <Route path="/privacy" element={<Navigate to="/terms-and-policy#privacy" replace />} />
+                    <Route
+                        path="/terms"
+                        element={<Navigate to="/terms-and-policy#terms" replace />}
+                    />
+                    <Route
+                        path="/privacy"
+                        element={<Navigate to="/terms-and-policy#privacy" replace />}
+                    />
 
-                    {/* ===== AUTH ROUTES - login/register pages ===== */}
+                    {/* ==================== AUTH ROUTES ==================== */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/oauth-success" element={<OAuthSuccess />} />
 
-
-                    {/* ===== USER ROUTES - requires user role ===== */}
+                    {/* ==================== USER ROUTES ==================== */}
                     <Route
                         path="/checkout"
                         element={
@@ -66,7 +97,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
-                    
+
                     <Route
                         path="/profile"
                         element={
@@ -94,26 +125,34 @@ const AppRoutes = () => {
                         }
                     />
 
-                    <Route path="/wishlist" element={
-                        <ProtectedRoute allowedRoles={["user"]}>
-                            <Wishlist />
-                        </ProtectedRoute>
-                    } />
+                    <Route
+                        path="/wishlist"
+                        element={
+                            <ProtectedRoute allowedRoles={["user"]}>
+                                <Wishlist />
+                            </ProtectedRoute>
+                        }
+                    />
 
-                    <Route path="/feedback" element={
-                        <ProtectedRoute allowedRoles={["user"]}>
-                            <Feedback />
-                        </ProtectedRoute>
-                    } />
+                    <Route
+                        path="/feedback"
+                        element={
+                            <ProtectedRoute allowedRoles={["user"]}>
+                                <Feedback />
+                            </ProtectedRoute>
+                        }
+                    />
 
-                    <Route path="/agents" element={
-                        <ProtectedRoute allowedRoles={["user"]}>
-                            <Agent />
-                        </ProtectedRoute>
-                    } />
+                    <Route
+                        path="/agents"
+                        element={
+                            <ProtectedRoute allowedRoles={["user"]}>
+                                <Agent />
+                            </ProtectedRoute>
+                        }
+                    />
 
-
-                    {/* ===== ADMIN ROUTES - requires admin role ===== */}
+                    {/* ==================== ADMIN ROUTES ==================== */}
                     <Route
                         path="/admin/dashboard"
                         element={
@@ -122,6 +161,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
+
                     <Route
                         path="/admin/products"
                         element={
@@ -130,14 +170,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
-                    <Route
-                        path="/admin/users"
-                        element={
-                            <ProtectedRoute allowedRoles={["admin"]}>
-                                <AdminUsers />
-                            </ProtectedRoute>
-                        }
-                    />
+
                     <Route
                         path="/admin/products/new"
                         element={
@@ -146,6 +179,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
+
                     <Route
                         path="/admin/products/:slug/edit"
                         element={
@@ -154,6 +188,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
+
                     <Route
                         path="/admin/orders"
                         element={
@@ -162,6 +197,7 @@ const AppRoutes = () => {
                             </ProtectedRoute>
                         }
                     />
+
                     <Route
                         path="/admin/orders/:id"
                         element={
@@ -171,11 +207,17 @@ const AppRoutes = () => {
                         }
                     />
 
+                    <Route
+                        path="/admin/users"
+                        element={
+                            <ProtectedRoute allowedRoles={["admin"]}>
+                                <AdminUsers />
+                            </ProtectedRoute>
+                        }
+                    />
 
-                    {/* Unauthorized Route */}
+                    {/* ==================== OTHER ROUTES ==================== */}
                     <Route path="/unauthorized" element={<Unauthorized />} />
-
-                    {/* 404 */}
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Suspense>
