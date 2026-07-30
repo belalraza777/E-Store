@@ -1,183 +1,190 @@
-# 🐳 Docker Guide - E-Store Backend
+# 🐳 Docker Cheat Sheet – E-Store Backend
 
-This guide explains how to build, run, publish, update, and deploy the
-Docker image for the **E-Store** backend.
+## 1. Build the image
 
-## Prerequisites
+Run this after you make code changes.
 
--   Docker Desktop / Docker Engine
--   Docker Hub account
--   `.env` file in the `server` directory
-
-Project structure:
-
-``` text
-E-STORE/
-├── client/
-└── server/
-    ├── Dockerfile
-    ├── .dockerignore
-    ├── .env
-    ├── package.json
-    └── server.js
-```
-
-## Build the image
-
-``` bash
+```bash
 cd server
-docker build -t estore-server .
+docker build -t belal007/estore-server:latest .
 ```
 
-Verify:
+Check the image:
 
-``` bash
+```bash
 docker images
 ```
 
-## Run locally
+---
 
-``` bash
-docker run --env-file .env -p 5000:5000 estore-server
-```
+## 2. Run the container
 
-Detached mode:
-
-``` bash
+```bash
 docker run -d \
   --name estore-server \
-  --restart unless-stopped \
   --env-file .env \
   -p 5000:5000 \
-  estore-server
+  --restart unless-stopped \
+  belal007/estore-server:latest
 ```
 
-Logs:
+View logs:
 
-``` bash
+```bash
 docker logs -f estore-server
 ```
 
 Stop:
 
-``` bash
+```bash
 docker stop estore-server
 ```
 
 Remove:
 
-``` bash
+```bash
 docker rm estore-server
 ```
 
-## Push to Docker Hub
+---
 
-Login:
+# 📤 Upload to Docker Hub
 
-``` bash
+Login once:
+
+```bash
 docker login
 ```
 
-Build with your repository name:
+Push the image:
 
-``` bash
-docker build -t YOUR_DOCKERHUB_USERNAME/estore-server:1.0.0 .
-docker tag YOUR_DOCKERHUB_USERNAME/estore-server:1.0.0 YOUR_DOCKERHUB_USERNAME/estore-server:latest
+```bash
+docker push belal007/estore-server:latest
 ```
 
-Push:
+That's it.
 
-``` bash
-docker push YOUR_DOCKERHUB_USERNAME/estore-server:1.0.0
-docker push YOUR_DOCKERHUB_USERNAME/estore-server:latest
+---
+
+# 🌍 Deploy on another server
+
+Pull the image:
+
+```bash
+docker pull belal007/estore-server:latest
 ```
 
-## Deploy on another machine
-
-Login:
-
-``` bash
-docker login
-```
-
-Pull:
-
-``` bash
-docker pull YOUR_DOCKERHUB_USERNAME/estore-server:1.0.0
-```
-
-Create a `.env` file beside where you will run `docker run`.
+Create a `.env` file.
 
 Run:
 
-``` bash
+```bash
 docker run -d \
   --name estore-server \
-  --restart unless-stopped \
   --env-file .env \
   -p 5000:5000 \
-  YOUR_DOCKERHUB_USERNAME/estore-server:1.0.0
+  --restart unless-stopped \
+  belal007/estore-server:latest
 ```
 
-## Updating the application
+---
 
-After changing the code:
+# 🔄 Update after changing code
 
-``` bash
-docker build -t YOUR_DOCKERHUB_USERNAME/estore-server:1.1.0 .
-docker tag YOUR_DOCKERHUB_USERNAME/estore-server:1.1.0 YOUR_DOCKERHUB_USERNAME/estore-server:latest
+Build the new image:
 
-docker push YOUR_DOCKERHUB_USERNAME/estore-server:1.1.0
-docker push YOUR_DOCKERHUB_USERNAME/estore-server:latest
+```bash
+docker build -t belal007/estore-server:latest .
 ```
 
-On the deployment server:
+Push it:
 
-``` bash
-docker pull YOUR_DOCKERHUB_USERNAME/estore-server:1.1.0
+```bash
+docker push belal007/estore-server:latest
+```
+
+On the server:
+
+```bash
+docker pull belal007/estore-server:latest
 
 docker stop estore-server
 docker rm estore-server
 
 docker run -d \
   --name estore-server \
-  --restart unless-stopped \
   --env-file .env \
   -p 5000:5000 \
-  YOUR_DOCKERHUB_USERNAME/estore-server:1.1.0
-```
-
-## Roll back
-
-``` bash
-docker stop estore-server
-docker rm estore-server
-
-docker run -d \
-  --name estore-server \
   --restart unless-stopped \
-  --env-file .env \
-  -p 5000:5000 \
-  YOUR_DOCKERHUB_USERNAME/estore-server:1.0.0
+  belal007/estore-server:latest
 ```
 
-## Useful commands
+---
 
-``` bash
+# 🧹 Useful commands
+
+See running containers:
+
+```bash
 docker ps
+```
+
+See all containers:
+
+```bash
 docker ps -a
+```
+
+See images:
+
+```bash
 docker images
-docker image rm IMAGE_ID
-docker container prune
-docker image prune
+```
+
+Remove a container:
+
+```bash
+docker rm CONTAINER_NAME
+```
+
+Remove an image:
+
+```bash
+docker rmi IMAGE_NAME
+```
+
+Clean unused Docker resources:
+
+```bash
 docker system prune -a
 ```
 
-## Best practices
+---
 
--   Never commit `.env`.
--   Add `.env` to `.gitignore`.
--   Commit `.env.example`.
--   Tag releases (`1.0.0`, `1.1.0`) instead of relying only on `latest`.
--   Use `--restart unless-stopped` for production.
--   Rebuild the image whenever dependencies or source code change.
+# 📌 Remember
+
+* **build** → Creates a Docker image.
+* **run** → Starts a container from the image.
+* **push** → Uploads the image to Docker Hub.
+* **pull** → Downloads the image from Docker Hub.
+* **stop** → Stops a running container.
+* **rm** → Removes a container.
+* **rmi** → Removes an image.
+
+### Typical workflow
+
+```text
+Write Code
+    ↓
+docker build
+    ↓
+Test with docker run
+    ↓
+docker push
+    ↓
+Server: docker pull
+    ↓
+Server: docker run
+```
+
+This is the workflow you'll use for almost every Docker deployment.
