@@ -26,7 +26,7 @@ const OrderDetail = lazy(() => import("../pages/Order/OrderDetail.jsx"));
 const Wishlist = lazy(() => import("../pages/Wishlist/Wishlist.jsx"));
 const Feedback = lazy(() => import("../pages/Feedback/FeedBack.jsx"));
 const ProfilePage = lazy(() => import("../pages/Profile/ProfilePage.jsx"));
-const Agent = lazy(() => import("../pages/Ai_Agent/agent.jsx"));
+const Agent = lazy(() => import("../pages/Ai_Agent/Agent.jsx"));
 
 // ==================== Admin Pages ====================
 const AdminDashboard = lazy(() =>
