@@ -2,7 +2,7 @@
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import AdminLayout from "./AdminLayout";
-import UserLayout from "./userLayout";
+import UserLayout from "./UserLayout";
 
 const Layout = ({ children }) => {
   const location = useLocation();
