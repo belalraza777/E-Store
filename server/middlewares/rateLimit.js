@@ -12,7 +12,7 @@ const makeStore = (prefix) =>
 // Global limiter: applies to all routes
 export const globalLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 400, // limit each IP to 400 requests per window
+  max:  1000, // limit each IP to 1000 requests per window
   standardHeaders: true,
   legacyHeaders: false,
   message: {

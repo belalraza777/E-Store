@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../context/authContext";
 import "./login.css";
@@ -43,11 +43,12 @@ const LoginPage = () => {
         setSubmitting(false);
 
         if (result.success) {
-            if (result.data.isblocked) {
+            if (result.data.isBlocked) {
                 toast.error("Your account has been blocked. Please contact support.");
-                return redirect('/');
+                navigate('/', { replace: true });
+                return;
             }
-            if (user && user.role === 'admin') {
+            if (result.data.role === 'admin') {
                 navigate('/admin/dashboard', { replace: true });
                 return;
             }

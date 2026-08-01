@@ -1,15 +1,14 @@
 // authContext.jsx - Global authentication state management
 import { createContext, useContext, useState, useEffect } from "react";
 import { register, login, logout, checkAuth, resetPassword } from "../api/authApi";
-import { connectSocket, disconnectSocket } from "../socket";
+import { disconnectSocket } from "../socket";
 
 // Create auth context for sharing auth state across components
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    // Initialize user and token from localStorage
+    // Initialize user from localStorage; server session is validated separately via cookie
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
-    const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -17,17 +16,13 @@ export const AuthProvider = ({ children }) => {
     const saveAuthData = (userData) => {
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
-        // Token is stored in httpOnly cookie by backend
-        const tokenFromStorage = localStorage.getItem("token");
-        if (tokenFromStorage) {
-            setToken(tokenFromStorage);
-        }
+        // Keep legacy token storage cleared so stale bearer auth does not override the cookie session.
+        localStorage.removeItem("token");
     };
 
     // Clear all auth data on logout
     const clearAuthData = () => {
         setUser(null);
-        setToken(null);
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         disconnectSocket();
@@ -36,39 +31,21 @@ export const AuthProvider = ({ children }) => {
     // Check if user is authenticated on app load
     useEffect(() => {
         const checkUser = async () => {
-            const token = localStorage.getItem("token");
-            if (token) {
-                const result = await checkAuth();
-                if (result.success && result.authenticated) {
-                    saveAuthData(result.data);
-                } else {
-                    setError(result.message || "Authentication check failed");
-                    clearAuthData();
-                }
+            const result = await checkAuth();
+            if (result.success && result.authenticated) {
+                saveAuthData(result.data);
+            } else {
+                clearAuthData();
             }
             setLoading(false);
         };
         checkUser();
     }, []);
 
-    // Connect/disconnect socket based on token
-    // useEffect(() => {
-    //     if (token) {
-    //         connectSocket(token);
-    //     }
-    //     return () => {
-    //         if (!token) {
-    //             disconnectSocket();
-    //         }
-    //     };
-    // }, [token]);
-
     // Handle user login
     const handleLogin = async (credentials) => {
         const result = await login(credentials);
         if (result.success) {
-            localStorage.setItem("token", "cookie-auth");
-            setToken("cookie-auth");
             saveAuthData(result.data);
         }else {
             setError(result.message || "Login failed");
@@ -93,8 +70,6 @@ export const AuthProvider = ({ children }) => {
     const handleRegister = async (credentials) => {
         const result = await register(credentials);
         if (result.success) {
-            localStorage.setItem("token", "cookie-auth");
-            setToken("cookie-auth");
             saveAuthData(result.data);
         }else{
             setError(result.message || "Registration failed");
@@ -122,7 +97,6 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{
             user,
-            token,
             loading,
             isAuthenticated: !!user,
             handleLogin,

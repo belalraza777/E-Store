@@ -13,19 +13,25 @@ import SearchBar from "../pages/search/SearchBar.jsx";
 export default function Header() {
   // State for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // Get user and logout function from auth context
-  const { user, refreshUser } = useAuth();
+  // Get auth state from context
+  const { user, loading: authLoading } = useAuth();
   // Get cart data from store
-  const { cart, fetchCart } = useCartStore();
+  const { cart, fetchCart, clearCart } = useCartStore();
   const navigate = useNavigate();
   // Track cart item count for badge
   const [cartItemCount, setCartItemCount] = useState(0);
 
-  // Fetch cart on component mount
+  // Fetch cart only after auth is resolved and the user is signed in.
   useEffect(() => {
-    fetchCart();
-    refreshUser();
-  }, []);
+    if (!authLoading && user) {
+      fetchCart();
+      return;
+    }
+
+    if (!authLoading && !user) {
+      clearCart();
+    }
+  }, [authLoading, user, fetchCart, clearCart]);
 
   // Update cart badge when cart changes
   useEffect(() => {
@@ -52,7 +58,7 @@ export default function Header() {
           <Link to="/products" className="site-header__nav-link">Products</Link>
           <Link to="/orders" className="site-header__nav-link">Orders</Link>
           <Link to="/wishlist" className="site-header__nav-link">Wishlist</Link>
-          <Link to="/agents" className="site-header__nav-link"><BsRobot size={22}/><span>AI</span></Link>
+          <Link to="/agents" className="site-header__nav-link"><BsRobot size={22} /><span>AI</span></Link>
         </nav>
 
         {/* Right Actions - Cart, Profile, Mobile Menu */}

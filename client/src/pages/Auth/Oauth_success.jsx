@@ -14,14 +14,15 @@ const OAuthSuccess = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                // Backend has set httpOnly cookie, fetch user data
+                // Backend has set an httpOnly cookie; hydrate auth state from the cookie-backed session.
                 const result = await refreshUser();
                 if (result.success) {
-                    if (result.data.isblocked) {
+                    if (result.data.isBlocked) {
                         toast.error("Your account has been blocked. Please contact support.");
-                        return redirect('/');
+                        navigate('/', { replace: true });
+                        return;
                     }
-                    if (user && user.role === 'admin') {
+                    if (result.data.role === 'admin') {
                         navigate('/admin/dashboard', { replace: true });
                         return;
                     }

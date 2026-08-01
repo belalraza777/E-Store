@@ -7,6 +7,11 @@ import passport from "../config/passport.js";
 
 // Setup all middlewares
 export const setupMiddlewares = (app) => {
+    // Trust the first proxy in front of the app
+    if (process.env.NODE_ENV === 'production') {
+        app.set('trust proxy', 1);
+    }
+
     app.use(express.json({
         verify: (req, res, buf) => {
             req.rawBody = buf;
@@ -24,3 +29,4 @@ export const setupMiddlewares = (app) => {
     app.use(globalLimiter);
     app.use(passport.initialize());
 };
+

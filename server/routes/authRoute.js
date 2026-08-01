@@ -14,7 +14,7 @@ router.post("/login", loginValidation, authLimiter, asyncWrapper(usersController
 router.post("/register", registerValidation, authLimiter, asyncWrapper(usersController.register));
 
 // Logout route 
-router.get("/logout", usersController.logoutUser);
+router.get("/logout", verifyAuth, usersController.logoutUser);
 
 //to Check Login and role in frontend 
 router.get("/check", asyncWrapper(usersController.checkUser));
