@@ -1,5 +1,5 @@
 // Header.jsx - Main site header with navigation, search, and cart
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { FiMenu, FiX, FiShoppingCart, FiUser } from "react-icons/fi";
@@ -52,7 +52,7 @@ export default function Header() {
           <Link to="/products" className="site-header__nav-link">Products</Link>
           <Link to="/orders" className="site-header__nav-link">Orders</Link>
           <Link to="/wishlist" className="site-header__nav-link">Wishlist</Link>
-          <Link to="/agents" className="site-header__nav-link"><BsRobot size={22}/>&nbsp;AI</Link>
+          <Link to="/agents" className="site-header__nav-link"><BsRobot size={22}/><span>AI</span></Link>
         </nav>
 
         {/* Right Actions - Cart, Profile, Mobile Menu */}
@@ -78,6 +78,8 @@ export default function Header() {
             className="site-header__menu-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="site-header-mobile-menu"
           >
             {mobileMenuOpen ? <FiX /> : <FiMenu />}
           </button>
@@ -86,12 +88,12 @@ export default function Header() {
 
       {/* Mobile Menu - shown when toggle is clicked */}
       {mobileMenuOpen && (
-        <nav className="site-header__mobile-menu">
+        <nav id="site-header-mobile-menu" className="site-header__mobile-menu">
           <Link to="/" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
           <Link to="/products" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Products</Link>
           <Link to="/orders" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
           <Link to="/wishlist" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Wishlist</Link>
-          <Link to="/agents" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}><BsRobot />Ai Agent</Link>
+          <Link to="/agents" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}><BsRobot /><span>AI Agent</span></Link>
           {!user && (
             <Link to="/login" className="site-header__mobile-link" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
           )}

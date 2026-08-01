@@ -16,6 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: var(--space-4);
 }
 
@@ -31,13 +32,6 @@
   height: 40px;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-}
-
-.site-header__brand-text {
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-text);
-  letter-spacing: -0.02em;
-  white-space: nowrap;
 }
 
 .site-header__search {
@@ -92,6 +86,8 @@
   border-radius: var(--radius-pill);
   transition: color var(--transition-base), background var(--transition-base);
   display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .site-header__nav-link:hover {
@@ -145,8 +141,8 @@
 }
 
 .site-header__menu-toggle {
-  width: 40px;
-  height: 40px;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-border);
   background: var(--color-panel);
@@ -154,19 +150,24 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text);
+  flex-shrink: 0;
 }
 
 .site-header__mobile-menu {
   border-top: 1px solid var(--color-border);
   background: var(--color-panel);
   padding: var(--space-3) var(--space-4) var(--space-4);
+  width: 100%;
 }
 
 .site-header__mobile-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-3) var(--space-3);
   border-radius: var(--radius-lg);
   color: var(--color-text-secondary);
+  min-height: var(--touch-target-min);
 }
 
 .site-header__mobile-link:hover {
@@ -192,14 +193,54 @@
   }
 }
 
-@media (max-width: 640px) {
-  .site-header__inner {
-    padding: var(--space-3);
-    gap: var(--space-2);
+/* Below 900px (mobile/tablet, no desktop nav): drop the logo entirely to
+   free up room, put the burger on the left and cart/sign-in on the right
+   of the same row, then let the search bar take its own full-width row
+   underneath instead of squeezing in next to everything else. */
+@media (max-width: 899px) {
+  .site-header__brand {
+    display: none;
+  }
+
+  .site-header__actions {
+    order: 1;
+    flex: 1 1 100%;
+    justify-content: flex-start;
   }
 
   .site-header__search {
+    order: 2;
+    flex: 1 1 100%;
     max-width: 100%;
+  }
+
+  /* Reorder the burger to the start of the row (DOM order is unchanged,
+     so focus/tab order still follows cart -> sign-in -> menu). */
+  .site-header__menu-toggle {
+    order: -1;
+  }
+
+  /* Push everything from the first real child (the cart button) onward
+     to the right-hand end of the row, leaving the burger pinned left. */
+  .site-header__actions > :first-child {
+    margin-left: auto;
+  }
+
+  /* Keep every tappable control in this row the same height so they sit
+     visually level with each other. */
+  .site-header__action,
+  .site-header__menu-toggle {
+    height: var(--touch-target-min);
+  }
+}
+
+@media (max-width: 640px) {
+  .site-header__inner {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .site-header__search {
     min-width: 0;
     padding: var(--space-1) var(--space-2);
   }
@@ -209,17 +250,7 @@
     font-size: 16px; /* prevent iOS zoom */
   }
 
-  .site-header__logo {
-    width: 60px;
-    height: 28px;
-  }
-
-  .site-header__brand-text {
-    font-size: var(--font-size-sm);
-  }
-
   .site-header__action {
-    height: 36px;
     padding: 0 var(--space-2);
     font-size: var(--font-size-sm);
   }
@@ -229,16 +260,12 @@
   }
 
   .site-header__search-btn {
-    width: 36px;
-    height: 36px;
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
   }
 }
 
 @media (max-width: 380px) {
-  .site-header__brand-text {
-    display: none;
-  }
-
   .site-header__actions {
     gap: var(--space-1);
   }

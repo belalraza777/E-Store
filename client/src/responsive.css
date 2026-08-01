@@ -63,6 +63,9 @@
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
+
+  /* Container padding token - actually wired into .container-responsive below */
+  --container-padding: var(--spacing-mobile-md);
 }
 
 /* =====================================================
@@ -104,8 +107,8 @@ body {
   margin-left: auto;
   margin-right: auto;
   /* Mobile-first: smaller padding */
-  padding-left: var(--spacing-mobile-md);
-  padding-right: var(--spacing-mobile-md);
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
 }
 
 /* Small phones (480px+) */
@@ -580,13 +583,11 @@ body {
   font-weight: var(--font-weight-semibold);
 }
 
-/* Form inputs - Mobile optimized */
+/* Form inputs - Mobile optimized (16px prevents iOS auto-zoom on focus) */
 .input-responsive {
   width: 100%;
   min-height: var(--touch-target-min);
   padding: var(--space-3) var(--space-4);
-  font-size: var(--font-mobile-base);
-  /* Prevent zoom on iOS */
   font-size: 16px;
 }
 
@@ -597,7 +598,7 @@ body {
   }
 }
 
-/* Prevent iOS zoom on input focus */
+/* Prevent iOS zoom on input focus for any un-classed inputs too */
 @media screen and (max-width: 768px) {
   input[type="text"],
   input[type="email"],
@@ -877,11 +878,6 @@ body {
   :root {
     --container-padding: var(--spacing-mobile-sm);
   }
-
-  /* Smaller text on very small screens */
-  body {
-    font-size: var(--font-mobile-sm);
-  }
 }
 
 /* Small Devices (large phones, 640px and down) */
@@ -1018,14 +1014,13 @@ body {
 
 /* =====================================================
    Dark Mode Mobile Optimizations
+   Only applies if the app hasn't set an explicit theme.
+   Respects manual data-theme toggle over OS preference.
    ===================================================== */
 
-@media (prefers-color-scheme: dark) {
-  @media (max-width: 768px) {
-    /* Additional dark mode mobile optimizations */
-    .card-responsive {
-      border-color: var(--color-border-strong);
-    }
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  html:not([data-theme]) .card-responsive {
+    border-color: var(--color-border-strong);
   }
 }
 

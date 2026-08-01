@@ -26,8 +26,9 @@
 }
 
 .site-footer__logo {
-  width: 100%;
-  height: 50px;
+  width: 130px;
+  height: 48px;
+  object-fit: contain;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
@@ -149,6 +150,11 @@
     gap: var(--space-8);
   }
 
+  .site-footer__logo {
+    width: 110px;
+    height: 42px;
+  }
+
   .site-footer__social-link {
     width: 44px;
     height: 44px;
@@ -158,4 +164,3 @@
     padding: var(--space-4) var(--space-3);
   }
 }
-
