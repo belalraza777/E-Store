@@ -20,7 +20,7 @@ import agentRoutes from "./routes/agentRoute.js";
 setupMiddlewares(app);
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Welcome to the E-Store API" });
+  res.status(200).json({ message: "Welcome to the E-Store API", env: process.env.NODE_ENV || "development" });
 });
 // Health check route
 app.get("/health", (req, res) => {
