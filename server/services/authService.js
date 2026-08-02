@@ -63,10 +63,8 @@ export const loginLogic = async (email, password) => {
         success: true,
         statusCode: 200,
         message: "Welcome Back!",
-        data: {
-            user,
-            token: generateToken(user),
-        },
+        data: user,
+        token: generateToken(user),
     };
 };
 
@@ -131,10 +129,8 @@ Thank you for joining E-Store!
         success: true,
         statusCode: 201,
         message: "Account Created Successfully!",
-        data: {
-            user,
-            token,
-        },
+        data: user,
+        token,
     };
 };
 
@@ -144,7 +140,6 @@ export const checkUserLogic = async (token) => {
     if (!token) {
         return {
             success: false,
-            authenticated: false,
             statusCode: 401,
             message: "No token provided",
         };
@@ -155,7 +150,6 @@ export const checkUserLogic = async (token) => {
     if (!decoded) {
         return {
             success: false,
-            authenticated: false,
             statusCode: 401,
             message: "Invalid token",
         };
@@ -166,7 +160,6 @@ export const checkUserLogic = async (token) => {
     if (!user) {
         return {
             success: false,
-            authenticated: false,
             statusCode: 401,
             message: "User not found",
         };
@@ -174,7 +167,6 @@ export const checkUserLogic = async (token) => {
 
     return {
         success: true,
-        authenticated: true,
         statusCode: 200,
         message: "Authenticated",
         data: user,

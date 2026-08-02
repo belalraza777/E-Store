@@ -39,9 +39,9 @@ export const logout = async () => {
 export const checkAuth = async () => {
     try {
         const response = await axiosInstance.get('/auth/check');
-        return { success: true, data: response.data.data, authenticated: response.data.authenticated };
+        return { success: true, data: response.data.data, message: response.data.message };
     } catch (error) {
-        return { success: false, authenticated: false };
+        return { success: false };
     }
 };
 

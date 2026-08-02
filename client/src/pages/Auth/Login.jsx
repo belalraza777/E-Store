@@ -24,7 +24,7 @@ const LoginPage = () => {
 
     // Get Google auth URL
     const googleAuthUrl = useMemo(() => {
-        const base = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+        const base = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
         return `${base.replace(/\/$/, "")}/auth/google`;
     }, []);
 

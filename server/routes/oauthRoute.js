@@ -6,6 +6,23 @@ import { oauthLimiter } from "../middlewares/rateLimit.js";
 
 const router = express.Router();
 
+const getFrontendRedirectUrl = (req) => {
+    if (process.env.GOOGLE_FRONTEND_REDIRECT_URL) {
+        return process.env.GOOGLE_FRONTEND_REDIRECT_URL;
+    }
+
+    if (process.env.FRONTEND_URL) {
+        return `${process.env.FRONTEND_URL.replace(/\/$/, "")}/oauth-success`;
+    }
+
+    const requestOrigin = req.get("origin") || req.get("referer");
+    if (requestOrigin) {
+        return `${requestOrigin.replace(/\/$/, "")}/oauth-success`;
+    }
+
+    return "http://localhost:5173/oauth-success";
+};
+
 // Start Google OAuth
 router.get(
     "/google",
@@ -35,7 +52,7 @@ router.get(
         });
 
         // redirect to frontend
-        res.redirect(process.env.GOOGLE_FRONTEND_REDIRECT_URL || "http://localhost:5173/oauth-success");
+        res.redirect(getFrontendRedirectUrl(req));
     }
 );
 

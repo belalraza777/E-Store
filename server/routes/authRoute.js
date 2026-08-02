@@ -11,7 +11,7 @@ import { authLimiter } from "../middlewares/rateLimit.js";
 router.post("/login", loginValidation, authLimiter, asyncWrapper(usersController.loginUser));
 
 // Signup routes
-router.post("/register", registerValidation, authLimiter, asyncWrapper(usersController.register));
+router.post("/register", registerValidation, authLimiter, asyncWrapper(usersController.registerUser));
 
 // Logout route 
 router.get("/logout", verifyAuth, usersController.logoutUser);

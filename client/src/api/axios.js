@@ -16,8 +16,6 @@ axiosInstance.interceptors.response.use(
     },
     (error) => {
         if (error.response?.status === 401) {
-            // Unauthorized - clear any cached auth state
-            localStorage.removeItem('token');
             localStorage.removeItem('user');
         }
         return Promise.reject(error);

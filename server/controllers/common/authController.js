@@ -1,4 +1,5 @@
 import * as authService from "../../services/authService.js";
+import { setAuthCookie } from "../../helper/authUtils.js";
 
 // ================= Login =================
 
@@ -7,7 +8,16 @@ export const loginUser = async (req, res, next) => {
 
         const result = await authService.loginLogic(email, password);
 
-        return res.status(result.statusCode).json(result);
+        if (result.success && result.token) {
+            setAuthCookie(res, result.token);
+        }
+
+        return res.status(result.statusCode).json({
+            success: result.success,
+            statusCode: result.statusCode,
+            message: result.message,
+            data: result.data,
+        });
 
 };
 
@@ -15,7 +25,17 @@ export const loginUser = async (req, res, next) => {
 
 export const registerUser = async (req, res, next) => {
         const result = await authService.registerLogic(req.body);
-        return res.status(result.statusCode).json(result);
+
+        if (result.success && result.token) {
+            setAuthCookie(res, result.token);
+        }
+
+        return res.status(result.statusCode).json({
+            success: result.success,
+            statusCode: result.statusCode,
+            message: result.message,
+            data: result.data,
+        });
 };
 
 // ================= Logout =================
@@ -47,7 +67,12 @@ export const checkUser = async (req, res, next) => {
 
         const result = await authService.checkUserLogic(token);
 
-        return res.status(result.statusCode).json(result);
+        return res.status(result.statusCode).json({
+            success: result.success,
+            statusCode: result.statusCode,
+            message: result.message,
+            data: result.data,
+        });
 
 };
 

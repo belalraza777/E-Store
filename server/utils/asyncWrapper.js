@@ -1,7 +1,9 @@
 export default function asyncWrapper(fn) {
-    return function (req, res, next) {
-        fn(req, res, next).catch((err) => {
-            next(err);
-        });
+    if (typeof fn !== "function") {
+        throw new TypeError("asyncWrapper expects a function");
     }
+
+    return (req, res, next) => {
+        Promise.resolve(fn(req, res, next)).catch(next);
+    };
 }

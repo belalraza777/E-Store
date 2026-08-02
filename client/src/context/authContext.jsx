@@ -16,15 +16,12 @@ export const AuthProvider = ({ children }) => {
     const saveAuthData = (userData) => {
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
-        // Keep legacy token storage cleared so stale bearer auth does not override the cookie session.
-        localStorage.removeItem("token");
     };
 
     // Clear all auth data on logout
     const clearAuthData = () => {
         setUser(null);
         localStorage.removeItem("user");
-        localStorage.removeItem("token");
         disconnectSocket();
     };
 
@@ -32,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const checkUser = async () => {
             const result = await checkAuth();
-            if (result.success && result.authenticated) {
+            if (result.success) {
                 saveAuthData(result.data);
             } else {
                 clearAuthData();
@@ -47,7 +44,7 @@ export const AuthProvider = ({ children }) => {
         const result = await login(credentials);
         if (result.success) {
             saveAuthData(result.data);
-        }else {
+        } else {
             setError(result.message || "Login failed");
         }
         return result;
@@ -56,7 +53,7 @@ export const AuthProvider = ({ children }) => {
     // Refresh user data from server
     const refreshUser = async () => {
         const result = await checkAuth();
-        if (result.success && result.authenticated) {
+        if (result.success) {
             saveAuthData(result.data);
             return { success: true, data: result.data };
         } else {
@@ -71,7 +68,7 @@ export const AuthProvider = ({ children }) => {
         const result = await register(credentials);
         if (result.success) {
             saveAuthData(result.data);
-        }else{
+        } else {
             setError(result.message || "Registration failed");
         }
         return result;

@@ -76,13 +76,21 @@ export const addToCartLogic = async (userId, productId, quantity = 1) => {
  * Retrieve the current user's cart with all items and product details
  */
 export const getCartLogic = async (userId) => {
-    // Fetch user's cart and populate product details (title, price, images, slug)
-    const cart = await Cart.findOne({ user: userId }).populate('items.product', 'title price discountPrice images slug');
+    let cart = await Cart.findOne({ user: userId })
+        .populate("items.product", "title price discountPrice images slug");
 
     if (!cart) {
-        const error = new Error("Cart not found");
-        error.statusCode = 404;
-        throw error;
+        cart = await Cart.create({
+            user: userId,
+            items: [],
+            totalPrice: 0,
+            totalDiscountPrice: 0,
+        });
+
+        await cart.populate(
+            "items.product",
+            "title price discountPrice images slug"
+        );
     }
 
     return cart;

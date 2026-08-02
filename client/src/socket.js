@@ -1,7 +1,7 @@
 // Socket placeholder - implement when WebSocket is needed
 let socket = null;
 
-export const connectSocket = (token) => {
+export const connectSocket = () => {
     // TODO: Implement socket connection
     // intentionally left blank until socket implementation is needed
 };
