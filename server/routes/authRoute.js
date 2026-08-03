@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 import usersController from "../controllers/common/authController.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
-import { registerValidation, loginValidation } from "../middlewares/joiValidation.js";
+import { registerValidation, loginValidation, resetPasswordValidation } from "../middlewares/joiValidation.js";
 import verifyAuth from "../middlewares/verifyAuth.js";
 import { authLimiter } from "../middlewares/rateLimit.js";
 
@@ -20,7 +20,7 @@ router.get("/logout", verifyAuth, usersController.logoutUser);
 router.get("/check", asyncWrapper(usersController.checkUser));
 
 //reset password
-router.patch("/reset", verifyAuth, authLimiter, asyncWrapper(usersController.resetPassword));
+router.patch("/reset", verifyAuth, authLimiter, resetPasswordValidation, asyncWrapper(usersController.resetPassword));
 
 // //otp base login 
 // router.post('/request-otp', otpLimiter, asyncWrapper(usersController.requestOtp));   // Step 1: Generate & send OTP

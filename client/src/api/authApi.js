@@ -5,9 +5,11 @@ export const register = async (credentials) => {
         const response = await axiosInstance.post('/auth/register', credentials);
         return { success: true, data: response.data.data, message: response.data.message };
     } catch (error) {
+        const responseData = error.response?.data;
         return { 
             success: false, 
-            message: error.response?.data?.message || 'Registration failed' 
+            message: responseData?.errors?.[0] || responseData?.message || 'Registration failed',
+            errors: responseData?.errors || [],
         };
     }
 };
@@ -17,9 +19,11 @@ export const login = async (credentials) => {
         const response = await axiosInstance.post('/auth/login', credentials);
         return { success: true, data: response.data.data, message: response.data.message };
     } catch (error) {
+        const responseData = error.response?.data;
         return { 
             success: false, 
-            message: error.response?.data?.message || 'Login failed' 
+            message: responseData?.errors?.[0] || responseData?.message || 'Login failed',
+            errors: responseData?.errors || [],
         };
     }
 };
@@ -50,9 +54,11 @@ export const resetPassword = async (passwordData) => {
         const response = await axiosInstance.patch('/auth/reset', passwordData);
         return { success: true, message: response.data.message };
     } catch (error) {
+        const responseData = error.response?.data;
         return { 
             success: false, 
-            message: error.response?.data?.message || 'Password reset failed' 
+            message: responseData?.errors?.[0] || responseData?.message || 'Password reset failed',
+            errors: responseData?.errors || [],
         };
     }
 };

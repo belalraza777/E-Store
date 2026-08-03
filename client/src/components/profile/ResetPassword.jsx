@@ -52,10 +52,15 @@ const ResetPassword = () => {
     try {
       const res = await handleResetPassword({
         oldPassword: form.oldPassword,
-        newPassword: form.newPassword
+        newPassword: form.newPassword,
+        confirmPassword: form.confirmPassword,
       });
-      toast.success(res.data.message || "Password updated successfully!");
-      setForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+      if (res.success) {
+        toast.success(res.message || "Password updated successfully!");
+        setForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+      } else {
+        toast.error(res.message || "Failed to reset password. Please try again.");
+      }
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to reset password. Please try again.");
     }

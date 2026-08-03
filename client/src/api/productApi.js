@@ -44,9 +44,11 @@ export const createProduct = async (formData) => {
         });
         return { success: true, data: response.data.data, message: response.data.message };
     } catch (error) {
+        const responseData = error.response?.data;
         return { 
             success: false, 
-            message: error.response?.data?.message || 'Failed to create product' 
+            message: responseData?.errors?.[0] || responseData?.message || 'Failed to create product',
+            errors: responseData?.errors || [],
         };
     }
 };
@@ -58,9 +60,11 @@ export const updateProduct = async (id, formData) => {
         });
         return { success: true, data: response.data.data, message: response.data.message };
     } catch (error) {
+        const responseData = error.response?.data;
         return { 
             success: false, 
-            message: error.response?.data?.message || 'Failed to update product' 
+            message: responseData?.errors?.[0] || responseData?.message || 'Failed to update product',
+            errors: responseData?.errors || [],
         };
     }
 };
