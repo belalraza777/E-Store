@@ -6,8 +6,6 @@ import './AddWishlistbtn.css';
 import { toast } from 'sonner';
 
 export default function AddWishlistbtn({ productId }) {    
-    if (!productId) return null;
-
     // Get the addProduct function and current wishlist from the store
     const { addProduct, removeProduct, wishlist } = useWishlistStore();
 
@@ -16,6 +14,8 @@ export default function AddWishlistbtn({ productId }) {
         if (!wishlist) return false;
         return wishlist.some(item => String(item) === String(productId));
     }, [wishlist, productId]);
+
+    if (!productId) return null;
 
     // Handler for adding/removing product from wishlist
     const handleAddToWishlist = async () => {

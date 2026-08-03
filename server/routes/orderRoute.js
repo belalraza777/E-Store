@@ -27,21 +27,6 @@ router.get(
     asyncWrapper(userOrderController.getMyOrders)
 );
 
-// Get single order by ID (user)
-router.get(
-    "/:id",
-    verifyAuth,
-    asyncWrapper(userOrderController.getOrderById)
-);
-
-// Cancel order by user
-router.put(
-    "/:id/cancel",
-    verifyAuth,
-    orderCancelLimiter,
-    asyncWrapper(userOrderController.cancelOrder)
-);
-
 // ADMIN ROUTES
 
 // ADMIN: list all orders
@@ -58,6 +43,21 @@ router.get(
     verifyAuth,
     verifyAdmin,
     asyncWrapper(adminOrderController.filterOrders)
+);
+
+// Get single order by ID (user)
+router.get(
+    "/:id",
+    verifyAuth,
+    asyncWrapper(userOrderController.getOrderById)
+);
+
+// Cancel order by user
+router.put(
+    "/:id/cancel",
+    verifyAuth,
+    orderCancelLimiter,
+    asyncWrapper(userOrderController.cancelOrder)
 );
 
 // ADMIN: update order status/payment status

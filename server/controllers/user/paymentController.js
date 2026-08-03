@@ -6,7 +6,7 @@ import * as paymentService from "../../services/paymentService.js";
 export const createOrder = async (req, res) => {
     const { orderId } = req.body;
 
-    const result = await paymentService.createRazorpayOrderLogic(orderId);
+    const result = await paymentService.createRazorpayOrderLogic(orderId, req.user.id);
 
     if (!result.success) {
         return res.status(result.statusCode).json({
@@ -37,7 +37,7 @@ export const verifyPayment = async (req, res) => {
         razorpay_payment_id,
         razorpay_signature,
         orderId,
-    });
+    }, req.user.id);
 
     if (!result.success) {
         return res.status(result.statusCode).json({
@@ -59,7 +59,7 @@ export const verifyPayment = async (req, res) => {
 export const markPaymentFailed = async (req, res) => {
     const { orderId, reason } = req.body;
 
-    const result = await paymentService.markPaymentFailedLogic(orderId, reason);
+    const result = await paymentService.markPaymentFailedLogic(orderId, reason, req.user.id);
 
     if (!result.success) {
         return res.status(result.statusCode).json({

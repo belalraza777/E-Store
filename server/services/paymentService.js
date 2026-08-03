@@ -14,7 +14,7 @@ const razorpay = new Razorpay({
  * CREATE RAZORPAY ORDER
  * Returns { success: boolean, statusCode, message?, razorpayOrder? }
  */
-export const createRazorpayOrderLogic = async (orderId) => {
+export const createRazorpayOrderLogic = async (orderId, userId) => {
     if (!orderId) {
         return {
             success: false,
@@ -30,6 +30,14 @@ export const createRazorpayOrderLogic = async (orderId) => {
             success: false,
             statusCode: 404,
             message: "Order not found",
+        };
+    }
+
+    if (order.user.toString() !== userId) {
+        return {
+            success: false,
+            statusCode: 403,
+            message: "Not authorized to pay for this order",
         };
     }
 
@@ -92,7 +100,7 @@ export const verifyPaymentLogic = async ({
     razorpay_payment_id,
     razorpay_signature,
     orderId,
-}) => {
+}, userId) => {
     if (
         !razorpay_order_id ||
         !razorpay_payment_id ||
@@ -113,6 +121,14 @@ export const verifyPaymentLogic = async ({
             success: false,
             statusCode: 404,
             message: "Order not found",
+        };
+    }
+
+    if (order.user._id.toString() !== userId) {
+        return {
+            success: false,
+            statusCode: 403,
+            message: "Not authorized to verify this payment",
         };
     }
 
@@ -208,7 +224,7 @@ export const verifyPaymentLogic = async ({
  * MARK PAYMENT FAILED (user cancellation / timeout)
  * Returns { success: boolean, statusCode, message }
  */
-export const markPaymentFailedLogic = async (orderId, reason) => {
+export const markPaymentFailedLogic = async (orderId, reason, userId) => {
     if (!orderId) {
         return {
             success: false,
@@ -224,6 +240,14 @@ export const markPaymentFailedLogic = async (orderId, reason) => {
             success: false,
             statusCode: 404,
             message: "Order not found",
+        };
+    }
+
+    if (order.user._id.toString() !== userId) {
+        return {
+            success: false,
+            statusCode: 403,
+            message: "Not authorized to update this payment",
         };
     }
 
