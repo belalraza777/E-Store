@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { FiAlertCircle, FiCheckCircle, FiArrowRight } from 'react-icons/fi';
 
 export default function LowStockAlert({ lowStockItems }) {
+  console.log(lowStockItems);
+  
   return (
     <section className="admin-dashboard__section">
       <div className="admin-dashboard__section-header">
@@ -26,7 +28,7 @@ export default function LowStockAlert({ lowStockItems }) {
             >
               <div className="admin-dashboard__stock-product">
                 <img 
-                  src={product.images?.[0] || '/placeholder.jpg'} 
+                  src={product?.images?.[0]?.url || '/placeholder.jpg'} 
                   alt={product.title}
                   className="admin-dashboard__stock-image"
                 />

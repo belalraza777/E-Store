@@ -35,12 +35,12 @@ export default function OrderDetail() {
     }
     setCancelling(true);
     const result = await cancelOrder(id, cancelReason);
-    setCancelling(false);
-    setShowCancelModal(false);
-    if (result.success) {
+    if (result?.success) {
       toast.success('Order cancelled successfully');
       // Refresh order data
       fetchOrderById(id);
+      setCancelling(false);
+      setShowCancelModal(false);
     } else {
       toast.error(result.message || 'Failed to cancel order');
     }
@@ -108,7 +108,7 @@ export default function OrderDetail() {
               <div
                 key={status}
                 className={`order-detail__step ${index < currentStepIndex ? 'order-detail__step--completed' :
-                    index === currentStepIndex ? 'order-detail__step--active' : ''
+                  index === currentStepIndex ? 'order-detail__step--active' : ''
                   }`}
               >
                 <div className="order-detail__step-icon" aria-hidden="true">

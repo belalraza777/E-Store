@@ -19,7 +19,7 @@ const ProfilePage = () => {
         if (!profile) {
             fetchProfile();
         }
-    }, [profile, fetchProfile]);
+    }, []);
 
     // Show loading skeleton if profile is not loaded
     if (!profile) return (
