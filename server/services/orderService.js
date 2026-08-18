@@ -149,7 +149,7 @@ export const getOrderByIdLogic = async (orderId, userId) => {
 
 // Cancel order by user
 export const cancelOrderLogic = async (orderId, userId, reason) => {
-    if (!reason || typeof reason !== "string") {
+    if (!reason) {
         const error = new Error("Cancel Reason is Required");
         error.statusCode = 400;
         throw error;
@@ -159,6 +159,13 @@ export const cancelOrderLogic = async (orderId, userId, reason) => {
     if (!order) {
         const error = new Error("Order not found");
         error.statusCode = 404;
+        throw error;
+    }
+    
+    //check order is paid [For now paid order will not cancelled, but in future we can add refund logic]
+    if (order.paymentMethod === "Online" && order.paymentStatus === "paid") {
+        const error = new Error("Paid orders cannot be cancelled");
+        error.statusCode = 400;
         throw error;
     }
 
@@ -175,7 +182,7 @@ export const cancelOrderLogic = async (orderId, userId, reason) => {
         error.statusCode = 400;
         throw error;
     }
-
+// Check if order is delivered
     if (order.isDelivered) {
         const error = new Error("Cannot cancel delivered order");
         error.statusCode = 400;

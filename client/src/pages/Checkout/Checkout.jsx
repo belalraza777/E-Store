@@ -145,10 +145,9 @@ export default function Checkout() {
               toast.success('Payment successful! Order placed.');
               navigate('/orders');
             }}
-            onFailure={() => {
-              // Keep one consistent failure message for better UX.
-              toast.error('Payment failed. Your order was cancelled.');
-              navigate('/orders');
+            onFailure={(message) => {
+              toast.error(message || 'Payment failed. Please try again.');
+              setCreatedOrderId(null);
             }}
           />
         )}

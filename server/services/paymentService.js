@@ -275,13 +275,14 @@ export const markPaymentFailedLogic = async (orderId, reason, userId) => {
             message: "Order already cancelled",
         };
     }
-
+    // Mark order as failed/cancelled
     order.paymentStatus = "failed";
     order.orderStatus = "cancelled";
     order.isCancelled = true;
     order.cancelReason = reason || "Payment cancelled by user";
     await order.save();
 
+    // Restore stock for all items
     for (const item of order.items) {
         await Product.findByIdAndUpdate(item.product, {
             $inc: { stock: item.quantity },
