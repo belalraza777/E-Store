@@ -96,7 +96,9 @@ export default function Orders() {
                                         {order.orderStatus}
                                     </span>
                                     {/* Payment status badge */}
-                                    <span className={`orders-page__badge orders-page__badge--${order.paymentStatus === 'paid' ? 'paid' : 'pending'}`}>
+                                    <span className={`orders-page__badge orders-page__badge--${order.paymentStatus === 'paid' ? 'paid' :
+                                            order.paymentStatus === 'refunded' ? 'refunded' : 'pending'
+                                        }`}>
                                         {order.paymentStatus}
                                     </span>
                                 </div>

@@ -36,6 +36,7 @@ A modern, full-featured e-commerce platform built with **React 19**, **Express 5
 - Order confirmation emails via Gmail (Nodemailer)
 - Track order status (Placed → Shipped → Delivered)
 - Cancel orders with reason
+- Automatic Razorpay refund on cancellation of  paid online orders
 
 ### ⭐ Reviews & Ratings
 - 1–5 star ratings with verified-purchase badges
@@ -384,11 +385,14 @@ docker rm -f estore-server
 | GET | `/api/v1/orders` | Get all orders (admin) |
 | PUT | `/api/v1/orders/:id/status` | Update status (admin) |
 
-### Payments
+
+### 💳 Payments
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/v1/payments/create-order` | Create Razorpay order |
 | POST | `/api/v1/payments/verify` | Verify payment |
+| POST | `/api/v1/payments/failed` | Mark payment as failed |
+
 
 ### Reviews
 | Method | Endpoint | Description |

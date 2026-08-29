@@ -50,7 +50,7 @@ const orderSchema = new mongoose.Schema(
 
         paymentStatus: {
             type: String,
-            enum: ["pending", "paid", "failed"],
+            enum: ["pending", "paid", "failed", "refunded"],
             default: "pending",
             trim: true,
         },
@@ -100,6 +100,16 @@ const orderSchema = new mongoose.Schema(
         isDelivered: {
             type: Boolean,
             default: false,
+        },
+
+        refund: {
+            refundId: { type: String, trim: true },
+            amount: { type: Number },
+            status: {
+                type: String,
+                enum: ["initiated", "processed", "failed"],
+            },
+            initiatedAt: { type: Date },
         },
 
     },

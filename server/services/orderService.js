@@ -3,7 +3,8 @@ import Product from "../models/productModel.js";
 import Cart from "../models/cartModel.js";
 import User from "../models/userModel.js";
 import { sendEmail } from "../config/email.js";
-// import mongoose from "mongoose";
+import * as paymentService from "../services/paymentService.js";
+import mongoose from "mongoose";
 
 /**
  * Contains pure business logic for orders.
@@ -147,48 +148,37 @@ export const getOrderByIdLogic = async (orderId, userId) => {
     return order;
 };
 
-// Cancel order by user
+// Cancel order by user and restock products, initiate refund if applicable, and send cancellation email.
 export const cancelOrderLogic = async (orderId, userId, reason) => {
     if (!reason) {
         const error = new Error("Cancel Reason is Required");
         error.statusCode = 400;
         throw error;
     }
-
     const order = await Order.findById(orderId);
     if (!order) {
         const error = new Error("Order not found");
         error.statusCode = 404;
         throw error;
     }
-    
-    //check order is paid [For now paid order will not cancelled, but in future we can add refund logic]
-    if (order.paymentMethod === "Online" && order.paymentStatus === "paid") {
-        const error = new Error("Paid orders cannot be cancelled");
-        error.statusCode = 400;
-        throw error;
-    }
-
     // Verify order belongs to user
     if (order.user.toString() !== userId) {
         const error = new Error("Not authorized to cancel this order");
         error.statusCode = 403;
         throw error;
     }
-
     // Check if order can be cancelled
     if (order.isCancelled) {
         const error = new Error("Order is already cancelled");
         error.statusCode = 400;
         throw error;
     }
-// Check if order is delivered
+    // Check if order is delivered
     if (order.isDelivered) {
         const error = new Error("Cannot cancel delivered order");
         error.statusCode = 400;
         throw error;
     }
-
     // Cancel order
     order.orderStatus = "cancelled";
     order.isCancelled = true;
@@ -197,21 +187,26 @@ export const cancelOrderLogic = async (orderId, userId, reason) => {
     }
     await order.save();
     await order.populate("items.product", "title slug price discount");
-
     // Restock the products
     for (const item of order.items) {
         await Product.findByIdAndUpdate(item.product._id, { $inc: { stock: item.quantity } });
     }
 
+    // Initiate refund for online paid orders (non-blocking — refund failure won't affect cancellation)
+    if (order.paymentMethod === "Online" && order.paymentStatus === "paid") {
+        paymentService.processRefundService(order).catch((err) =>
+            console.error(`Refund failed for order ${order._id}:`, err)
+        );
+    }
+    
     // Send order cancellation email
     const userCancel = await User.findById(userId);
     if (userCancel && userCancel.email) {
         await sendEmail(
             userCancel.email,
             "Order Cancelled - E-Store",
-            `Hi ${userCancel.name},\n\nYour order (ID: ${order._id}) has been cancelled.\nReason: ${order.cancelReason || reason}\n\nIf you have questions, contact support.\n\n- E-Store Team`
+            `Hi ${userCancel.name},\n\nYour order (ID: ${order._id}) has been cancelled.\nReason: ${order.cancelReason || reason}${order.paymentMethod === "Online" && order.paymentStatus === "paid" ? "\n\nYour refund has been initiated and will reflect in 5-7 business days." : ""}\n\nIf you have questions, contact support.\n\n- E-Store Team`
         );
     }
-
     return order;
 };

@@ -131,8 +131,12 @@ export default function OrderDetail() {
         <div className="order-detail__tracker order-detail__tracker--cancelled">
           <p className="order-detail__cancelled-title">This order was cancelled</p>
           {order.cancelReason && (
+            <p className="order-detail__cancelled-reason">Reason: {order.cancelReason}</p>
+          )}
+          {/* Refund notice */}
+          {order.paymentStatus === 'refunded' && (
             <p className="order-detail__cancelled-reason">
-              Reason: {order.cancelReason}
+              💳 Refund of ₹{Number(order.refund?.amount).toLocaleString()} initiated — reflects in 5–7 business days.
             </p>
           )}
         </div>
@@ -157,7 +161,13 @@ export default function OrderDetail() {
             Method: <span className="order-detail__highlight">{order.paymentMethod}</span><br />
             Status: <span className="order-detail__highlight">
               {order.paymentStatus?.charAt(0).toUpperCase() + order.paymentStatus?.slice(1)}
-            </span>
+            </span><br />
+            {/* Show refund details if refunded */}
+            {order.paymentStatus === 'refunded' && order.refund && (
+              <span className="order-detail__highlight">
+                Refund of ₹{Number(order.refund.amount).toLocaleString()} initiated on {new Date(order.refund.initiatedAt).toLocaleDateString()}
+              </span>
+            )}
           </p>
         </div>
       </div>
@@ -235,6 +245,7 @@ export default function OrderDetail() {
         setCancelReason={setCancelReason}
         onSubmit={handleCancelSubmit}
         cancelling={cancelling}
+        isPaidOnline={order.paymentMethod === 'Online' && order.paymentStatus === 'paid'}
       />
     </div>
   );

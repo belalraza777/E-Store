@@ -159,6 +159,12 @@
   color: var(--color-accent);
 }
 
+.orders-page__badge--refunded {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+
 .orders-page__items {
   padding: var(--space-4) var(--space-5);
   display: grid;

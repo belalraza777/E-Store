@@ -78,8 +78,6 @@ export default function CheckoutForm({ form, handleChange, handleSubmit, submitt
             <label>Country</label>
             <select name="country" value={form.country} onChange={handleChange}>
               <option value="India">India</option>
-              <option value="United States">United States</option>
-              <option value="United Kingdom">United Kingdom</option>
             </select>
           </div>
         </div>
@@ -112,11 +110,6 @@ export default function CheckoutForm({ form, handleChange, handleSubmit, submitt
             <span className="checkout-page__payment-name">Pay Online</span>
           </label>
         </div>
-        {form.paymentMethod === 'Online' && (
-          <div className="checkout-page__terms" style={{ fontSize: '0.92em', color: '#b91c1c', marginTop: 8 }}>
-            * If you pay online, your order is <b>not cancellable</b> as for now.
-          </div>
-        )}
       </div>
 
       {/* Place Order Button */}

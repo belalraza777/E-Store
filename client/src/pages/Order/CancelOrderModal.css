@@ -87,6 +87,15 @@
   transform: none;
 }
 
+.cancel-order-modal__refund-notice {
+  font-size: 0.85rem;
+  color: #2563eb;
+  background: #eff6ff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
 /* ---- CancelOrderModal Responsive ---- */
 @media (max-width: 640px) {
   .cancel-order-modal {
@@ -116,4 +125,3 @@
     min-height: 100px;
   }
 }
-

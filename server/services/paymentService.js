@@ -485,3 +485,31 @@ export const handlePaymentFailedWebhookLogic = async (payload) => {
         message: "Order marked as failed via webhook",
     };
 };
+
+/*
+    * PROCESS REFUND
+    * This function initiates a refund for an order that was paid online.
+    * It checks if the order is eligible for a refund and then calls the Razorpay Refund API.
+*/
+export const processRefundService = async (order) => {
+    // Only process refund for online paid orders
+    if (order.paymentMethod !== "Online" || order.paymentStatus !== "paid") return;
+    if (!order.razorpay?.paymentId) return;
+    // Initiate full refund via Razorpay Refund API
+    const refund = await razorpay.payments.refund(order.razorpay.paymentId, {
+        amount: order.totalAmount * 100, // Convert to paise
+        speed: "normal",
+        notes: { reason: order.cancelReason || "Order cancelled by user" },
+    });
+
+    console.log(`Refund initiated for order ${order._id}:`, refund);
+    // Update order with refund tracking details
+    order.paymentStatus = "refunded";
+    order.refund = {
+        refundId: refund.id,
+        amount: refund.amount / 100, // Convert back to rupees
+        status: "initiated",
+        initiatedAt: new Date(),
+    };
+    await order.save();
+};

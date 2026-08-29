@@ -1,13 +1,12 @@
-import React from 'react';
 import './CancelOrderModal.css';
-
 export default function CancelOrderModal({
   show,
   onClose,
   cancelReason,
   setCancelReason,
   onSubmit,
-  cancelling
+  cancelling,
+  isPaidOnline,
 }) {
   if (!show) return null;
   return (
@@ -15,6 +14,12 @@ export default function CancelOrderModal({
       <div className="cancel-order-modal__panel" onClick={e => e.stopPropagation()}>
         <h3 className="cancel-order-modal__title">Cancel Order</h3>
         <p className="cancel-order-modal__text">Please provide a reason for cancelling this order:</p>
+        {/* Refund notice for online paid orders */}
+        {isPaidOnline && (
+          <p className="cancel-order-modal__refund-notice">
+            💳 A full refund will be initiated to your original payment method within 5–7 business days.
+          </p>
+        )}
         <textarea
           value={cancelReason}
           onChange={e => setCancelReason(e.target.value)}
