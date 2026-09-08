@@ -20,8 +20,17 @@ export const updateOrderStatusLogic = async (orderId, orderStatus, paymentStatus
         throw error;
     }
 
-    order.orderStatus = orderStatus;
-    if (paymentStatus) {
+    order.orderStatus = orderStatus.trim();
+    if (paymentStatus && paymentStatus.trim() !== order.paymentStatus) {
+        // An online payment can only be changed by the verified Razorpay flow
+        // (or its signed webhook). Otherwise an admin edit could make an
+        // unpaid order look paid in invoices and reporting.
+        if (order.paymentMethod === "Online") {
+            const error = new Error("Online payment status is managed by the payment provider");
+            error.statusCode = 400;
+            throw error;
+        }
+
         order.paymentStatus = paymentStatus.trim();
     }
 

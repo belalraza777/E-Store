@@ -194,6 +194,7 @@ export default function AdminOrderDetail() {
           form={form}
           loading={loading}
           submitting={submitting}
+          paymentMethod={order.paymentMethod}
           onChange={handleChange}
           onSubmit={handleSubmit}
         />

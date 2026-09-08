@@ -7,6 +7,7 @@ export default function OrderStatusUpdateForm({
   form,
   loading,
   submitting,
+  paymentMethod,
   onChange,
   onSubmit,
 }) {
@@ -51,12 +52,17 @@ export default function OrderStatusUpdateForm({
                 name="paymentStatus"
                 value={form.paymentStatus}
                 onChange={onChange}
+                disabled={paymentMethod === 'Online'}
                 className="admin-order-detail-page__form-select"
               >
                 <option value="pending">Pending</option>
                 <option value="paid">Paid</option>
                 <option value="failed">Failed</option>
+                <option value="refunded">Refunded</option>
               </select>
+              {paymentMethod === 'Online' && (
+                <small>Online payment status is updated by Razorpay verification.</small>
+              )}
             </div>
           </div>
 

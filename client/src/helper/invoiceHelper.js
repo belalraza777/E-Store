@@ -3,6 +3,11 @@
 
 export function getInvoiceData(order) {
   if (!order) return null;
+
+  // Payment state must come from the persisted order.  Do not infer it from
+  // the payment method: COD and an unfinished online payment are both unpaid.
+  const paymentStatus = String(order.paymentStatus || 'pending').toLowerCase();
+
   return {
     storeName: 'E-Store',
     // storeLogo: '', // Optionally add base64 logo here
@@ -18,6 +23,7 @@ export function getInvoiceData(order) {
     subtotal: order.subtotal || order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
     total: order.totalAmount,
     paymentMethod: order.paymentMethod,
+    status: paymentStatus,
     orderDate: order.createdAt
   };
 }

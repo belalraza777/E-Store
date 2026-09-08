@@ -299,10 +299,10 @@ const createOrderSchema = Joi.object({
                 "any.required": "Order status is required",
             }),
         paymentStatus: Joi.string()
-            .valid("pending", "paid", "failed")
+            .valid("pending", "paid", "failed", "refunded")
             .optional()
             .messages({
-                "any.only": "Payment status must be pending, paid, or failed",
+                "any.only": "Payment status must be pending, paid, failed, or refunded",
             }),
     });
 
