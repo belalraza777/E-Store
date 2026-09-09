@@ -9,7 +9,7 @@ import ReviewForm from './ReviewForm.jsx';
 import ReviewsList from './ReviewsList.jsx';
 
 
-export default function ReviewsSection({ productId, reviews, averageRating, totalReviews, reviewsLoading, fetchProductReviews }) {
+export default function ReviewsSection({ productId, reviews, averageRating, totalReviews, reviewsLoading, fetchProductReviews, id }) {
   // Keep store interactions in parent so child components stay presentational.
   const { addReview, deleteReview } = useReviewStore();
   const { user } = useAuth();
@@ -60,10 +60,13 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
   
 
   return (
-    <div className="reviews-section">
+    <section className="reviews-section" id={id} aria-labelledby="customer-reviews-title">
       {/* Reviews header with average rating */}
       <div className="reviews-header">
-        <h2>Customer Reviews</h2>
+        <div className="reviews-heading">
+          <p className="reviews-eyebrow">Community feedback</p>
+          <h2 id="customer-reviews-title">Customer Reviews</h2>
+        </div>
         <div className="reviews-summary">
           <span className="avg-rating">{averageRating.toFixed(1)}</span>
           {/* Display star rating visually */}
@@ -82,6 +85,6 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
         deletingReviewId={deletingReviewId}
         onDeleteReview={handleDeleteReview}
       />
-    </div>
+    </section>
   )
 }

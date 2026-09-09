@@ -80,6 +80,9 @@ export default function ProductCard({ product }) {
                     <div className="quantity-selector">
                         {/* Decrease quantity button */}
                         <button
+                            type="button"
+                            aria-label="Decrease quantity"
+                            disabled={quantity <= 1}
                             onClick={() => setQuantity(q => Math.max(1, q - 1))}
                             className="qty-btn"
                         >
@@ -89,13 +92,17 @@ export default function ProductCard({ product }) {
                         <input
                             type="number"
                             value={quantity}
-                            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                            aria-label={`Quantity for ${product.title}`}
+                            onChange={(e) => setQuantity(Math.min(product.stock, Math.max(1, parseInt(e.target.value) || 1)))}
                             min="1"
                             max={product.stock}
                             className="qty-input"
                         />
                         {/* Increase quantity button */}
                         <button
+                            type="button"
+                            aria-label="Increase quantity"
+                            disabled={quantity >= product.stock}
                             onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
                             className="qty-btn"
                         >

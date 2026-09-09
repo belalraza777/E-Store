@@ -73,6 +73,8 @@ export default function ReviewsList({
                                     <button
                                         type="button"
                                         className="review-delete-btn"
+                                        aria-label="Delete review"
+                                        title="Delete review"
                                         onClick={() => onDeleteReview(review._id)}
                                         disabled={deletingReviewId === review._id}
                                     >

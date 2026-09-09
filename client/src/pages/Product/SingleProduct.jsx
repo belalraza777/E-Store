@@ -29,6 +29,8 @@ export default function SingleProduct() {
   // Fetch product when slug changes
   useEffect(() => {
     if (slug) {
+      setSelectedImage(0);
+      setQuantity(1);
       fetchProductBySlug(slug);
     }
   }, [slug]);
@@ -88,6 +90,9 @@ export default function SingleProduct() {
                 />
                 {/* Discount badge overlay */}
                 {hasDiscount && <div className="single-product__discount-badge">-{discountPercent}%</div>}
+                <div className="single-product__image-count" aria-live="polite">
+                  {selectedImage + 1} / {product.images.length}
+                </div>
               </>
             ) : (
               <div className="single-product__placeholder">No Image Available</div>
@@ -96,15 +101,18 @@ export default function SingleProduct() {
 
           {/* Thumbnail gallery - only show if multiple images */}
           {product.images && product.images.length > 1 && (
-            <div className="single-product__thumbnails">
+            <div className="single-product__thumbnails" aria-label="Product images">
               {product.images.map((img, idx) => (
-                <img
+                <button
                   key={idx}
-                  src={img.url || img}
-                  alt={`${product.title} ${idx + 1}`}
+                  type="button"
+                  aria-label={`View image ${idx + 1} of ${product.images.length}`}
+                  aria-current={selectedImage === idx ? 'true' : undefined}
                   className={`single-product__thumbnail ${selectedImage === idx ? 'single-product__thumbnail--active' : ''}`}
                   onClick={() => setSelectedImage(idx)}
-                />
+                >
+                  <img src={img.url || img} alt="" />
+                </button>
               ))}
             </div>
           )}
@@ -115,7 +123,10 @@ export default function SingleProduct() {
           {/* Category tag */}
           <div className="single-product__category">{product.category}</div>
 
-          <h1 className="single-product__title">{product.title}</h1>
+          <div className="single-product__heading">
+            <h1 className="single-product__title">{product.title}</h1>
+            <p className="single-product__sku">Product details</p>
+          </div>
 
           {/* Rating display with stars */}
           <div className="single-product__rating">
@@ -124,7 +135,7 @@ export default function SingleProduct() {
               <span className="single-product__stars-empty">{'☆'.repeat(5 - Math.round(averageRating))}</span>
             </div>
             <span className="single-product__rating-value">{averageRating.toFixed(1)}</span>
-            <span className="single-product__reviews-link">({totalReviews} reviews)</span>
+            <a className="single-product__reviews-link" href="#customer-reviews">({totalReviews} reviews)</a>
           </div>
 
           {/* Price display with discount if applicable */}
@@ -157,6 +168,9 @@ export default function SingleProduct() {
               {/* Quantity controls */}
               <div className="single-product__qty">
                 <button
+                  type="button"
+                  aria-label="Decrease quantity"
+                  disabled={quantity <= 1}
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}
                   className="single-product__qty-btn"
                 >
@@ -165,12 +179,16 @@ export default function SingleProduct() {
                 <input
                   type="number"
                   value={quantity}
-                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                  aria-label="Quantity"
+                  onChange={(e) => setQuantity(Math.min(product.stock, Math.max(1, parseInt(e.target.value) || 1)))}
                   min="1"
                   max={product.stock}
                   className="single-product__qty-input"
                 />
                 <button
+                  type="button"
+                  aria-label="Increase quantity"
+                  disabled={quantity >= product.stock}
                   onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
                   className="single-product__qty-btn"
                 >
@@ -178,7 +196,7 @@ export default function SingleProduct() {
                 </button>
               </div>
               {/* Add to cart and wishlist buttons */}
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <div className="single-product__action-tools">
                 <AddCartBtn productId={product._id} quantity={quantity} />
                 <AddWishlistBtn productId={product._id} />
                 <Sharebtn slug={product.slug} />
@@ -193,6 +211,7 @@ export default function SingleProduct() {
 
       {/* Reviews Section - displays and adds reviews */}
       <ReviewsSection
+        id="customer-reviews"
         productId={product._id}
         reviews={reviews}
         averageRating={averageRating}

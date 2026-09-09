@@ -9,7 +9,7 @@ export default function ProductList({ products, loading = false, horizontal = fa
   // Show loading spinner while fetching products
   if (loading) {
     return (
-      <div className="product-list-loading">
+      <div className="product-list-loading" role="status" aria-live="polite">
         <Skeleton variant="text" width="220px" aria-label="Loading products" />
         <div className="product-list-loading__grid" aria-hidden="true">
           {Array.from({ length: 8 }).map((_, idx) => (
@@ -27,7 +27,7 @@ export default function ProductList({ products, loading = false, horizontal = fa
   // Show empty state if no products found
   if (!products || products.length === 0) {
     return (
-      <div className="product-list-empty">
+      <div className="product-list-empty" role="status">
         <svg 
           width="120" 
           height="120" 
@@ -48,7 +48,10 @@ export default function ProductList({ products, loading = false, horizontal = fa
 
   // Render grid of product cards
   return (
-    <div className={`product-list ${horizontal ? 'product-list--horizontal' : ''}`}>
+    <div
+      className={`product-list ${horizontal ? 'product-list--horizontal' : ''}`}
+      aria-label={horizontal ? 'Recommended products' : 'Product list'}
+    >
       {products.map((product) => (
         <ProductCard key={product._id} product={product} />
       ))}

@@ -20,13 +20,14 @@ export default function ReviewForm({ submitting, onSubmit }) {
       <h3>Share Your Experience</h3>
 
       <div className="form-group">
-        <label>Rate this product</label>
+        <label id="review-rating-label">Rate this product</label>
         <StarRating value={reviewForm.rating} size={30} readOnly={false} onChange={handleRatingChange} />
       </div>
 
       <div className="form-group">
-        <label>Your Review</label>
+        <label htmlFor="product-review-comment">Your Review</label>
         <textarea
+          id="product-review-comment"
           value={reviewForm.comment}
           onChange={(e) => setReviewForm((prev) => ({ ...prev, comment: e.target.value }))}
           placeholder="Tell us what you think about this product..."
@@ -36,6 +37,7 @@ export default function ReviewForm({ submitting, onSubmit }) {
       </div>
 
       <button
+        type="button"
         onClick={handleSubmit}
         disabled={submitting}
         className="submit-review-btn"
