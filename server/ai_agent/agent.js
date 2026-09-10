@@ -7,7 +7,7 @@ import SYSTEM_PROMPT from "./systemPrompt.js";
 
 // Groq LLM for agent
 const model = new ChatGroq({
-  model: "llama-3.1-8b-instant",
+  model: "openai/gpt-oss-20b",
   temperature: 0.3,
 });
 

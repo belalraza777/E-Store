@@ -146,8 +146,32 @@
 
 @media (max-width: 480px) {
   .site-footer__inner {
-    padding: var(--space-8) var(--space-3);
-    gap: var(--space-8);
+    padding: var(--space-8) var(--space-4);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-4);
+  }
+
+  .site-footer__section:first-child,
+  .site-footer__section:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .site-footer__description {
+    max-width: 34ch;
+  }
+
+  .site-footer__title {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-3);
+  }
+
+  .site-footer__links,
+  .site-footer__contact {
+    gap: var(--space-2);
+  }
+
+  .site-footer__contact-item {
+    gap: var(--space-2);
   }
 
   .site-footer__logo {
@@ -161,6 +185,16 @@
   }
 
   .site-footer__bottom-inner {
-    padding: var(--space-4) var(--space-3);
+    padding: var(--space-4);
+    gap: var(--space-2);
+  }
+
+  .site-footer__bottom-inner p {
+    font-size: var(--font-size-xs);
+  }
+
+  .site-footer__legal {
+    gap: var(--space-2);
+    font-size: var(--font-size-xs);
   }
 }
