@@ -71,7 +71,6 @@
     height: 100%;
     object-fit: cover;
     transition: transform var(--transition-slow);
-    will-change: transform;
 }
 
 .product-card:hover .product-image {
@@ -111,7 +110,6 @@
     letter-spacing: 0.025em;
     text-transform: uppercase;
     backdrop-filter: blur(4px);
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes pulse {

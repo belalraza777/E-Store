@@ -29,7 +29,8 @@ export default function ProductCard({ product }) {
                             src={product.images[0]?.url || product.images[0]}
                             alt={product.title}
                             className="product-image"
-                            lazy="true"
+                            loading="lazy"
+                            decoding="async"
                         />
                     ) : (
                         <div className="product-placeholder">No Image</div>

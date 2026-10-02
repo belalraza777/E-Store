@@ -110,6 +110,11 @@
     min-width: 0; /* Prevents grid items from overflowing */
 }
 
+.product-list > .product-card {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+}
+
 /* Horizontal scroll layout for carousels / recommendations */
 .product-list--horizontal {
     display: flex;
