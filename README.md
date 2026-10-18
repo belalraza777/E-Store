@@ -1,6 +1,9 @@
-# 🛒 E-Store — Full-Stack E-Commerce Platform
+# 🛒 E-Store — Full-Stack E-Commerce Platform with Ai Assistent
 
 A modern, full-featured e-commerce platform built with **React 19**, **Express 5**, **MongoDB**, and **Redis** — complete with an **AI shopping assistant**, **Razorpay payments**, **Google OAuth**, and a full **admin dashboard**.
+
+The repository contains two independently installable applications: a Vite frontend in
+[`client/`](./client) and an Express API in [`server/`](./server).
 
 ---
 
@@ -109,6 +112,7 @@ E-STORE/
 │   │   ├── routes/             # App routing & protected routes
 │   │   ├── store/              # Zustand state management
 │   │   └── utils/              # Client utilities
+│   ├── FRONTEND_SETUP.md       # Frontend state and API setup notes
 │   └── package.json
 │
 ├── server/                     # Express backend
@@ -129,6 +133,7 @@ E-STORE/
 │   ├── utils/                  # Async wrapper, Redis cache helpers
 │   └── package.json
 │
+├── docs/                       # Feature and implementation notes
 └── README.md
 ```
 
@@ -150,8 +155,8 @@ E-STORE/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/e-store.git
-cd e-store
+git clone https://github.com/belalraza777/E-Store.git
+cd E-Store
 ```
 
 ### 2. Setup the server
@@ -165,7 +170,7 @@ Create a `.env` file in `/server`:
 
 ```env
 # Server
-PORT=5000
+PORT=3000
 
 # Database
 MONGODB_URL=mongodb://127.0.0.1:27017/E-store
@@ -182,7 +187,7 @@ JWT_SECRET=your_jwt_secret
 # Google OAuth
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_CALLBACK_URL=http://localhost:5000/api/v1/auth/google/callback
+GOOGLE_CALLBACK_URL=http://localhost:3000/api/v1/auth/google/callback
 
 # Cloudinary
 CLOUD_NAME=your_cloud_name
@@ -208,8 +213,12 @@ FRONTEND_URL=http://localhost:5173
 Start the server:
 
 ```bash
-npx nodemon
+node server.js
 ```
+
+The API listens on `http://localhost:3000` by default. Set `PORT` if a different
+port is required. For automatic restarts during development, run
+`npx nodemon server.js` if Nodemon is available in your environment.
 
 ### 3. Setup the client
 
@@ -221,8 +230,9 @@ npm install
 Create a `.env` file in `/client`:
 
 ```env
-VITE_API_URL=http://localhost:5000/api/v1
+VITE_API_URL=http://localhost:3000/api/v1
 VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
+VITE_GOOGLE_FORM_URL=your_feedback_form_url
 ```
 
 Start the dev server:
@@ -256,7 +266,7 @@ Create a `.env` file inside the `server` directory and configure all required en
 Example:
 
 ```env
-PORT=5000
+PORT=3000
 
 MONGODB_URL=your_mongodb_connection_string
 
@@ -269,7 +279,7 @@ JWT_SECRET=your_jwt_secret
 
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_CALLBACK_URL=http://localhost:5000/api/v1/auth/google/callback
+GOOGLE_CALLBACK_URL=http://localhost:3000/api/v1/auth/google/callback
 
 CLOUD_NAME=your_cloud_name
 CLOUD_API_KEY=your_cloud_api_key
@@ -292,7 +302,7 @@ FRONTEND_URL=http://localhost:5173
 ### 3. Run the container
 
 ```bash
-docker run --env-file .env -p 5000:5000 estore-server
+docker run --env-file .env -p 3000:3000 estore-server
 ```
 
 ### Run from another directory
@@ -302,13 +312,13 @@ If you are not inside the `server` directory, specify the full path to the `.env
 Windows:
 
 ```powershell
-docker run --env-file "C:\path\to\server\.env" -p 5000:5000 estore-server
+docker run --env-file "C:\path\to\server\.env" -p 3000:3000 estore-server
 ```
 
 Linux/macOS:
 
 ```bash
-docker run --env-file /path/to/server/.env -p 5000:5000 estore-server
+docker run --env-file /path/to/server/.env -p 3000:3000 estore-server
 ```
 
 ### Stop the container
@@ -326,7 +336,7 @@ docker run -d \
   --name estore-server \
   --restart unless-stopped \
   --env-file .env \
-  -p 5000:5000 \
+  -p 3000:3000 \
   estore-server
 ```
 
@@ -346,6 +356,12 @@ docker rm -f estore-server
 
 ## 📡 API Endpoints
 
+### System
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | API welcome response |
+| GET | `/health` | Health check |
+
 ### Auth
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -355,6 +371,7 @@ docker rm -f estore-server
 | GET | `/api/v1/auth/check` | Check auth status |
 | PATCH | `/api/v1/auth/reset` | Reset password |
 | GET | `/api/v1/auth/google` | Google OAuth login |
+| GET | `/api/v1/auth/google/callback` | Google OAuth callback |
 
 ### Products
 | Method | Endpoint | Description |
@@ -366,6 +383,7 @@ docker rm -f estore-server
 | POST | `/api/v1/products` | Create product (admin) |
 | PUT | `/api/v1/products/:id` | Update product (admin) |
 | DELETE | `/api/v1/products/:id` | Delete product (admin) |
+| PATCH | `/api/v1/products/:id/stock` | Update product stock (admin) |
 
 ### Cart
 | Method | Endpoint | Description |
@@ -381,8 +399,9 @@ docker rm -f estore-server
 | POST | `/api/v1/orders` | Place order |
 | GET | `/api/v1/orders/my` | Get my orders |
 | GET | `/api/v1/orders/:id` | Get order details |
-| POST | `/api/v1/orders/:id/cancel` | Cancel order |
+| PUT | `/api/v1/orders/:id/cancel` | Cancel order |
 | GET | `/api/v1/orders` | Get all orders (admin) |
+| GET | `/api/v1/orders/filter` | Filter orders (admin) |
 | PUT | `/api/v1/orders/:id/status` | Update status (admin) |
 
 
@@ -392,6 +411,7 @@ docker rm -f estore-server
 | POST | `/api/v1/payments/create-order` | Create Razorpay order |
 | POST | `/api/v1/payments/verify` | Verify payment |
 | POST | `/api/v1/payments/failed` | Mark payment as failed |
+| POST | `/api/v1/payments/webhook` | Receive Razorpay webhook events |
 
 
 ### Reviews
@@ -407,6 +427,9 @@ docker rm -f estore-server
 | GET | `/api/v1/profile` | Get profile |
 | PATCH | `/api/v1/profile` | Update profile |
 | PATCH | `/api/v1/profile/avatar` | Update avatar |
+| GET | `/api/v1/profile/users` | List users (admin) |
+| PATCH | `/api/v1/profile/:userId/block` | Block user (admin) |
+| PATCH | `/api/v1/profile/:userId/unblock` | Unblock user (admin) |
 
 ### Wishlist
 | Method | Endpoint | Description |
@@ -448,7 +471,7 @@ docker rm -f estore-server
 
 ## 📂 Product Categories
 
-Electronics · Clothing · Books · Groceries · Sports · Beauty · Toys · Furniture · Automotive · Jewelry · Health
+`electronics` · `clothing` · `books` · `groceries` · `sports` · `beauty` · `toys` · `furniture` · `automotive` · `jewelry` · `health`
 
 ---
 

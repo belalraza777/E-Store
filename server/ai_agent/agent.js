@@ -11,9 +11,9 @@ const model = new ChatGroq({
   temperature: 0.3,
 });
 
-// Redis session config (1 hour TTL)
+// Redis session config (20 minute TTL)
 const CHAT_PREFIX = "agent:chat:";
-const CHAT_TTL = 60 * 60;
+const CHAT_TTL = 60 * 20;
 
 // Load chat history from Redis
 const loadHistory = async (userId) => {
