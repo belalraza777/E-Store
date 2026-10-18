@@ -67,7 +67,7 @@ export default function Footer() {
           <div className="site-footer__contact">
             <div className="site-footer__contact-item">
               <FiPhone aria-hidden="true" />
-              <a href="tel:+917004068598">+91 7004068598</a>
+              <a href="tel:+917004068598">+91 7004068597</a>
             </div>
             <div className="site-footer__contact-item">
               <FiMail aria-hidden="true" />
@@ -75,7 +75,7 @@ export default function Footer() {
             </div>
             <div className="site-footer__contact-item">
               <FiMapPin aria-hidden="true" />
-              <span>Jhilli Chowk Akabrpur Mathurapur Samastipur Bihar 848101 India</span>
+              <span>PAN INDIA</span>
             </div>
           </div>
         </div>

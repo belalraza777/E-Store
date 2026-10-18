@@ -2,33 +2,31 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FaArrowRight,
-  FaBolt,
-  FaCheck,
-  FaShieldAlt,
+  FaCheckCircle,
+  FaInfoCircle,
+  FaListAlt,
   FaShoppingBag,
-  FaStar,
-  FaTruck,
-  FaUndoAlt,
+  FaShieldAlt,
 } from 'react-icons/fa';
 import useProductStore from '../../store/productStore.js';
 import ProductList from '../../components/product/ProductList.jsx';
 import './Home.css';
 
-const valueProps = [
+const features = [
   {
-    icon: <FaShieldAlt aria-hidden="true" />,
-    title: 'Quality checked',
-    text: 'Thoughtful products selected for everyday use.',
+    icon: FaShoppingBag,
+    title: 'Easy browsing',
+    text: 'Explore everyday products in one simple place.',
   },
   {
-    icon: <FaTruck aria-hidden="true" />,
-    title: 'Fast delivery',
-    text: 'Simple, reliable shipping from checkout to doorstep.',
+    icon: FaListAlt,
+    title: 'Clear details',
+    text: 'Find the information you need to make better choices.',
   },
   {
-    icon: <FaUndoAlt aria-hidden="true" />,
-    title: 'Easy returns',
-    text: 'A straightforward experience if something is not right.',
+    icon: FaCheckCircle,
+    title: 'Simple experience',
+    text: 'A clean storefront designed to keep shopping effortless.',
   },
 ];
 
@@ -40,252 +38,196 @@ export default function Home() {
     fetchProducts({ page: 1 });
   }, [fetchProducts]);
 
-  const featuredProduct = products[0];
-  const featuredPrice = featuredProduct?.discountPrice ?? featuredProduct?.price;
-
-  const handleScrollToProducts = () => {
-    const productsSection = document.getElementById('products-section');
-
-    if (productsSection) {
-      productsSection.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-      return;
-    }
-
-    navigate('/products');
-  };
-
   const goToProducts = () => navigate('/products');
+
+  const scrollToProducts = () => {
+    document.getElementById('products-section')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
 
   return (
     <div className="home-page">
-      <aside className="home-page__demo-notice" role="note" aria-label="Demo site notice">
-        <span className="home-page__demo-notice-icon" aria-hidden="true">
-          <FaShieldAlt />
-        </span>
-
-        <div className="home-page__demo-notice-content">
-          <strong>Demo website.</strong>
-          <span>
-            This website is a demo for review and is not taking any orders for now.
-          </span>
-        </div>
+      <aside className="home-notice" role="note">
+        <FaInfoCircle aria-hidden="true" />
+        <p>
+          <strong>Demo storefront:</strong> Browse products freely.
+          Online ordering is currently disabled.
+        </p>
       </aside>
 
       <main>
-        <section className="home-page__hero" aria-labelledby="home-page-title">
-          <div className="home-page__hero-inner">
-            <div className="home-page__hero-copy">
-              <div className="home-page__eyebrow">
-                <span className="home-page__eyebrow-dot" aria-hidden="true" />
-                Curated essentials for modern living
-              </div>
-
-              <h1 id="home-page-title" className="home-page__hero-title">
-                Good products.
-                <span>Better prices.</span>
-              </h1>
-
-              <p className="home-page__hero-description">
-                Discover practical, premium pieces designed to make everyday life
-                feel a little more considered.
-              </p>
-
-              <div className="home-page__hero-actions">
-                <button
-                  className="home-page__button home-page__button--primary"
-                  type="button"
-                  onClick={handleScrollToProducts}
-                >
-                  Shop the collection
-                  <FaArrowRight aria-hidden="true" />
-                </button>
-
-                <button
-                  className="home-page__button home-page__button--secondary"
-                  type="button"
-                  onClick={goToProducts}
-                >
-                  View all products
-                  <span aria-hidden="true">↗</span>
-                </button>
-              </div>
-
-              <div className="home-page__metrics" role="list">
-                <div className="home-page__metric" role="listitem">
-                  <strong>4.8/5</strong>
-                  <span>
-                    <FaStar aria-hidden="true" />
-                    customer rating
-                  </span>
-                </div>
-
-                <div className="home-page__metric" role="listitem">
-                  <strong>30%</strong>
-                  <span>maximum savings</span>
-                </div>
-
-                <div className="home-page__metric" role="listitem">
-                  <strong>24h</strong>
-                  <span>dispatch promise</span>
-                </div>
-              </div>
+        {/* Hero */}
+        <section className="home-hero">
+          <div className="home-hero__content">
+            <div className="home-eyebrow">
+              <span className="home-eyebrow__dot" />
+              EVERYDAY SHOPPING, SIMPLIFIED
             </div>
 
-            <div className="home-page__showcase" aria-label="Featured product preview">
-              <div className="home-page__showcase-grid" aria-hidden="true" />
+            <h1>
+              Find your
+              <span> everyday essentials.</span>
+            </h1>
 
-              <div className="home-page__showcase-card">
-                <div className="home-page__showcase-meta">
-                  <span>e-store / 01</span>
-                  <span>Featured drop</span>
-                </div>
+            <p className="home-hero__description">
+              Discover products for your everyday needs with a
+              clean, simple, and enjoyable browsing experience.
+            </p>
 
-                <div className="home-page__showcase-art" aria-hidden="true">
-                  <FaShoppingBag />
-                </div>
+            <div className="home-hero__actions">
+              <button
+                type="button"
+                className="home-button home-button--primary"
+                onClick={scrollToProducts}
+              >
+                Explore products <FaArrowRight />
+              </button>
 
-                <div className="home-page__showcase-details">
-                  <div>
-                    <p>{featuredProduct?.category || 'Featured product'}</p>
-                    <h2>
-                      {featuredProduct?.title || 'Carry light. Live well.'}
-                    </h2>
-                  </div>
+              <button
+                type="button"
+                className="home-button home-button--secondary"
+                onClick={goToProducts}
+              >
+                View collection
+              </button>
+            </div>
 
-                  <strong>
-                    {featuredPrice ? `₹${Number(featuredPrice).toFixed(2)}` : 'Explore'}
-                  </strong>
-                </div>
-
-                <div className="home-page__showcase-footer">
-                  <span>
-                    <FaCheck aria-hidden="true" />
-                    Quality checked
-                  </span>
-                  <span>Free shipping</span>
-                </div>
-              </div>
-
-              <div className="home-page__floating-card home-page__floating-card--rating">
-                <FaStar aria-hidden="true" />
-                <strong>4.8</strong>
-                <span>from happy shoppers</span>
-              </div>
-
-              <div className="home-page__floating-card home-page__floating-card--delivery">
-                <FaBolt aria-hidden="true" />
-                <span>Fast delivery</span>
-              </div>
+            <div className="home-hero__note">
+              <FaShieldAlt aria-hidden="true" />
+              <span>Simple browsing. Clear product information.</span>
             </div>
           </div>
 
-          <button
-            className="home-page__scroll-hint"
-            type="button"
-            onClick={handleScrollToProducts}
-          >
-            <span className="home-page__scroll-hint-icon" aria-hidden="true">
-              <FaArrowRight />
-            </span>
-            Explore the collection
-          </button>
-        </section>
+          <div className="home-hero__visual" aria-hidden="true">
+            <div className="home-hero__circle home-hero__circle--one" />
+            <div className="home-hero__circle home-hero__circle--two" />
 
-        <section className="home-page__trust-strip" aria-label="Store benefits">
-          <div className="home-page__trust-intro">
-            <span>Built around</span>
-            <strong>simple, better shopping.</strong>
-          </div>
+            <div className="home-hero__bag">
+              <FaShoppingBag />
+            </div>
 
-          <div className="home-page__trust-item">
-            <FaShieldAlt aria-hidden="true" />
-            <span>Secure experience</span>
-          </div>
+            <span className="home-hero__brand">EAZY STORE<span>.</span></span>
 
-          <div className="home-page__trust-item">
-            <FaTruck aria-hidden="true" />
-            <span>Reliable delivery</span>
-          </div>
+            <div className="home-float home-float--top">
+              <span className="home-float__icon">
+                <FaCheckCircle />
+              </span>
+              <div>
+                <strong>Made simple</strong>
+                <small>Easy to explore</small>
+              </div>
+            </div>
 
-          <div className="home-page__trust-item">
-            <FaUndoAlt aria-hidden="true" />
-            <span>Easy returns</span>
+            <div className="home-float home-float--bottom">
+              <FaShoppingBag />
+              <span>Your everyday finds</span>
+            </div>
           </div>
         </section>
 
+        {/* Store highlights */}
+        <section className="home-highlights" aria-label="Store highlights">
+          <div className="home-highlights__intro">
+            <span>Discover more.</span>
+            <strong>Shop smarter.</strong>
+          </div>
+
+          <div className="home-highlights__item">
+            <FaShoppingBag />
+            <span>Useful products</span>
+          </div>
+
+          <div className="home-highlights__item">
+            <FaListAlt />
+            <span>Product details</span>
+          </div>
+
+          <div className="home-highlights__item">
+            <FaCheckCircle />
+            <span>Simple experience</span>
+          </div>
+        </section>
+
+        {/* Products */}
         <section
           id="products-section"
-          className="home-page__collection"
-          aria-labelledby="collection-title"
+          className="home-collection"
+          aria-labelledby="home-products-title"
         >
-          <div className="home-page__section-heading">
+          <div className="home-section-heading">
             <div>
-              <p className="home-page__eyebrow">Featured products</p>
-              <h2 id="collection-title">
-                Find your next
-                <span>everyday favorite.</span>
+              <p className="home-eyebrow">EXPLORE THE STORE</p>
+              <h2 id="home-products-title">
+                Find something <span>you need.</span>
               </h2>
+              <p className="home-section-description">
+                Take a look at some products from our collection.
+              </p>
             </div>
 
             <button
-              className="home-page__inline-link"
               type="button"
+              className="home-text-link"
               onClick={goToProducts}
             >
-              Browse everything
-              <FaArrowRight aria-hidden="true" />
+              View all products <FaArrowRight />
             </button>
           </div>
 
-          <ProductList products={products.slice(0, 4)} loading={loading && products.length === 0} />
+          <ProductList
+            products={products.slice(0, 4)}
+            loading={loading && products.length === 0}
+          />
         </section>
 
-        <section className="home-page__values" aria-labelledby="values-title">
-          <div className="home-page__section-heading home-page__section-heading--centered">
+        {/* Benefits */}
+        <section className="home-features">
+          <div className="home-section-heading home-section-heading--features">
             <div>
-              <p className="home-page__eyebrow">Why e-store</p>
-              <h2 id="values-title">
-                Designed to feel
-                <span>effortless.</span>
+              <p className="home-eyebrow">WHY EAZY STORE</p>
+              <h2>
+                Shopping without <span>the noise.</span>
               </h2>
             </div>
 
-            <p>
-              From the first scroll to the final purchase, every detail is made to
-              stay clear, useful, and enjoyable.
+            <p className="home-section-description">
+              Less clutter, useful information, and a straightforward
+              way to explore the collection.
             </p>
           </div>
 
-          <div className="home-page__value-grid">
-            {valueProps.map((value) => (
-              <article className="home-page__value-card" key={value.title}>
-                <div className="home-page__value-icon">{value.icon}</div>
-                <h3>{value.title}</h3>
-                <p>{value.text}</p>
+          <div className="home-features__grid">
+            {features.map(({ icon: Icon, title, text }) => (
+              <article className="home-feature-card" key={title}>
+                <div className="home-feature-card__icon">
+                  <Icon aria-hidden="true" />
+                </div>
+
+                <h3>{title}</h3>
+                <p>{text}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="home-page__closing">
+        {/* Closing section */}
+        <section className="home-cta">
           <div>
-            <p className="home-page__eyebrow">Ready when you are</p>
-            <h2>
-              Find something worth
-              <span>bringing home.</span>
-            </h2>
+            <p className="home-eyebrow">YOUR NEXT FIND AWAITS</p>
+            <h2>Take a look around.</h2>
+            <p>
+              Explore the collection and discover what works for you.
+            </p>
           </div>
 
           <button
-            className="home-page__button home-page__button--light"
             type="button"
+            className="home-button home-button--light"
             onClick={goToProducts}
           >
-            Browse all products
-            <FaArrowRight aria-hidden="true" />
+            Browse products <FaArrowRight />
           </button>
         </section>
       </main>
