@@ -75,7 +75,8 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-//indexes for better search performance
-productSchema.index({ category: 1, isActive: 1 });
+// Support public listings and category-filtered listings.
+productSchema.index({ isActive: 1, createdAt: -1, _id: -1 });
+productSchema.index({ category: 1, isActive: 1, createdAt: -1, _id: -1 });
 
 export default mongoose.model("Product", productSchema);

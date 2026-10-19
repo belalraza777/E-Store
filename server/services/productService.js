@@ -1,121 +1,156 @@
 import Product from "../models/productModel.js";
 import { getCache, setCache } from "../utils/cache.js";
 
-/**
- * Search products by title, category, or slug (with caching & pagination)
- * Returns result object { success, statusCode?, message?, data?, pagination? }
- */
+const MAX_LIMIT = 50;
+
+const normalizePagination = (page, limit) => {
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+    const safePage = Number.isFinite(pageNumber)
+        ? Math.max(1, Math.floor(pageNumber))
+        : 1;
+    const safeLimit = Number.isFinite(limitNumber)
+        ? Math.min(MAX_LIMIT, Math.max(1, Math.floor(limitNumber)))
+        : 20;
+
+    return {
+        page: safePage,
+        limit: safeLimit,
+        skip: (safePage - 1) * safeLimit,
+    };
+};
+
+const escapeRegex = (value) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const productCardFields =
+    "title slug price discountPrice stock category averageRating reviewCount isActive images";
+
+const getProductCardQuery = (filter, skip, limit) =>
+    Product.find(filter)
+        .select(productCardFields)
+        .slice("images", 1)
+        .sort({ createdAt: -1, _id: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
 export const searchProductsLogic = async (query, page = 1, limit = 30) => {
-    const cacheKey = `searchProducts:${query}:${page}:${limit}`;
+    if (typeof query !== "string" || !query.trim()) {
+        return {
+            success: false,
+            statusCode: 400,
+            message: "Search query cannot be empty",
+        };
+    }
+
+    const normalizedQuery = query.trim().slice(0, 100);
+    const pagination = normalizePagination(page, limit);
+    const cacheKey =
+        `searchProducts:${normalizedQuery.toLowerCase()}:` +
+        `${pagination.page}:${pagination.limit}`;
     const cached = await getCache(cacheKey);
-    if (cached) {
-        return cached; // cached already contains { success: true, data, pagination }
-    }
+    if (cached) return cached;
 
-    if (!query || query.trim() === "") {
-        return { success: false, statusCode: 400, message: "Search query cannot be empty" };
-    }
-
-    const regex = new RegExp(query.trim(), 'i'); // Case-insensitive regex
-    const skip = (page - 1) * limit;
-
-    // Build filter for active products only [users]
+    const regex = new RegExp(escapeRegex(normalizedQuery), "i");
     const filter = {
         isActive: true,
         $or: [
-            { title: { $regex: regex } },
-            { category: { $regex: regex } },
-            { slug: { $regex: regex } }
-        ]
+            { title: regex },
+            { category: regex },
+            { slug: regex },
+        ],
     };
 
-    const products = await Product.find(filter)
-        .populate('category', 'name slug')
-        .lean()
-        .skip(skip)
-        .limit(limit)
-        .sort({ createdAt: -1 });
-
-    const total = await Product.countDocuments(filter);
-
-    const response = {
-        success: true,
-        data: products,
-        pagination: { total, page, limit }
-    };
-
-    // Set cache for search results
-    await setCache(cacheKey, response, 300); // 5 min TTL
-    return response;
-};
-
-/**
- * Get all products with optional filtering and pagination (admin sees inactive too)
- */
-export const getAllProductsLogic = async (page = 1, limit = 20, userRole = 'user') => {
-    const skip = (page - 1) * limit;
-    const cacheKey = `getAllProducts:${userRole}:${page}:${limit}`;
-    const cached = await getCache(cacheKey);
-    if (cached) {
-        return cached; // { success: true, data, pagination }
-    }
-
-    // Build filter for active products only [users]
-    const filter = { isActive: true };
-
-    // If Admin, No filter
-    if (userRole === 'admin') {
-        delete filter.isActive;
-    }
-
-    // Fetch products
-    const products = await Product.find(filter)
-        .populate('category', 'name slug')
-        .skip(skip)
-        .limit(limit)
-        .sort({ createdAt: -1 })
-        .lean();
-
-    // Get total count
-    const total = await Product.countDocuments(filter);
+    const [products, total] = await Promise.all([
+        getProductCardQuery(filter, pagination.skip, pagination.limit),
+        Product.countDocuments(filter),
+    ]);
 
     const response = {
         success: true,
         data: products,
         pagination: {
             total,
-            page: parseInt(page),
-            limit: parseInt(limit),
-            pages: Math.ceil(total / limit)
-        }
+            page: pagination.page,
+            limit: pagination.limit,
+            pages: Math.ceil(total / pagination.limit),
+        },
     };
 
-    // Set cache for product list
-    await setCache(cacheKey, response, 300); // 5 min TTL
+    await setCache(cacheKey, response, 300);
     return response;
 };
 
-/**
- * Get single product by slug (active only)
- */
-export const getProductBySlugLogic = async (slug) => {
-    const cacheKey = `getProductBySlug:${slug}`;
-    const cached = await getCache(cacheKey);
-    if (cached) {
-        return cached; // { success: true, data }
+export const getAllProductsLogic = async (
+    page = 1,
+    limit = 20,
+    userRole = "user",
+    category
+) => {
+    const pagination = normalizePagination(page, limit);
+    const filter = {};
+
+    if (userRole !== "admin") {
+        filter.isActive = true;
     }
 
-    const product = await Product.findOne({ slug, isActive: true })
-        .populate('category', 'name slug')
-        .lean();
+    const normalizedCategory =
+        typeof category === "string" ? category.trim() : "";
+    if (normalizedCategory && normalizedCategory.toLowerCase() !== "all") {
+        filter.category = normalizedCategory;
+    }
+
+    const cacheKey =
+        `getAllProducts:${userRole}:${pagination.page}:` +
+        `${pagination.limit}:${filter.category || "all"}`;
+    const cached = await getCache(cacheKey);
+    if (cached) return cached;
+
+    const [products, total] = await Promise.all([
+        getProductCardQuery(filter, pagination.skip, pagination.limit),
+        Product.countDocuments(filter),
+    ]);
+
+    const response = {
+        success: true,
+        data: products,
+        pagination: {
+            total,
+            page: pagination.page,
+            limit: pagination.limit,
+            pages: Math.ceil(total / pagination.limit),
+        },
+    };
+
+    await setCache(cacheKey, response, 300);
+    return response;
+};
+
+export const getProductBySlugLogic = async (slug) => {
+    if (typeof slug !== "string" || !slug.trim()) {
+        return {
+            success: false,
+            statusCode: 400,
+            message: "Product slug is required",
+        };
+    }
+
+    const normalizedSlug = slug.trim();
+    const cacheKey = `getProductBySlug:${normalizedSlug}`;
+    const cached = await getCache(cacheKey);
+    if (cached) return cached;
+
+    const product = await Product.findOne({
+        slug: normalizedSlug,
+        isActive: true,
+    }).lean();
 
     if (!product) {
         return { success: false, statusCode: 404, message: "Product not found" };
     }
 
     const response = { success: true, data: product };
-
-    // Set cache for product detail
-    await setCache(cacheKey, response, 300); // 5 min TTL
+    await setCache(cacheKey, response, 300);
     return response;
 };

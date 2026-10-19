@@ -1,6 +1,6 @@
 
 // Product page with infinite scroll, category filter, and skeleton loading
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useProductStore from '../../store/productStore.js'
 import ProductList from '../../components/product/ProductList.jsx'
@@ -11,7 +11,7 @@ import Skeleton from '../../components/ui/Skeleton/Skeleton.jsx'
 
 
 export default function Product() {
-  const { fetchProducts } = useProductStore() // get fetch function from store
+  const fetchProducts = useProductStore(state => state.fetchProducts)
 
   // State for all loaded products
   const [allProducts, setAllProducts] = useState([])
@@ -24,62 +24,85 @@ export default function Product() {
   // Loading state
   const [loading, setLoading] = useState(false)
 
-  // Load first page on category change
+  const loadingRef = useRef(false)
+  const requestIdRef = useRef(0)
+
+  // Load the first page when the category changes.
   useEffect(() => {
-    loadFirstPage()
-  }, [currentCategory])
-
-  // Filter products by selected category
-  const filterByCategory = (products) => {
-    if (currentCategory === 'all') return products
-    return products.filter(
-      product => product?.category === currentCategory
-    )
-  }
-
-  // Fetch first page of products
-  const loadFirstPage = async () => {
-    if (loading) return
+    const requestId = ++requestIdRef.current
+    loadingRef.current = true
     setLoading(true)
+    setAllProducts([])
+    setPage(1)
+    setTotalPages(1)
+    setHasMore(true)
 
-    const result = await fetchProducts({ page: 1 })
-    if (!result.success) {
+    const loadFirstPage = async () => {
+      const result = await fetchProducts({
+        category: currentCategory,
+        page: 1,
+        limit: 20,
+      })
+
+      if (requestId !== requestIdRef.current) return
+
+      if (result.success) {
+        const resultPage = result.pagination?.page || 1
+        const resultPages = result.pagination?.pages || 0
+
+        setAllProducts(result.data)
+        setPage(resultPage)
+        setTotalPages(resultPages)
+        setHasMore(resultPage < resultPages)
+      }
+
+      loadingRef.current = false
       setLoading(false)
-      return
     }
 
-    const filteredProducts = filterByCategory(result.data)
+    loadFirstPage()
 
-    setAllProducts(filteredProducts)
-    setPage(1)
-    setTotalPages(result.pagination.pages) // set total pages from API
-    setHasMore(result.pagination.pages > 1) // enable infinite scroll if more pages
-    setLoading(false)
-  }
+    return () => {
+      requestIdRef.current += 1
+    }
+  }, [currentCategory, fetchProducts])
 
-  // Fetch next page for infinite scroll
+  // Load the next page when scrolling.
   const fetchMore = async () => {
-    if (loading || !hasMore) return
-    setLoading(true)
+    if (loadingRef.current || !hasMore) return
 
     const nextPage = page + 1
     if (nextPage > totalPages) {
       setHasMore(false)
-      setLoading(false)
       return
     }
 
-    const result = await fetchProducts({ page: nextPage })
+    const requestId = requestIdRef.current
+    loadingRef.current = true
+    setLoading(true)
+
+    const result = await fetchProducts({
+      category: currentCategory,
+      page: nextPage,
+      limit: 20,
+    })
+
+    if (requestId !== requestIdRef.current) return
+
     if (!result.success) {
+      loadingRef.current = false
       setLoading(false)
       return
     }
 
-    const filteredProducts = filterByCategory(result.data)
+    const resultPage = result.pagination?.page || nextPage
+    const resultPages = result.pagination?.pages || totalPages
 
-    setAllProducts(prev => [...prev, ...filteredProducts]) // append new products
-    setPage(nextPage)
-    setHasMore(nextPage < totalPages)
+    setAllProducts(prev => [...prev, ...result.data])
+    setPage(resultPage)
+    setTotalPages(resultPages)
+    setHasMore(resultPage < resultPages)
+    loadingRef.current = false
     setLoading(false)
   }
 

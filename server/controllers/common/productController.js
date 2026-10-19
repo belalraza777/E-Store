@@ -1,6 +1,6 @@
 import * as productService from "../../services/productService.js";
 
-//Search products by title or category
+// Search products by title, category, or slug.
 const searchProducts = async (req, res) => {
     const { query } = req.body;
     const limit = Number(req.body.limit) || 30;
@@ -20,13 +20,14 @@ const searchProducts = async (req, res) => {
 
 // Get all products with optional filtering and pagination
 const getAllProducts = async (req, res) => {
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, category } = req.query;
     const userRole = req?.user?.role || 'user';
 
     const result = await productService.getAllProductsLogic(
         Number(page),
         Number(limit),
-        userRole
+        userRole,
+        category
     );
 
     if (!result.success) {

@@ -1,10 +1,10 @@
 // ProductCard.jsx - Displays single product with image, price, and add to cart
-import React, { useState } from 'react'
+import React, { memo, useState } from 'react'
 import AddCartBtn from '../FunctionalBtn/AddCartbtn.jsx'
 import './ProductCard.css';
 import { Link } from 'react-router-dom'
 
-export default function ProductCard({ product }) {
+function ProductCard({ product }) {
     // Track quantity for add to cart
     const [quantity, setQuantity] = useState(1);
 
@@ -119,3 +119,5 @@ export default function ProductCard({ product }) {
         </div>
     )
 }
+
+export default memo(ProductCard)
