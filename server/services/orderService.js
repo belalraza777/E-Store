@@ -4,6 +4,7 @@ import Cart from "../models/cartModel.js";
 import User from "../models/userModel.js";
 import { sendEmail } from "../config/email.js";
 import * as paymentService from "../services/paymentService.js";
+import { deleteCachePattern } from "../utils/cache.js";
 import mongoose from "mongoose";
 
 /**
@@ -61,6 +62,10 @@ export const createOrderLogic = async (userId, items, shippingAddress, paymentMe
                 error.statusCode = 400;
                 throw error;
             }
+
+            await deleteCachePattern("getAllProducts:*");
+            await deleteCachePattern("searchProducts:*");
+            await deleteCachePattern(`getProductBySlug:${product.slug}`);
 
             orderItems.push({  // Build order item
                 product: product._id,
@@ -189,7 +194,10 @@ export const cancelOrderLogic = async (orderId, userId, reason) => {
     await order.populate("items.product", "title slug price discount");
     // Restock the products
     for (const item of order.items) {
-        await Product.findByIdAndUpdate(item.product._id, { $inc: { stock: item.quantity } });
+        const product = await Product.findByIdAndUpdate(item.product._id, { $inc: { stock: item.quantity } }, { new: true });
+        await deleteCachePattern("getAllProducts:*");
+        await deleteCachePattern("searchProducts:*");
+        await deleteCachePattern(`getProductBySlug:${product?.slug}`);
     }
 
     // Initiate refund for online paid orders (non-blocking — refund failure won't affect cancellation)

@@ -52,6 +52,7 @@ export const updateProductLogic = async (productId, reqBody, files) => {
     if (!product) {
         return { success: false, statusCode: 404, message: "Product not found" };
     }
+    const oldSlug = product.slug;
 
     // Validate category if provided
     if (reqBody.category && !isValidCategory(reqBody.category)) {
@@ -86,6 +87,9 @@ export const updateProductLogic = async (productId, reqBody, files) => {
     // Invalidate product-related cache
     await deleteCachePattern("getAllProducts:*");
     await deleteCachePattern("searchProducts:*");
+    if (oldSlug !== product.slug) {
+        await deleteCachePattern(`getProductBySlug:${oldSlug}`);
+    }
     await deleteCachePattern(`getProductBySlug:${product.slug}`);
     // Optionally, invalidate other product cache keys if needed
 
@@ -117,6 +121,7 @@ export const deleteProductLogic = async (productId) => {
     await deleteCachePattern("getAllProducts:*");
     await deleteCachePattern("searchProducts:*");
     await deleteCachePattern(`getProductBySlug:${product.slug}`);
+    await deleteCachePattern(`productReviews:${product._id}:*`);
     // Optionally, invalidate other product cache keys if needed
 
     return { success: true, message: "Product deleted", data: { id: product._id } };

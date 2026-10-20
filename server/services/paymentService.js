@@ -3,6 +3,7 @@ import crypto from "crypto";
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import { sendEmail } from "../config/email.js";
+import { deleteCachePattern } from "../utils/cache.js";
 
 // Razorpay instance
 const razorpay = new Razorpay({
@@ -176,9 +177,12 @@ export const verifyPaymentLogic = async ({
 
         // Restore stock for all items
         for (const item of order.items) {
-            await Product.findByIdAndUpdate(item.product, {
+            const product = await Product.findByIdAndUpdate(item.product, {
                 $inc: { stock: item.quantity },
-            });
+            }, { new: true });
+            await deleteCachePattern("getAllProducts:*");
+            await deleteCachePattern("searchProducts:*");
+            await deleteCachePattern(`getProductBySlug:${product?.slug}`);
         }
 
         // Email is non-critical and should not block cancellation flow.
@@ -284,9 +288,12 @@ export const markPaymentFailedLogic = async (orderId, reason, userId) => {
 
     // Restore stock for all items
     for (const item of order.items) {
-        await Product.findByIdAndUpdate(item.product, {
+        const product = await Product.findByIdAndUpdate(item.product, {
             $inc: { stock: item.quantity },
-        });
+        }, { new: true });
+        await deleteCachePattern("getAllProducts:*");
+        await deleteCachePattern("searchProducts:*");
+        await deleteCachePattern(`getProductBySlug:${product?.slug}`);
     }
 
     if (order?.user?.email) {
@@ -466,9 +473,12 @@ export const handlePaymentFailedWebhookLogic = async (payload) => {
     await order.save();
 
     for (const item of order.items) {
-        await Product.findByIdAndUpdate(item.product, {
+        const product = await Product.findByIdAndUpdate(item.product, {
             $inc: { stock: item.quantity },
-        });
+        }, { new: true });
+        await deleteCachePattern("getAllProducts:*");
+        await deleteCachePattern("searchProducts:*");
+        await deleteCachePattern(`getProductBySlug:${product?.slug}`);
     }
 
     if (order?.user?.email) {
@@ -502,7 +512,6 @@ export const processRefundService = async (order) => {
         notes: { reason: order.cancelReason || "Order cancelled by user" },
     });
 
-    console.log(`Refund initiated for order ${order._id}:`, refund);
     // Update order with refund tracking details
     order.paymentStatus = "refunded";
     order.refund = {
