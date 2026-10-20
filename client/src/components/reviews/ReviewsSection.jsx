@@ -9,7 +9,7 @@ import ReviewForm from './ReviewForm.jsx';
 import ReviewsList from './ReviewsList.jsx';
 
 
-export default function ReviewsSection({ productId, reviews, averageRating, totalReviews, reviewsLoading, fetchProductReviews, id }) {
+export default function ReviewsSection({ productId, reviews, averageRating, totalReviews, currentPage, totalPages, reviewsLoading, fetchProductReviews, id }) {
   // Keep store interactions in parent so child components stay presentational.
   const { addReview, deleteReview } = useReviewStore();
   const { user } = useAuth();
@@ -28,7 +28,7 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
 
     if (result.success) {
       toast.success('Review added successfully');
-      await fetchProductReviews(productId);
+      await fetchProductReviews(productId, 1);
       setSubmitting(false);
       return true;
     } else {
@@ -49,7 +49,7 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
 
     if (result.success) {
       toast.success('Review deleted successfully');
-      await fetchProductReviews(productId);
+      await fetchProductReviews(productId, 1);
     } else {
       toast.error(result.message || 'Failed to delete review');
     }
@@ -80,10 +80,13 @@ export default function ReviewsSection({ productId, reviews, averageRating, tota
       <ReviewsList
         reviews={reviews}
         totalReviews={totalReviews}
+        currentPage={currentPage}
+        totalPages={totalPages}
         reviewsLoading={reviewsLoading}
         currentUserId={user?._id}
         deletingReviewId={deletingReviewId}
         onDeleteReview={handleDeleteReview}
+        onPageChange={(page) => fetchProductReviews(productId, page)}
       />
     </section>
   )

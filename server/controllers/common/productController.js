@@ -3,7 +3,7 @@ import * as productService from "../../services/productService.js";
 // Search products by title, category, or slug.
 const searchProducts = async (req, res) => {
     const { query } = req.body;
-    const limit = Number(req.body.limit) || 30;
+    const limit = Number(req.body.limit) || 20;
     const page = Number(req.body.page) || 1;
 
     const result = await productService.searchProductsLogic(query, page, limit);

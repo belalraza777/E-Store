@@ -1,29 +1,33 @@
 import { create } from 'zustand';
 import { addReview, getProductReviews, deleteReview } from '../api/reviewApi';
 
-const useReviewStore = create((set, get) => ({
+const useReviewStore = create((set) => ({
     reviews: [],
     averageRating: 0,
     totalReviews: 0,
     verifiedReviews: 0,
+    currentPage: 1,
+    totalPages: 0,
     loading: false,
     error: null,
 
-    // Fetch reviews for a product
-    fetchProductReviews: async (productId) => {
+    // Fetch reviews for a product page
+    fetchProductReviews: async (productId, page = 1) => {
         set({ loading: true, error: null });
-        const result = await getProductReviews(productId);
+        const result = await getProductReviews(productId, page);
         if (result.success) {
             const normalizedAverageRating = Number(result.averageRating);
             const normalizedTotalReviews = Number(result.totalReviews);
             const normalizedVerifiedReviews = Number(result.verifiedReviews);
 
-            set({ 
-                reviews: result.data, 
+            set({
+                reviews: result.data,
                 averageRating: Number.isFinite(normalizedAverageRating) ? normalizedAverageRating : 0,
                 totalReviews: Number.isFinite(normalizedTotalReviews) ? normalizedTotalReviews : 0,
                 verifiedReviews: Number.isFinite(normalizedVerifiedReviews) ? normalizedVerifiedReviews : 0,
-                loading: false 
+                currentPage: result.page || 1,
+                totalPages: result.totalPages || 0,
+                loading: false,
             });
         } else {
             set({ error: result.message, loading: false });
@@ -36,9 +40,7 @@ const useReviewStore = create((set, get) => ({
         set({ loading: true, error: null });
         const result = await addReview(productId, reviewData);
         if (result.success) {
-            // Add review to the list
-            const reviews = [result.data, ...get().reviews];
-            set({ reviews, loading: false });
+            set({ loading: false });
         } else {
             set({ error: result.message, loading: false });
         }
@@ -50,9 +52,7 @@ const useReviewStore = create((set, get) => ({
         set({ loading: true, error: null });
         const result = await deleteReview(reviewId);
         if (result.success) {
-            // Remove review from the list
-            const reviews = get().reviews.filter(r => r._id !== reviewId);
-            set({ reviews, totalReviews: reviews.length, loading: false });
+            set({ loading: false });
         } else {
             set({ error: result.message, loading: false });
         }
@@ -60,7 +60,7 @@ const useReviewStore = create((set, get) => ({
     },
 
     // Clear reviews
-    clearReviews: () => set({ reviews: [], averageRating: 0, totalReviews: 0, verifiedReviews: 0 }),
+    clearReviews: () => set({ reviews: [], averageRating: 0, totalReviews: 0, verifiedReviews: 0, currentPage: 1, totalPages: 0 }),
 
     // Clear error
     clearError: () => set({ error: null }),

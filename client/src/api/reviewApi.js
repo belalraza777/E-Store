@@ -12,15 +12,19 @@ export const addReview = async (productId, reviewData) => {
     }
 };
 
-export const getProductReviews = async (productId) => {
+export const getProductReviews = async (productId, page = 1, limit = 5) => {
     try {
-        const response = await axiosInstance.get(`/reviews/product/${productId}`);
+        const response = await axiosInstance.get(`/reviews/product/${productId}`, {
+            params: { page, limit },
+        });
         return { 
             success: true, 
             data: response.data.data,
             averageRating: response.data.averageRating,
             totalReviews: response.data.totalReviews,
-            verifiedReviews: response.data.verifiedReviews
+            verifiedReviews: response.data.verifiedReviews,
+            page: response.data.page,
+            totalPages: response.data.totalPages,
         };
     } catch (error) {
         return { 

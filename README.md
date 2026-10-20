@@ -10,7 +10,7 @@ The repository contains two independently installable applications: a Vite front
 ## ✨ Features
 
 ### 🛍️ Shopping
-- Browse products by category with sorting & pagination
+- Browse products by category with numbered pagination
 - Full-text product search with Redis caching
 - Product detail pages with SEO-friendly slugs
 - Shopping cart with discount price support
@@ -93,7 +93,7 @@ E-STORE/
 │   │   │   ├── profile/        #   Profile display/edit
 │   │   │   ├── Recommendation/ #   Product recommendations
 │   │   │   ├── reviews/        #   Review list, form, ratings
-│   │   │   └── ui/             #   Skeleton loaders & primitives
+│   │   │   └── ui/             #   Skeleton loaders, pagination & primitives
 │   │   ├── context/            # React Context (auth)
 │   │   ├── helper/             # Client-side helpers (invoices, stats, etc.)
 │   │   ├── layout/             # Header, Footer, Admin & User layouts
@@ -376,14 +376,38 @@ docker rm -f estore-server
 ### Products
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/v1/products` | Get all products (paginated) |
+| GET | `/api/v1/products` | Get products with pagination and optional category filter |
 | GET | `/api/v1/products/:slug` | Get product by slug |
-| POST | `/api/v1/products/search` | Search products |
+| POST | `/api/v1/products/search` | Search products with pagination |
 | GET | `/api/v1/products/categories` | Get categories |
 | POST | `/api/v1/products` | Create product (admin) |
 | PUT | `/api/v1/products/:id` | Update product (admin) |
 | DELETE | `/api/v1/products/:id` | Delete product (admin) |
 | PATCH | `/api/v1/products/:id/stock` | Update product stock (admin) |
+
+Product listing query parameters:
+
+```text
+GET /api/v1/products?page=1&limit=20&category=electronics
+```
+
+- `page` - page number, starting at `1`
+- `limit` - products per page (maximum `50`)
+- `category` - optional category filter; use `all` or omit it for every category
+
+Paginated product responses include `data` and a `pagination` object:
+
+```json
+{
+  "data": [],
+  "pagination": {
+    "total": 100,
+    "page": 1,
+    "limit": 20,
+    "pages": 5
+  }
+}
+```
 
 ### Cart
 | Method | Endpoint | Description |
@@ -417,9 +441,18 @@ docker rm -f estore-server
 ### Reviews
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/v1/reviews/product/:productId` | Get product reviews |
+| GET | `/api/v1/reviews/product/:productId` | Get product reviews with pagination |
 | POST | `/api/v1/reviews/:productId` | Add review |
 | DELETE | `/api/v1/reviews/:reviewId` | Delete review |
+
+Review pagination uses the same page-based approach:
+
+```text
+GET /api/v1/reviews/product/:productId?page=1&limit=5
+```
+
+The frontend displays numbered page buttons and loads one page at a time. Product
+lists and reviews do not use infinite scrolling.
 
 ### Profile
 | Method | Endpoint | Description |

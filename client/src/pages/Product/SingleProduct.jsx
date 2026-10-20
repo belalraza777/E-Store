@@ -19,7 +19,7 @@ export default function SingleProduct() {
 
   // Get product and review data from stores
   const { currentProduct: product, loading: productLoading, fetchProductBySlug } = useProductStore();
-  const { reviews, averageRating, totalReviews, loading: reviewsLoading, fetchProductReviews } = useReviewStore();
+  const { reviews, averageRating, totalReviews, currentPage, totalPages, loading: reviewsLoading, fetchProductReviews } = useReviewStore();
 
   // Local state for quantity selection
   const [quantity, setQuantity] = useState(1);
@@ -216,6 +216,8 @@ export default function SingleProduct() {
         reviews={reviews}
         averageRating={averageRating}
         totalReviews={totalReviews}
+        currentPage={currentPage}
+        totalPages={totalPages}
         reviewsLoading={reviewsLoading}
         fetchProductReviews={fetchProductReviews}
       />

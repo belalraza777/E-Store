@@ -13,12 +13,13 @@ const addReview = async (req, res) => {
 };
 
 // GET /api/v1/reviews/product/:productId
-// Get all reviews for a product
+// Get paginated reviews for a product
 const getProductReviews = async (req, res) => {
     const { productId } = req.params;
+    const page = Math.max(Number.parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 5, 1), 20);
 
-    // Service returns the full response object (already formatted with success/data/averages)
-    const response = await reviewService.getProductReviewsLogic(productId);
+    const response = await reviewService.getProductReviewsLogic(productId, page, limit);
 
     return res.status(200).json(response);
 };

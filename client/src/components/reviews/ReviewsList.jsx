@@ -2,15 +2,19 @@ import React from 'react';
 import Skeleton from '../ui/Skeleton/Skeleton.jsx';
 import StarRating from './StarRating.jsx';
 import { AiOutlineDelete } from "react-icons/ai";
+import Pagination from '../ui/Pagination/Pagination.jsx';
 
 
 export default function ReviewsList({
     reviews,
     totalReviews,
+    currentPage,
+    totalPages,
     reviewsLoading,
     currentUserId,
     deletingReviewId,
     onDeleteReview,
+    onPageChange,
 }) {
 
     if (!Array.isArray(reviews)) {
@@ -42,49 +46,56 @@ export default function ReviewsList({
             ) : reviews.length === 0 ? (
                 <div className="no-reviews">No reviews yet. Be the first to share your thoughts!</div>
             ) : (
-                <div className="reviews-list">
-                    {reviews.map((review) => (
-                        <div key={review._id} className="review-item">
-                            <div className="review-header">
-                                <div className="reviewer-info">
-                                    <div className="reviewer-name-row">
-                                        <strong>{review.user?.name || 'Anonymous'}</strong>
-                                        {review.isVerified && (
-                                            <span className="verified-tag" title="Verified Purchase">Verified Purchase</span>
-                                        )}
+                <>
+                    <div className="reviews-list">
+                        {reviews.map((review) => (
+                            <div key={review._id} className="review-item">
+                                <div className="review-header">
+                                    <div className="reviewer-info">
+                                        <div className="reviewer-name-row">
+                                            <strong>{review.user?.name || 'Anonymous'}</strong>
+                                            {review.isVerified && (
+                                                <span className="verified-tag" title="Verified Purchase">Verified Purchase</span>
+                                            )}
+                                        </div>
+                                        <span className="review-rating">
+                                            <StarRating value={review.rating} size={16} readOnly={true} />
+                                        </span>
                                     </div>
-                                    <span className="review-rating">
-                                        <StarRating value={review.rating} size={16} readOnly={true} />
+                                    <span className="review-date">
+                                        {new Date(review.createdAt).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                        })}
                                     </span>
                                 </div>
-                                <span className="review-date">
-                                    {new Date(review.createdAt).toLocaleDateString('en-US', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric',
-                                    })}
-                                </span>
+
+                                <p className="review-comment">{review.comment}</p>
+
+                                {isReviewOwner(review) && (
+                                    <div className="review-actions">
+                                        <button
+                                            type="button"
+                                            className="review-delete-btn"
+                                            aria-label="Delete review"
+                                            title="Delete review"
+                                            onClick={() => onDeleteReview(review._id)}
+                                            disabled={deletingReviewId === review._id}
+                                        >
+                                            {deletingReviewId === review._id ? 'Deleting...' : <AiOutlineDelete />}
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-
-                            <p className="review-comment">{review.comment}</p>
-
-                            {isReviewOwner(review) && (
-                                <div className="review-actions">
-                                    <button
-                                        type="button"
-                                        className="review-delete-btn"
-                                        aria-label="Delete review"
-                                        title="Delete review"
-                                        onClick={() => onDeleteReview(review._id)}
-                                        disabled={deletingReviewId === review._id}
-                                    >
-                                        {deletingReviewId === review._id ? 'Deleting...' : <AiOutlineDelete />}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={onPageChange}
+                    />
+                </>
             )}
         </div>
     );
