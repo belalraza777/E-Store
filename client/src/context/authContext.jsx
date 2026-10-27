@@ -39,6 +39,12 @@ export const AuthProvider = ({ children }) => {
         checkUser();
     }, []);
 
+    // Interceptor refresh fail hone par user ko logout state me daalo
+    useEffect(() => {
+        window.addEventListener('auth:logout', clearAuthData);
+        return () => window.removeEventListener('auth:logout', clearAuthData);
+    }, []);
+
     // Handle user login
     const handleLogin = async (credentials) => {
         const result = await login(credentials);

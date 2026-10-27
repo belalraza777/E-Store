@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const verifyAuth = (req, res, next) => {
     // Try to get token from cookie first, then Authorization header
-    let token = req?.cookies?.token;
+    let token = req?.cookies?.accessToken;
 
     if (!token && req?.headers?.authorization) {
         const authHeader = req.headers.authorization;
@@ -19,12 +19,13 @@ const verifyAuth = (req, res, next) => {
         });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).json({
+            // 401 (pehle 403 tha) taaki client expired token pe refresh trigger kare
+            return res.status(401).json({
                 success: false,
                 message: "Invalid or expired token",
-                error: "Forbidden"
+                error: "Unauthorized"
             });
         }
         req.user = user;

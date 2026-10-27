@@ -13,14 +13,18 @@ router.post("/login", loginValidation, authLimiter, asyncWrapper(usersController
 // Signup routes
 router.post("/register", registerValidation, authLimiter, asyncWrapper(usersController.registerUser));
 
-// Logout route 
-router.get("/logout", verifyAuth, usersController.logoutUser);
+/// Logout route (no verifyAuth: access token expire ho tab bhi session revoke hona chahiye)
+router.get("/logout", asyncWrapper(usersController.logoutUser));
+
+// Refresh token route
+router.post("/refresh", asyncWrapper(usersController.refreshToken));
 
 //to Check Login and role in frontend 
 router.get("/check", asyncWrapper(usersController.checkUser));
 
 //reset password
 router.patch("/reset", verifyAuth, authLimiter, resetPasswordValidation, asyncWrapper(usersController.resetPassword));
+
 
 // //otp base login 
 // router.post('/request-otp', otpLimiter, asyncWrapper(usersController.requestOtp));   // Step 1: Generate & send OTP

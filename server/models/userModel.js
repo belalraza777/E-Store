@@ -64,7 +64,15 @@ const userSchema = new mongoose.Schema(
             enum: ["local", "google", "facebook"],
             default: "local",
         },
+
         providerId: String,
+        
+        refreshSessions: {
+            type: [{ _id: false, jti: String, tokenHash: String, expiresAt: Date }],
+            select: false,       // queries me by default nahi aayega
+            default: undefined,  // register response me empty array leak nahi hoga
+        },
+
     },
     { timestamps: true }
 );

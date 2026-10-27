@@ -1,7 +1,8 @@
 import express from "express";
 import passport from "../config/passport.js";
 import User from "../models/userModel.js";
-import jwt from "jsonwebtoken";
+import { createSessionLogic } from "../services/authService.js";
+import { setAuthCookies } from "../helper/authUtils.js";
 import { oauthLimiter } from "../middlewares/rateLimit.js";
 
 const router = express.Router();
@@ -40,21 +41,13 @@ router.get(
         if (!user) {
             return res.status(404).json({ success: false, message: "User not exist!", error: "Authentication Failed" });
         }
-        // Generating JWT token
-        const token = jwt.sign({ id: user._id ,role: user.role}, process.env.JWT_SECRET, { expiresIn: "5d" });
-        // Setting token in cookie (5 days to match JWT expiry)
-        res.cookie("token", token, {
-            httpOnly: true,
-            maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days in ms
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            path: '/',
-        });
+        // Create session + set access and refresh token cookies
+        const { accessToken, refreshToken } = await createSessionLogic(user);
+        setAuthCookies(res, accessToken, refreshToken);
 
         // redirect to frontend
         res.redirect(getFrontendRedirectUrl(req));
     }
 );
-
 
 export default router;

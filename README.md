@@ -1,4 +1,4 @@
-# 🛒 E-Store — Full-Stack E-Commerce Platform with Ai Assistent
+# 🛒 E-Store — Full-Stack E-Commerce Platform with AI Assistant
 
 A modern, full-featured e-commerce platform built with **React 19**, **Express 5**, **MongoDB**, and **Redis** — complete with an **AI shopping assistant**, **Razorpay payments**, **Google OAuth**, and a full **admin dashboard**.
 
@@ -29,7 +29,8 @@ The repository contains two independently installable applications: a Vite front
 - Automated payment confirmation emails
 
 ### 👤 Authentication & Users
-- JWT-based auth with httpOnly cookies
+- JWT access token (15 min) + rotating refresh token (7 days) in httpOnly cookies
+- Per-device refresh sessions (logout revokes only the current device)
 - **Google OAuth 2.0** via Passport.js
 - Email verification & password reset
 - Role-based access control (User / Admin)
@@ -39,7 +40,7 @@ The repository contains two independently installable applications: a Vite front
 - Order confirmation emails via Gmail (Nodemailer)
 - Track order status (Placed → Shipped → Delivered)
 - Cancel orders with reason
-- Automatic Razorpay refund on cancellation of  paid online orders
+- Automatic Razorpay refund on cancellation of paid online orders
 
 ### ⭐ Reviews & Ratings
 - 1–5 star ratings with verified-purchase badges
@@ -70,7 +71,7 @@ The repository contains two independently installable applications: a Vite front
 | **Cache** | Redis (ioredis) |
 | **AI** | LangChain, LangGraph, Groq (LLaMA 3.3 70B) |
 | **Payments** | Razorpay |
-| **Auth** | JWT, Passport.js (Google OAuth 2.0), bcrypt |
+| **Auth** | JWT (access + refresh tokens), Passport.js (Google OAuth 2.0), bcrypt |
 | **File Storage** | Cloudinary (via Multer) |
 | **Email** | Nodemailer (Gmail) |
 | **Validation** | Joi (server), Zod (AI agent schemas) |
@@ -181,8 +182,9 @@ REDIS_PORT=6379
 REDIS_USERNAME=
 REDIS_PASSWORD=
 
-# JWT
-JWT_SECRET=your_jwt_secret
+# JWT (use two different long random strings)
+ACCESS_TOKEN_SECRET=your_access_token_secret
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
 
 # Google OAuth
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -202,12 +204,19 @@ GMAIL_APP_PASSWORD=your_app_password
 # Razorpay
 RAZORPAY_KEY_ID=your_razorpay_key_id
 RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+RAZORPAY_WEBHOOK_SECRET=your_razorpay_webhook_secret
 
 # AI Agent (Groq)
 GROQ_API_KEY=your_groq_api_key
 
 # Frontend URL
 FRONTEND_URL=http://localhost:5173
+```
+
+Generate each token secret with:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
 
 Start the server:
@@ -275,7 +284,8 @@ REDIS_PORT=6379
 REDIS_USERNAME=
 REDIS_PASSWORD=
 
-JWT_SECRET=your_jwt_secret
+ACCESS_TOKEN_SECRET=your_access_token_secret
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
 
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
@@ -291,6 +301,7 @@ GMAIL_APP_PASSWORD=your_gmail_app_password
 
 RAZORPAY_KEY_ID=your_razorpay_key_id
 RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+RAZORPAY_WEBHOOK_SECRET=your_razorpay_webhook_secret
 
 GROQ_API_KEY=your_groq_api_key
 
@@ -367,11 +378,19 @@ docker rm -f estore-server
 |--------|----------|-------------|
 | POST | `/api/v1/auth/register` | Register new user |
 | POST | `/api/v1/auth/login` | Login |
-| GET | `/api/v1/auth/logout` | Logout |
+| GET | `/api/v1/auth/logout` | Logout (revokes current device session) |
+| POST | `/api/v1/auth/refresh` | Refresh access token (rotates refresh token) |
 | GET | `/api/v1/auth/check` | Check auth status |
 | PATCH | `/api/v1/auth/reset` | Reset password |
 | GET | `/api/v1/auth/google` | Google OAuth login |
 | GET | `/api/v1/auth/google/callback` | Google OAuth callback |
+
+Tokens are set as httpOnly cookies and never returned in the response body:
+
+| Cookie | Lifetime | Path |
+|--------|----------|------|
+| `accessToken` | 15 minutes | `/` |
+| `refreshToken` | 7 days | `/api/v1/auth` |
 
 ### Products
 | Method | Endpoint | Description |
@@ -486,7 +505,9 @@ lists and reviews do not use infinite scrolling.
 
 ## 🔒 Security
 
-- JWT tokens stored in **httpOnly cookies** (no XSS exposure)
+- Short-lived access token (15 min) and rotating refresh token (7 days), both in **httpOnly cookies** (no XSS exposure)
+- Refresh tokens are stored only as **SHA-256 hashes** in the user document, with one session per device
+- Refresh token reuse is rejected, and changing the password revokes all sessions
 - **bcrypt** password hashing (salt rounds: 10)
 - **HMAC SHA256** payment signature verification
 - **Rate limiting** on all routes:
